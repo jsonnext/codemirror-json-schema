@@ -1,0 +1,17 @@
+{
+  "name": "cm6-json-schema",
+  "dependencies": {
+    "@types/json-schema": "^7.0.12",
+    "ajv": "8.12.0",
+    "json-schema": "0.2.3",
+    "json-source-map": "0.6.1",
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "vitest": "0.33.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  }
+}
