@@ -25,7 +25,7 @@
   },
   "scripts": {
     "dev": "npm run build && vite ./dev --port 3000",
-    "build": "tsc",
+    "build": "tsc && vite build ./dev --outDir ../public",
     "test": "vitest"
   }
 }
