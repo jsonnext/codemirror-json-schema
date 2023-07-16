@@ -48,9 +48,9 @@ class CompletionCollector {
 }
 
 export class JSONCompletion {
-  constructor(private schema: JSONSchema7) {}
+  public constructor(private schema: JSONSchema7) {}
 
-  doComplete(ctx: CompletionContext) {
+  public doComplete(ctx: CompletionContext) {
     const result: CompletionResult = {
       from: ctx.pos,
       to: ctx.pos,

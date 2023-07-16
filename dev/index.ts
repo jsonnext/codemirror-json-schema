@@ -1,4 +1,4 @@
-import { JSONCompletion } from "../dist/";
+import { JSONCompletion } from "../";
 import { EditorState } from '@codemirror/state';
 import { EditorView, lineNumbers } from '@codemirror/view';
 import { history } from '@codemirror/commands';
