@@ -3,6 +3,7 @@
   "license": "MIT",
   "description": "A JSONSchema enabled mode for codemirror 6, inspired by monaco-json ",
   "type": "module",
+  "packageManager": "pnpm@8.6.6",
   "dependencies": {
     "@codemirror/autocomplete": "^6.8.1",
     "@codemirror/buildhelper": "^1.0.0",
