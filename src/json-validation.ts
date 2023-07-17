@@ -30,12 +30,13 @@ const getErrorPath = (error: JsonError) => {
   return "";
 };
 
-// a little utility to join members of an array with commas and "or"
+// a little english-centric utility
+// to join members of an array with commas and "or"
 const joinWithOr = (arr: string[], getPath?: (err: any) => any) => {
   const needsComma = arr.length > 2;
   let data = arr.map((err: any, i: number) => {
     const result = `\`` + (getPath ? JSON.stringify(getPath(err)) : err) + `\``;
-    if (i === arr.length - 1) return "or " + result ;
+    if (i === arr.length - 1) return "or " + result;
     return result;
   });
   if (needsComma) {
@@ -59,14 +60,13 @@ const rewriteError = (error: JsonError): string => {
         : error?.data?.expected
     }\` but received \`${error?.data?.received}\``;
   }
-  const message = error.message
-    .replaceAll("#/", "")
-    .replace('/', ".")
+  const message = error.message.replaceAll("#/", "").replace("/", ".");
 
   return message;
 };
 
-// get the errors with locations from the json schema library
+// get the errors with locations
+// from the json schema library and json-source-map
 export function getJSONValidationErrors(
   view: EditorView,
   schema: Draft
@@ -74,7 +74,7 @@ export function getJSONValidationErrors(
   if (!schema) return [];
 
   // first see if the json can parse
-  let json: any;
+  let json = {} as JsonMap.ParsedJSON;
   const text = view.state.doc.toString();
 
   // ignore blank texts
@@ -82,24 +82,11 @@ export function getJSONValidationErrors(
 
   try {
     json = JsonMap.parse(text);
-  } catch (error) {
-    // if the error is a syntax error, report the line numbers
-    // these area already handled by @codemirror/lang-json before our linter
-    // is even loaded, so this is just a fallback
-    if (error instanceof SyntaxError) {
-      // parse the error message and report the line numbers
-      const pos = getErrorPosition(error as SyntaxError, view.state.doc);
-      
-      return [
-        {
-          from: pos,
-          to: pos + 1,
-          severity: "error",
-          message: error.message,
-          source: 'SyntaxError'
-        },
-      ];
-    }
+  } catch {
+    // skip because @codemirror/lang-json already provides syntax error handling
+  }
+  if (!json.data) {
+    return [];
   }
   let errors: JsonError[] = [];
   try {
@@ -107,10 +94,11 @@ export function getJSONValidationErrors(
   } catch {}
 
   if (!errors.length) return [];
-  return errors.reduce((acc: Diagnostic[], error) => {
+  // reduce() because we want to filter out errors that don't have a pointer
+  return errors.reduce((acc, error) => {
     const errorPath = getErrorPath(error);
-    let pointer = json.pointers[errorPath];
-    if (errorPath && pointer) {
+    const pointer = json.pointers[errorPath];
+    if (pointer) {
       // if the error is a property error, use the key position
       const isPropertyError = error.name === "NoAdditionalPropertiesError";
       acc.push({
@@ -124,12 +112,12 @@ export function getJSONValidationErrors(
       } as Diagnostic);
     }
     return acc;
-  }, []);
+  }, [] as Diagnostic[]);
 }
 
 export class JSONValidation {
   private _schema: Draft;
-  public constructor(private schema: JSONSchema7) {
+  public constructor(schema: JSONSchema7) {
     // todo: support other versions of json schema.
     // most standard schemas are draft 4 for some reason.
     // ajv did not support draft 4, so I used json-schema-library
