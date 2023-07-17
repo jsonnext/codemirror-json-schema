@@ -30,6 +30,9 @@ const testSchema2 = {
       },
       additionalProperties: false,
     },
+    oneOfEg: {
+      oneOf: [{"type": "string"}, {"type": "array"}]
+    }
   },
   required: ["foo", "object.foo"],
   additionalProperties: false,
@@ -52,8 +55,9 @@ describe("json-validation", () => {
         {
           from: 8,
           to: 11,
-          message: "Expected `123` (number) in `#/foo` to be of type `string`",
+          message: "Expected `string` but received `number`",
           severity: "error",
+          source: 'json-schema'
         },
       ])
     );
@@ -66,6 +70,7 @@ describe("json-validation", () => {
           to: 24,
           message: "Additional property `bar` in `#` is not allowed",
           severity: "error",
+          source: 'json-schema'
         },
       ])
     );
@@ -78,6 +83,7 @@ describe("json-validation", () => {
           to: 19,
           message: 'Unexpected token " in JSON at position 18',
           severity: "error",
+          source: 'SyntaxError'
         },
       ])
     );
@@ -98,6 +104,28 @@ describe("json-validation", () => {
           to: 37,
           message: "Additional property `bar` in `#` is not allowed",
           severity: "error",
+          source: 'json-schema'
+        },
+      ])
+    );
+  });
+  it("should provide formatted error message for oneOf fields", () => {
+    expect(
+      getErrors(
+        `{
+        "foo": "example",
+    "oneOfEg": 123
+  }`,
+        testSchema2
+      )
+    ).toEqual(
+      expect.arrayContaining([
+        {
+          from: 43,
+          to: 46,
+          message: "Expected one of `\"string\"` or `\"array\"`",
+          severity: "error",
+          source: 'json-schema'
         },
       ])
     );

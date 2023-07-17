@@ -1,10 +1,11 @@
 import { JSONCompletion, JSONValidation } from "../src";
 import { EditorState } from '@codemirror/state';
 import { gutter, EditorView, lineNumbers } from '@codemirror/view';
+import { basicSetup } from 'codemirror'
 import { history } from '@codemirror/commands';
 import { autocompletion, closeBrackets, CompletionContext } from '@codemirror/autocomplete';
 import { linter, lintGutter } from '@codemirror/lint';
-import { bracketMatching, indentUnit, syntaxHighlighting } from '@codemirror/language';
+import { bracketMatching, syntaxHighlighting } from '@codemirror/language';
 import { oneDarkHighlightStyle, oneDark } from '@codemirror/theme-one-dark';
 import {jsonText} from './sample-text';
 import packageJsonSchema from './package.schema.json';
@@ -19,12 +20,15 @@ const state = EditorState.create({
   extensions: [
     gutter({class: 'CodeMirror-lint-markers'}),
     bracketMatching(),
+    basicSetup,
     closeBrackets(),
     history(),
     autocompletion(),
     lineNumbers(),
     lintGutter(),
     oneDark,
+    EditorView.lineWrapping,
+    EditorState.tabSize.of(2),
     syntaxHighlighting(oneDarkHighlightStyle),
     json(),
     linter(jsonParseLinter()),
