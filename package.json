@@ -13,23 +13,27 @@
     "@codemirror/commands": "^6.2.4",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/language": "^6.8.0",
+    "@codemirror/lint": "^6.4.0",
     "@codemirror/state": "^6.2.1",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.14.1",
     "@lezer/common": "^1.0.3",
     "@types/json-schema": "^7.0.12",
     "ajv": "8.12.0",
+    "ajv-formats": "^2.1.1",
     "json-schema": "0.2.3",
+    "json-schema-library": "^8.0.0",
     "json-source-map": "0.6.1",
     "typescript": "^5.1.6"
   },
   "devDependencies": {
+    "happy-dom": "^10.3.2",
     "vite": "^4.4.4",
     "vitest": "0.33.0"
   },
   "scripts": {
     "dev": "npm run build && vite ./dev --port 3000",
     "build": "tsc && vite build ./dev --outDir ../public",
-    "test": "vitest"
+    "test": "vitest --dom"
   }
 }

@@ -1,27 +1,34 @@
-import { JSONCompletion } from "../";
+import { JSONCompletion, JSONValidation } from "../src";
 import { EditorState } from '@codemirror/state';
-import { EditorView, lineNumbers } from '@codemirror/view';
+import { gutter, EditorView, lineNumbers } from '@codemirror/view';
 import { history } from '@codemirror/commands';
 import { autocompletion, closeBrackets, CompletionContext } from '@codemirror/autocomplete';
+import { linter, lintGutter } from '@codemirror/lint';
 import { bracketMatching, indentUnit, syntaxHighlighting } from '@codemirror/language';
 import { oneDarkHighlightStyle, oneDark } from '@codemirror/theme-one-dark';
 import {jsonText} from './sample-text';
 import packageJsonSchema from './package.schema.json';
-import { json, jsonLanguage } from '@codemirror/lang-json';
+import { json, jsonLanguage, jsonParseLinter } from '@codemirror/lang-json';
 import { JSONSchema7 } from 'json-schema';
 
 const jsonCompletion = new JSONCompletion(packageJsonSchema as JSONSchema7);
+const jsonLinting =  new JSONValidation(packageJsonSchema as JSONSchema7);
+
 const state = EditorState.create({
   doc: jsonText,
   extensions: [
+    gutter({class: 'CodeMirror-lint-markers'}),
     bracketMatching(),
     closeBrackets(),
     history(),
     autocompletion(),
     lineNumbers(),
+    lintGutter(),
     oneDark,
     syntaxHighlighting(oneDarkHighlightStyle),
     json(),
+    linter(jsonParseLinter()),
+    // linter((view) => jsonLinting.doValidation(view)),
     jsonLanguage.data.of({
       autocomplete: (ctx: CompletionContext) => jsonCompletion.doComplete(ctx),
     }),
