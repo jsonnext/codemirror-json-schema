@@ -3,6 +3,7 @@ import type { Diagnostic } from "@codemirror/lint";
 import type { JSONSchema7 } from "json-schema";
 import { Draft04, type Draft, type JsonError } from "json-schema-library";
 import JsonMap from "json-source-map";
+import { joinWithOr } from "./utils/formatting";
 
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
@@ -18,20 +19,7 @@ const getErrorPath = (error: JsonError): string => {
   return "";
 };
 
-// a little english-centric utility
-// to join members of an array with commas and "or"
-const joinWithOr = (arr: string[], getPath?: (err: any) => any) => {
-  const needsComma = arr.length > 2;
-  let data = arr.map((err: any, i: number) => {
-    const result = `\`` + (getPath ? JSON.stringify(getPath(err)) : err) + `\``;
-    if (i === arr.length - 1) return "or " + result;
-    return result;
-  });
-  if (needsComma) {
-    return data.join(", ");
-  }
-  return data.join(" ");
-};
+
 
 export class JSONValidation {
   private schema: Draft;

@@ -1,6 +1,6 @@
-import { JSONCompletion, JSONValidation } from "../src";
+import { JSONCompletion, JSONHover, JSONValidation } from "../src";
 import { EditorState } from '@codemirror/state';
-import { gutter, EditorView, lineNumbers } from '@codemirror/view';
+import { gutter, EditorView, lineNumbers, hoverTooltip } from '@codemirror/view';
 import { basicSetup } from 'codemirror'
 import { history } from '@codemirror/commands';
 import { autocompletion, closeBrackets, CompletionContext } from '@codemirror/autocomplete';
@@ -14,6 +14,7 @@ import { JSONSchema7 } from 'json-schema';
 
 const jsonCompletion = new JSONCompletion(packageJsonSchema as JSONSchema7);
 const jsonLinting =  new JSONValidation(packageJsonSchema as JSONSchema7);
+const jsonHover = new JSONHover(packageJsonSchema as JSONSchema7);
 
 const state = EditorState.create({
   doc: jsonText,
@@ -36,6 +37,7 @@ const state = EditorState.create({
     jsonLanguage.data.of({
       autocomplete: (ctx: CompletionContext) => jsonCompletion.doComplete(ctx),
     }),
+    hoverTooltip((view, pos, side) => jsonHover.doHover(view, pos, side)),
   ],
 });
 

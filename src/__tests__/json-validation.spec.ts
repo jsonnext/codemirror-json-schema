@@ -4,39 +4,7 @@ import { describe, it, expect } from "vitest";
 import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
 
-const testSchema = {
-  type: "object",
-  properties: {
-    foo: {
-      type: "string",
-    },
-  },
-  required: ["foo"],
-  additionalProperties: false,
-} as JSONSchema7;
-
-const testSchema2 = {
-  type: "object",
-  properties: {
-    foo: {
-      type: "string",
-    },
-    object: {
-      type: "object",
-      properties: {
-        foo: {
-          type: "string",
-        },
-      },
-      additionalProperties: false,
-    },
-    oneOfEg: {
-      oneOf: [{ type: "string" }, { type: "array" }],
-    },
-  },
-  required: ["foo", "object.foo"],
-  additionalProperties: false,
-} as JSONSchema7;
+import { testSchema, testSchema2 } from "./__fixtures__/schemas";
 
 const getErrors = (jsonString: string, schema?: JSONSchema7) => {
   const view = new EditorView({ doc: jsonString, extensions: [json()] });

@@ -9,7 +9,7 @@ import { SyntaxNode } from '@lezer/common';
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema';
 import { debug } from './debug';
 
-const TOKENS = {
+export const TOKENS = {
   STRING: 'String',
   NUMBER: 'Number',
   TRUE: 'True',
@@ -22,7 +22,7 @@ const TOKENS = {
   JSON_TEXT: 'JsonText',
   INVALID: '⚠',
 };
-const VALUE_TYPES = [
+export const VALUE_TYPES = [
   TOKENS.STRING,
   TOKENS.NUMBER,
   TOKENS.TRUE,
