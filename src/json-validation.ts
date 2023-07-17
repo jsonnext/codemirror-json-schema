@@ -5,6 +5,7 @@ import { JSONSchema7 } from "json-schema";
 import { Draft04, Draft, JsonError } from "json-schema-library";
 import JsonMap from "json-source-map";
 
+// from @codemirror/lang-json jsonParseLinter
 function getErrorPosition(error: SyntaxError, doc: Text): number {
   let m;
   if ((m = error.message.match(/at position (\d+)/))) {
@@ -15,7 +16,7 @@ function getErrorPosition(error: SyntaxError, doc: Text): number {
   }
   return 0;
 }
-
+// return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError) => {
   // if a pointer is present, return without #
   if (error?.data?.pointer && error?.data?.pointer !== "#") {
@@ -25,10 +26,11 @@ const getErrorPath = (error: JsonError) => {
   if (error?.data?.property) {
     return `/${error.data.property}`;
   }
-  // else, return the pointer to represent the whole document
+  // else, return the empty pointer to represent the whole document
   return "";
 };
 
+// a little utility to join members of an array with commas and "or"
 const joinWithOr = (arr: string[], getPath?: (err: any) => any) => {
   const needsComma = arr.length > 2;
   let data = arr.map((err: any, i: number) => {
@@ -42,6 +44,7 @@ const joinWithOr = (arr: string[], getPath?: (err: any) => any) => {
   return data.join(" ");
 };
 
+// rewrite the error message to be more readable
 const rewriteError = (error: JsonError): string => {
   if (error.code === "one-of-error") {
     return `Expected one of ${joinWithOr(
@@ -63,7 +66,8 @@ const rewriteError = (error: JsonError): string => {
   return message;
 };
 
-export function getRangeForJSONErrors(
+// get the errors with locations from the json schema library
+export function getJSONValidationErrors(
   view: EditorView,
   schema: Draft
 ): Diagnostic[] {
@@ -79,10 +83,13 @@ export function getRangeForJSONErrors(
   try {
     json = JsonMap.parse(text);
   } catch (error) {
+    // if the error is a syntax error, report the line numbers
+    // these area already handled by @codemirror/lang-json before our linter
+    // is even loaded, so this is just a fallback
     if (error instanceof SyntaxError) {
       // parse the error message and report the line numbers
       const pos = getErrorPosition(error as SyntaxError, view.state.doc);
-
+      
       return [
         {
           from: pos,
@@ -104,10 +111,12 @@ export function getRangeForJSONErrors(
     const errorPath = getErrorPath(error);
     let pointer = json.pointers[errorPath];
     if (errorPath && pointer) {
+      // if the error is a property error, use the key position
       const isPropertyError = error.name === "NoAdditionalPropertiesError";
       acc.push({
         from: isPropertyError ? pointer.key.pos : pointer.value.pos,
         to: isPropertyError ? pointer.keyEnd.pos : pointer.valueEnd.pos,
+        // todo: create a domnode and replace `` with <code></code>
         // renderMessage: () => error.message,
         message: rewriteError(error),
         severity: "error",
@@ -121,14 +130,18 @@ export function getRangeForJSONErrors(
 export class JSONValidation {
   private _schema: Draft;
   public constructor(private schema: JSONSchema7) {
+    // todo: support other versions of json schema.
+    // most standard schemas are draft 4 for some reason.
+    // ajv did not support draft 4, so I used json-schema-library
     this._schema = new Draft04(schema);
   }
   public doValidation(view: EditorView) {
-    return getRangeForJSONErrors(view, this._schema);
+    return getJSONValidationErrors(view, this._schema);
   }
 }
 
-// the attempt at using codemirror AST
+// TODO: this will probably be more performant
+// attempt at using codemirror AST instead of json-source-map
 // const document = syntaxTree(view.state);
 
 // const errorPathNames = validate.errors?.map((error) => {
