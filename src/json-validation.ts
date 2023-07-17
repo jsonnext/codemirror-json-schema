@@ -17,7 +17,7 @@ function getErrorPosition(error: SyntaxError, doc: Text): number {
   return 0;
 }
 // return an object path that matches with the json-source-map pointer
-const getErrorPath = (error: JsonError) => {
+const getErrorPath = (error: JsonError): string => {
   // if a pointer is present, return without #
   if (error?.data?.pointer && error?.data?.pointer !== "#") {
     return error.data.pointer.slice(1);
