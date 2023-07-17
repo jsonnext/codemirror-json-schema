@@ -11,7 +11,7 @@ import addFormats from "ajv-formats"
 
 import JsonMap from "json-source-map";
 
-import Ajv, { ValidateFunction } from "ajv";
+import Ajv, { ErrorObject, ValidateFunction } from "ajv";
 
 
 const schemas: Record<string, unknown> = {}
@@ -79,6 +79,19 @@ const errorMessage = (error: any) => {
     .join(" ");
 };
 
+
+const getErrorPath = (error: ErrorObject<string, Record<string, unknown>>) => {
+  if(error.instancePath) {
+    return error.instancePath
+  }
+  if(error.params) {
+    if(error.params.additionalProperty) {
+      return `/${error.params.additionalProperty}`
+    }
+  }
+  return null
+}
+
 export function getRangeForJSONErrors(
   view: EditorView,
   validate?: ValidateFunction
@@ -109,7 +122,7 @@ export function getRangeForJSONErrors(
       return [
         {
           from: pos,
-          to: pos,
+          to: pos + 1,
           severity: "error",
           message: error.message
         },
@@ -124,13 +137,13 @@ export function getRangeForJSONErrors(
 
   if (valid || !validate.errors) return [];
   return validate.errors.reduce((acc: Diagnostic[], error) => {
-    let pointer = json.pointers[error.instancePath];
-
-    if (pointer) {
-      // console.log('pointer', pointer, error);
+    const errorPath = getErrorPath(error)
+    let pointer = json.pointers[getErrorPath(error)!];
+    if (errorPath && pointer) {
+      const isPropertyError  = error.keyword === 'additionalProperties'
       acc.push({
-        from: pointer.value.pos,
-        to: pointer.valueEnd.pos,
+        from: isPropertyError ? pointer.key.pos : pointer.value.pos,
+        to: isPropertyError ? pointer.keyEnd.pos : pointer.valueEnd.pos,
         message: errorMessage(error),
         severity: "error",
       } as Diagnostic);

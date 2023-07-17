@@ -62,8 +62,8 @@ describe("json-validation", () => {
     expect(getErrors('{"foo": "example", "bar": 123}', testSchema)).toEqual(
       expect.arrayContaining([
         {
-          from: 0,
-          to: 30,
+          from: 19,
+          to: 24,
           message: "must NOT have additional properties bar",
           severity: "error",
         },
@@ -75,7 +75,7 @@ describe("json-validation", () => {
       expect.arrayContaining([
         {
           from: 18,
-          to: 18,
+          to: 19,
           message: 'Unexpected token " in JSON at position 18',
           severity: "error",
         },
@@ -94,8 +94,8 @@ describe("json-validation", () => {
     ).toEqual(
       expect.arrayContaining([
         {
-          from: 0,
-          to: 59,
+          from: 32,
+          to: 37,
           message: "must NOT have additional properties bar",
           severity: "error",
         },
