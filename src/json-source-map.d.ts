@@ -1,5 +1,4 @@
 declare module "json-source-map" {
-
   type Position = {
     line: number;
     column: number;

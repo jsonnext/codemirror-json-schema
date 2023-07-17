@@ -41,7 +41,11 @@ export function getJsonPointerAt(docText: Text, node: SyntaxNode): string {
   return path.join("/");
 }
 
-export const jsonPointerForPosition = (view: EditorView, pos: number, side: -1 | 1) => {
+export const jsonPointerForPosition = (
+  view: EditorView,
+  pos: number,
+  side: -1 | 1
+) => {
   return getJsonPointerAt(
     view.state.doc,
     syntaxTree(view.state).resolve(pos, side)
