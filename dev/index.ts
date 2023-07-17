@@ -28,7 +28,7 @@ const state = EditorState.create({
     syntaxHighlighting(oneDarkHighlightStyle),
     json(),
     linter(jsonParseLinter()),
-    // linter((view) => jsonLinting.doValidation(view)),
+    linter((view) => jsonLinting.doValidation(view)),
     jsonLanguage.data.of({
       autocomplete: (ctx: CompletionContext) => jsonCompletion.doComplete(ctx),
     }),

@@ -7,32 +7,44 @@ import { EditorView } from "@codemirror/view";
 import { Text } from "@codemirror/state";
 import { Diagnostic } from "@codemirror/lint";
 import { JSONSchema7 } from "json-schema";
-import addFormats from "ajv-formats"
+import { Draft04, Draft, JsonError } from "json-schema-library";
 
 import JsonMap from "json-source-map";
 
-import Ajv, { ErrorObject, ValidateFunction } from "ajv";
+// import Ajv, { ErrorObject, ValidateFunction } from "ajv";
 
 
-const schemas: Record<string, unknown> = {}
-
-const ajv = new Ajv({
-  // allErrors: true,
-  // verbose: true,
-  strict: false,
-  // this is only executed on compileAsync, but loops endlessly 
-  // until the browser main process crashes
-  loadSchema: async function (uri) {
-    if(schemas[uri]) return schemas[uri]
-    const data = await fetch(uri).then((res) => res.json());
-    schemas[uri] = data;
-    return data
-  },
-
-});
+// const schemas: Record<string, unknown> = {}
 
 
-addFormats(ajv)
+
+
+// const ajv = new Ajv({
+//   // allErrors: true,
+//   // verbose: true,
+//   strict: false,
+//   // this is only executed on compileAsync, but loops endlessly 
+//   // until the browser main process crashes
+//   loadSchema: async function (uri) {
+//     if(schemas[uri]) return schemas[uri]
+//     const data = await fetch(uri).then((res) => res.json());
+//     schemas[uri] = data;
+//     return data
+//   },
+
+// });
+
+// import('./schemas/draft-4.json').then((schema) => {
+//   console.log(schema)
+//   const newSchema = { ...schema, id: undefined }
+//   newSchema['$id'] = schema.id;
+
+//   ajv.addMetaSchema(newSchema, 'http://json-schema.org/draft-04/schema#')
+// })
+
+
+
+// addFormats(ajv)
 
 /**
  * from https://github.com/codemirror/lang-json/blob/main/src/lint.ts
@@ -80,9 +92,13 @@ const errorMessage = (error: any) => {
 };
 
 
-const getErrorPath = (error: ErrorObject<string, Record<string, unknown>>) => {
-  if(error.instancePath) {
-    return error.instancePath
+const getErrorPath = (error: JsonError) => {
+  if(error?.data?.pointer && error?.data?.pointer !== '#') {
+    console.log(error.data.pointer.slice(1))
+    return error.data.pointer.slice(1)
+  }
+  if(error?.data?.property) {
+    return `/${error.data.property}`
   }
   if(error.params) {
     if(error.params.additionalProperty) {
@@ -94,9 +110,9 @@ const getErrorPath = (error: ErrorObject<string, Record<string, unknown>>) => {
 
 export function getRangeForJSONErrors(
   view: EditorView,
-  validate?: ValidateFunction
+  schema: Draft
 ): Diagnostic[] {
-  if(!validate) return []
+  if(!schema) return []
   // const validate = ajv.compile(schema);
   // let parsed: ParsedJSON;
 
@@ -129,18 +145,19 @@ export function getRangeForJSONErrors(
       ];
     }
   }
-  let valid = false
+  let errors: JsonError[]  = []
   try {
-   valid = validate(json.data);
+   errors = schema.validate(json.data);
   }
   catch {}
 
-  if (valid || !validate.errors) return [];
-  return validate.errors.reduce((acc: Diagnostic[], error) => {
+  if ( !errors.length) return [];
+  return errors.reduce((acc: Diagnostic[], error) => {
     const errorPath = getErrorPath(error)
-    let pointer = json.pointers[getErrorPath(error)!];
+    console.log(error, json.pointers)
+    let pointer = json.pointers[errorPath];
     if (errorPath && pointer) {
-      const isPropertyError  = error.keyword === 'additionalProperties'
+      const isPropertyError  = error.name === 'NoAdditionalPropertiesError'
       acc.push({
         from: isPropertyError ? pointer.key.pos : pointer.value.pos,
         to: isPropertyError ? pointer.keyEnd.pos : pointer.valueEnd.pos,
@@ -148,7 +165,7 @@ export function getRangeForJSONErrors(
         severity: "error",
       } as Diagnostic);
     }
-
+    console.log(acc)
     return acc;
   }, []);
   // const document = syntaxTree(view.state);
@@ -194,28 +211,12 @@ export function getRangeForJSONErrors(
 }
 
 export class JSONValidation {
-  private validate?: ValidateFunction;
+  private _schema: Draft;
   public constructor(private schema: JSONSchema7) {
-    this.schema = schema;
-    // if(this.schema['$schema']) {
-    //   this.schema['$schema'] = this.schema['$schema'].replace('http://', 'https://')
-    // }
-    try {
-      // TODO: we need compileAsync to load the remote schemas
-      // but then it loads them in an endless loop
-      //  (async () => {
-      //   console.log('compiling')
-      //   this.validate = await ajv.compileAsync(this.schema)
-        
-      // })();
-      this.validate = ajv.compile(this.schema)
-    }
-    catch(err) {
-      console.error(err)
-    }
+    this._schema = new Draft04(schema);
 
   }
   public doValidation(view: EditorView) {
-    return getRangeForJSONErrors(view, this.validate);
+    return getRangeForJSONErrors(view, this._schema);
   }
 }

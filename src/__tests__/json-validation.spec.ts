@@ -52,7 +52,7 @@ describe("json-validation", () => {
         {
           from: 8,
           to: 11,
-          message: "/foo must be string",
+          message: "Expected `123` (number) in `#/foo` to be of type `string`",
           severity: "error",
         },
       ])
@@ -64,7 +64,7 @@ describe("json-validation", () => {
         {
           from: 19,
           to: 24,
-          message: "must NOT have additional properties bar",
+          message: "Additional property `bar` in `#` is not allowed",
           severity: "error",
         },
       ])
@@ -96,7 +96,7 @@ describe("json-validation", () => {
         {
           from: 32,
           to: 37,
-          message: "must NOT have additional properties bar",
+          message: "Additional property `bar` in `#` is not allowed",
           severity: "error",
         },
       ])
