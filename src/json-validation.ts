@@ -1,9 +1,8 @@
-import { EditorView } from "@codemirror/view";
-import { Diagnostic } from "@codemirror/lint";
-import { JSONSchema7 } from "json-schema";
-import { Draft04, Draft, JsonError } from "json-schema-library";
+import type { EditorView } from "@codemirror/view";
+import type { Diagnostic } from "@codemirror/lint";
+import type { JSONSchema7 } from "json-schema";
+import { Draft04, type Draft, type JsonError } from "json-schema-library";
 import JsonMap from "json-source-map";
-
 
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
@@ -34,102 +33,86 @@ const joinWithOr = (arr: string[], getPath?: (err: any) => any) => {
   return data.join(" ");
 };
 
-// rewrite the error message to be more readable
-const rewriteError = (error: JsonError): string => {
-  if (error.code === "one-of-error") {
-    return `Expected one of ${joinWithOr(
-      error?.data?.errors,
-      (data) => data.data.expected
-    )}`;
-  }
-  if (error.code === "type-error") {
-    return `Expected \`${
-      error?.data?.expected && Array.isArray(error?.data?.expected)
-        ? joinWithOr(error?.data?.expected)
-        : error?.data?.expected
-    }\` but received \`${error?.data?.received}\``;
-  }
-  const message = error.message.replaceAll("#/", "").replace("/", ".");
-
-  return message;
-};
-
-// get the errors with locations
-// from the json schema library and json-source-map
-export function getJSONValidationErrors(
-  view: EditorView,
-  schema: Draft
-): Diagnostic[] {
-  if (!schema) return [];
-
-  // first see if the json can parse
-  let json = {} as JsonMap.ParsedJSON;
-  const text = view.state.doc.toString();
-
-  // ignore blank texts
-  if (!text) return [];
-
-  try {
-    json = JsonMap.parse(text);
-  } catch {
-    // skip because @codemirror/lang-json already provides syntax error handling
-  }
-  if (!json.data) {
-    return [];
-  }
-  let errors: JsonError[] = [];
-  try {
-    errors = schema.validate(json.data);
-  } catch {}
-
-  if (!errors.length) return [];
-  // reduce() because we want to filter out errors that don't have a pointer
-  return errors.reduce((acc, error) => {
-    const errorPath = getErrorPath(error);
-    const pointer = json.pointers[errorPath];
-    if (pointer) {
-      // if the error is a property error, use the key position
-      const isPropertyError = error.name === "NoAdditionalPropertiesError";
-      acc.push({
-        from: isPropertyError ? pointer.key.pos : pointer.value.pos,
-        to: isPropertyError ? pointer.keyEnd.pos : pointer.valueEnd.pos,
-        // todo: create a domnode and replace `` with <code></code>
-        // renderMessage: () => error.message,
-        message: rewriteError(error),
-        severity: "error",
-        source: `${schema.getSchema().title ?? "json-schema"}`,
-      } as Diagnostic);
-    }
-    return acc;
-  }, [] as Diagnostic[]);
-}
-
 export class JSONValidation {
-  private _schema: Draft;
+  private schema: Draft;
   public constructor(schema: JSONSchema7) {
-    // todo: support other versions of json schema.
-    // most standard schemas are draft 4 for some reason.
+    // TODO: support other versions of json schema.
+    // most standard schemas are draft 4 for some reason, probably
+    // backwards compatibility
+    //
     // ajv did not support draft 4, so I used json-schema-library
-    this._schema = new Draft04(schema);
+    this.schema = new Draft04(schema);
   }
+  private get schemaTitle() {
+    return this.schema.getSchema().title ?? "json-schema";
+  }
+
+  // rewrite the error message to be more human readable
+  private rewriteError = (error: JsonError): string => {
+    if (error.code === "one-of-error") {
+      return `Expected one of ${joinWithOr(
+        error?.data?.errors,
+        (data) => data.data.expected
+      )}`;
+    }
+    if (error.code === "type-error") {
+      return `Expected \`${
+        error?.data?.expected && Array.isArray(error?.data?.expected)
+          ? joinWithOr(error?.data?.expected)
+          : error?.data?.expected
+      }\` but received \`${error?.data?.received}\``;
+    }
+    const message = error.message.replaceAll("#/", "").replace("/", ".");
+
+    return message;
+  };
+
+  // validate using view as the linter extension signature requires
   public doValidation(view: EditorView) {
-    return getJSONValidationErrors(view, this._schema);
+    if (!this.schema) return [];
+    let json = {} as JsonMap.ParsedJSON;
+    const text = view.state.doc.toString();
+
+    // ignore blank json strings
+    if (!text || text.trim().length < 3) return [];
+
+    try {
+      json = JsonMap.parse(text);
+    } catch {
+      // skip because @codemirror/lang-json already provides syntax error handling
+      return [];
+    }
+    let errors: JsonError[] = [];
+    try {
+      errors = this.schema.validate(json.data);
+    } catch {}
+
+    if (!errors.length) return [];
+    // reduce() because we want to filter out errors that don't have a pointer
+    return errors.reduce((acc, error) => {
+      const errorPath = getErrorPath(error);
+      const pointer = json.pointers[errorPath];
+      if (pointer) {
+        // if the error is a property error, use the key position
+        const isPropertyError = error.name === "NoAdditionalPropertiesError";
+        acc.push({
+          from: isPropertyError ? pointer.key.pos : pointer.value.pos,
+          to: isPropertyError ? pointer.keyEnd.pos : pointer.valueEnd.pos,
+          // TODO: create a domnode and replace `` with <code></code>
+          // renderMessage: () => error.message,
+          message: this.rewriteError(error),
+          severity: "error",
+          source: this.schemaTitle,
+        });
+      }
+      return acc;
+    }, [] as Diagnostic[]);
   }
 }
 
-// TODO: this will probably be more performant
-// attempt at using codemirror AST instead of json-source-map
+// TODO: this will probably be more performant.
+// An attempt at using codemirror AST instead of json-source-map
 // const document = syntaxTree(view.state);
-
-// const errorPathNames = validate.errors?.map((error) => {
-//   if(error.instancePath) return error.instancePath.slice(1).replace(/\//g, '.')
-//   if(error.keyword === 'additionalProperties') {
-//     return error.params.additionalProperty
-//   }
-//   if(error.keyword === 'required') {
-//     return error.params.missingProperty
-//   }
-// })
 
 // const locations = {}
 
@@ -155,7 +138,4 @@ export class JSONValidation {
 //   },
 // })
 
-// return validate.errors?.map((error) => {
-
-//  return error
-// })
+// return validate.errors
