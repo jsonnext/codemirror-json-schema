@@ -1,21 +1,10 @@
 import { EditorView } from "@codemirror/view";
-import { Text } from "@codemirror/state";
 import { Diagnostic } from "@codemirror/lint";
 import { JSONSchema7 } from "json-schema";
 import { Draft04, Draft, JsonError } from "json-schema-library";
 import JsonMap from "json-source-map";
 
-// from @codemirror/lang-json jsonParseLinter
-function getErrorPosition(error: SyntaxError, doc: Text): number {
-  let m;
-  if ((m = error.message.match(/at position (\d+)/))) {
-    return Math.min(+m[1], doc.length);
-  }
-  if ((m = error.message.match(/at line (\d+) column (\d+)/))) {
-    return Math.min(doc.line(+m[1]).from + +m[2] - 1, doc.length);
-  }
-  return 0;
-}
+
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
   // if a pointer is present, return without #
