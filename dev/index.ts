@@ -1,9 +1,9 @@
 import {
   JSONCompletion,
-  lintJSONSchema,
-  hoverJsonSchema,
-  lintJSON5Schema,
-  hoverJson5Schema,
+  jsonSchemaLiner,
+  jsonSchemaHover,
+  json5SchemaLinter,
+  json5SchemaHover,
 } from "../src";
 import { EditorState } from "@codemirror/state";
 import {
@@ -53,11 +53,11 @@ const state = EditorState.create({
     ...commonExtensions,
     json(),
     linter(jsonParseLinter()),
-    linter(lintJSONSchema(schema)),
+    linter(jsonSchemaLiner(schema)),
     jsonLanguage.data.of({
       autocomplete: (ctx: CompletionContext) => jsonCompletion.doComplete(ctx),
     }),
-    hoverTooltip(hoverJsonSchema(schema)),
+    hoverTooltip(jsonSchemaHover(schema)),
   ],
 });
 
@@ -72,8 +72,8 @@ const json5State = EditorState.create({
     ...commonExtensions,
     json5(),
     linter(json5ParseLinter()),
-    linter(lintJSON5Schema(schema)),
-    hoverTooltip(hoverJson5Schema(schema)),
+    linter(json5SchemaLinter(schema)),
+    hoverTooltip(json5SchemaHover(schema)),
   ],
 });
 

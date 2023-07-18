@@ -6,7 +6,7 @@ import { parseJSON5DocumentState } from "./utils/parseJSON5Document";
 /**
  * Instantiates a JSONValidation instance with the JSON5 mode
  */
-export function lintJSON5Schema(
+export function json5SchemaLinter(
   schema: JSONSchema7,
   options?: JSONValidationOptions
 ) {

@@ -17,7 +17,7 @@ export type HoverOptions = {
   // onHover?: () => void;
 };
 
-export function hoverJsonSchema(schema: JSONSchema7, options?: HoverOptions) {
+export function jsonSchemaHover(schema: JSONSchema7, options?: HoverOptions) {
   const hover = new JSONHover(schema, options);
   return async function jsonDoHover(
     view: EditorView,

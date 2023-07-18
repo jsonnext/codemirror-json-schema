@@ -27,7 +27,7 @@ export type JSONValidationOptions = {
 /**
  * Helper for simpler class instantiaton
  */
-export function lintJSONSchema(
+export function jsonSchemaLiner(
   schema: JSONSchema7,
   options?: JSONValidationOptions
 ) {
