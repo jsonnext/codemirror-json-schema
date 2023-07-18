@@ -1,5 +1,5 @@
 import { type EditorView, Tooltip } from "@codemirror/view";
-import { type Draft, Draft04, JsonSchema } from "json-schema-library/index";
+import { type Draft, Draft04, JsonSchema } from "json-schema-library";
 import type { JSONSchema7 } from "json-schema";
 
 import { jsonPointerForPosition } from "./utils/jsonPointers";
