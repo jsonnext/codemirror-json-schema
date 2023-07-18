@@ -47,9 +47,6 @@ dependencies:
   json-schema-library:
     specifier: ^8.0.0
     version: 8.0.0
-  json-source-map:
-    specifier: 0.6.1
-    version: 0.6.1
 
 devDependencies:
   happy-dom:
@@ -1112,10 +1109,6 @@ packages:
 
   /json-schema@0.2.3:
     resolution: {integrity: sha512-a3xHnILGMtk+hDOqNwHzF6e2fNbiMrXZvxKQiEv2MlgQP+pjIOzqAmKYD2mDpXYE/44M7g+n9p2bKkYWDUcXCQ==}
-    dev: false
-
-  /json-source-map@0.6.1:
-    resolution: {integrity: sha512-1QoztHPsMQqhDq0hlXY5ZqcEdUzxQEIxgFkKl4WUp2pgShObl+9ovi4kRh2TfvAfxAoHOJ9vIMEqk3k4iex7tg==}
     dev: false
 
   /jsonc-parser@3.2.0:

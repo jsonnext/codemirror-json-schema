@@ -2,8 +2,8 @@ import type { EditorView } from "@codemirror/view";
 import type { Diagnostic } from "@codemirror/lint";
 import type { JSONSchema7 } from "json-schema";
 import { Draft04, type Draft, type JsonError } from "json-schema-library";
-import JsonMap from "json-source-map";
 import { joinWithOr } from "./utils/formatting";
+import { parseJSONDocument } from "./utils/jsonPointerForPosition";
 
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
@@ -18,8 +18,6 @@ const getErrorPath = (error: JsonError): string => {
   // else, return the empty pointer to represent the whole document
   return "";
 };
-
-
 
 export class JSONValidation {
   private schema: Draft;
@@ -58,18 +56,13 @@ export class JSONValidation {
   // validate using view as the linter extension signature requires
   public doValidation(view: EditorView) {
     if (!this.schema) return [];
-    let json = {} as JsonMap.ParsedJSON;
     const text = view.state.doc.toString();
 
     // ignore blank json strings
     if (!text || text.trim().length < 3) return [];
+      
+    const json = parseJSONDocument(view);
 
-    try {
-      json = JsonMap.parse(text);
-    } catch {
-      // skip because @codemirror/lang-json already provides syntax error handling
-      return [];
-    }
     let errors: JsonError[] = [];
     try {
       errors = this.schema.validate(json.data);
@@ -79,13 +72,13 @@ export class JSONValidation {
     // reduce() because we want to filter out errors that don't have a pointer
     return errors.reduce((acc, error) => {
       const errorPath = getErrorPath(error);
-      const pointer = json.pointers[errorPath];
+      const pointer = json.pointers.get(errorPath);
       if (pointer) {
         // if the error is a property error, use the key position
         const isPropertyError = error.name === "NoAdditionalPropertiesError";
         acc.push({
-          from: isPropertyError ? pointer.key.pos : pointer.value.pos,
-          to: isPropertyError ? pointer.keyEnd.pos : pointer.valueEnd.pos,
+          from: isPropertyError ? pointer.keyFrom : pointer.valueFrom,
+          to: isPropertyError ? pointer.keyTo : pointer.valueTo,
           // TODO: create a domnode and replace `` with <code></code>
           // renderMessage: () => error.message,
           message: this.rewriteError(error),

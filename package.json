@@ -35,8 +35,7 @@
     "@types/json-schema": "^7.0.12",
     "codemirror": "^6.0.1",
     "json-schema": "0.2.3",
-    "json-schema-library": "^8.0.0",
-    "json-source-map": "0.6.1"
+    "json-schema-library": "^8.0.0"
   },
   "devDependencies": {
     "happy-dom": "^10.3.2",

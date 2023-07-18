@@ -1,7 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { json } from "@codemirror/lang-json";
 
-import { jsonPointerForPosition } from "../jsonPointerForPosition";
+import {
+  getJsonPointers,
+  jsonPointerForPosition,
+} from "../jsonPointerForPosition";
 import { EditorView } from "@codemirror/view";
 
 const getPointer = (jsonString: string, pos: number) => {
@@ -19,5 +22,27 @@ describe("jsonPointerForPosition", () => {
     expect(
       getPointer('[{"object": [{ "foo": true }], "bar": 123}]', 16)
     ).toEqual("/0/object/0/foo");
+  });
+});
+
+describe("getJsonPointers", () => {
+  it("should return a map of all pointers for a document", () => {
+    const view = new EditorView({
+      doc: '{"object": { "foo": true }, "bar": 123}',
+      extensions: [json()],
+    });
+    const pointers = getJsonPointers(view);
+    expect(pointers.get("/object/foo")).toEqual({
+      keyFrom: 13,
+      keyTo: 18,
+      valueFrom: 20,
+      valueTo: 24,
+    });
+    expect(pointers.get("/bar")).toEqual({
+      keyFrom: 28,
+      keyTo: 33,
+      valueFrom: 35,
+      valueTo: 38,
+    });
   });
 });
