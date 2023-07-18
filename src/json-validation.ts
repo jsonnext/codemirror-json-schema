@@ -41,10 +41,11 @@ export class JSONValidation {
   private schema: Draft;
   private options: JSONValidationOptions;
   public constructor(schema: JSONSchema7, options?: JSONValidationOptions) {
-    this.options = options ?? {};
-    if (!this.options.jsonParser) {
-      this.options.jsonParser = parseJSONDocumentState;
-    }
+    this.options = {
+      jsonParser: parseJSONDocumentState,
+      ...options,
+    };
+
     // TODO: support other versions of json schema.
     // most standard schemas are draft 4 for some reason, probably
     // backwards compatibility
