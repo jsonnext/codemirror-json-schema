@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   json-schema-library@8.0.0:
-    hash: m2montx3ebu3rigmtvhcxa6pku
+    hash: twhjfow6xhcwtpnr4zdz4cum3m
     path: patches/json-schema-library@8.0.0.patch
 
 dependencies:
@@ -51,7 +51,7 @@ dependencies:
     version: 0.2.3
   json-schema-library:
     specifier: ^8.0.0
-    version: 8.0.0(patch_hash=m2montx3ebu3rigmtvhcxa6pku)
+    version: 8.0.0(patch_hash=twhjfow6xhcwtpnr4zdz4cum3m)
 
 devDependencies:
   '@vitest/coverage-v8':
@@ -1238,7 +1238,7 @@ packages:
       argparse: 2.0.1
     dev: false
 
-  /json-schema-library@8.0.0(patch_hash=m2montx3ebu3rigmtvhcxa6pku):
+  /json-schema-library@8.0.0(patch_hash=twhjfow6xhcwtpnr4zdz4cum3m):
     resolution: {integrity: sha512-qqsEdyhuA68YHzuWNGrOk9ViknRKw1NfIbhT9wQ0z6l5cpfuYoqKRkbu8tgHAXjahmLEkpNdGwHq+gCgIrMYeA==}
     dependencies:
       '@sagold/json-pointer': 5.1.1
