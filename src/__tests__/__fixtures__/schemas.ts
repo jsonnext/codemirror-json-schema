@@ -22,12 +22,15 @@ export const testSchema2 = {
       properties: {
         foo: {
           type: "string",
-          description: 'an elegant string'
+          description: "an elegant string",
         },
       },
       additionalProperties: false,
     },
     oneOfEg: {
+      oneOf: [{ type: "string" }, { type: "array" }, {type: 'boolean'}],
+    },
+    oneOfEg2: {
       oneOf: [{ type: "string" }, { type: "array" }],
     },
   },

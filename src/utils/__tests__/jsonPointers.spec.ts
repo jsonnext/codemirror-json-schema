@@ -4,7 +4,7 @@ import { json } from "@codemirror/lang-json";
 import {
   getJsonPointers,
   jsonPointerForPosition,
-} from "../jsonPointerForPosition";
+} from "../jsonPointers";
 import { EditorView } from "@codemirror/view";
 
 const getPointer = (jsonString: string, pos: number) => {

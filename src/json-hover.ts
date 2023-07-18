@@ -2,7 +2,7 @@ import { type EditorView, Tooltip } from "@codemirror/view";
 import { type Draft, Draft04, JsonSchema } from "json-schema-library";
 import type { JSONSchema7 } from "json-schema";
 
-import { jsonPointerForPosition } from "./utils/jsonPointerForPosition";
+import { jsonPointerForPosition } from "./utils/jsonPointers";
 import { joinWithOr } from "./utils/formatting";
 
 export type CursorData = { schema?: JsonSchema; pointer: string };
@@ -72,16 +72,15 @@ export class JSONHover {
         return null;
       }
       // allow users to override the hover
-      const formatter = this.opts?.formatHover ?? this.formatMessage
+      const formatter = this.opts?.formatHover ?? this.formatMessage;
       return {
         pos: start,
         end,
         above: true,
         arrow: true,
         create: (view) => {
-        
           return {
-            dom: formatter(cursorData as FoundCursorData)
+            dom: formatter(cursorData as FoundCursorData),
           };
         },
       };

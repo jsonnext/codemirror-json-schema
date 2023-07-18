@@ -52,35 +52,52 @@ export const jsonPointerForPosition = (
   );
 };
 
+export type JSONPartialPointerData = {
+  keyFrom: number;
+  keyTo: number;
+}
+
+export type JSONPointerData = {
+  keyFrom: number;
+  keyTo: number;
+  valueFrom: number;
+  valueTo: number;
+};
+
+export type JSONPointersMap = Map<string, JSONPointerData | JSONPartialPointerData>;
+
 // retrieve a Map of all the json pointers in a document
-export const getJsonPointers = (view: EditorView) => {
+export const getJsonPointers = (view: EditorView): JSONPointersMap => {
   const json = syntaxTree(view.state);
-  const pointers = new Map<
-    string,
-    { keyFrom: number; keyTo: number; valueFrom: number; valueTo: number }
-  >();
+  const pointers: JSONPointersMap = new Map();
   json.iterate({
-    // @ts-expect-error
     enter: (type: SyntaxNodeRef) => {
       if (type.name === "PropertyName") {
         const pointer = getJsonPointerAt(view.state.doc, type.node);
 
         const { from: keyFrom, to: keyTo } = type.node;
-        if (!type.node?.nextSibling) {
-          return { keyFrom, keyTo };
+        // if there's no value, we can't get the valueFrom/to
+        if (!type.node?.nextSibling?.node) {
+          pointers.set(pointer, { keyFrom, keyTo });
+          return true
         }
         const { from: valueFrom, to: valueTo } = type.node?.nextSibling?.node;
         pointers.set(pointer, { keyFrom, keyTo, valueFrom, valueTo });
+        return true
       }
     },
   });
   return pointers;
 };
 
+/**
+ * Mimics the behavior of `json-source-map`'s `parseJSONDocument` function
+ */
 export function parseJSONDocument(view: EditorView) {
   let data = null;
   try {
     data = JSON.parse(view.state.doc.toString());
+    // return pointers regardless of whether JSON.parse succeeds
   } catch {}
   const pointers = getJsonPointers(view);
   return { data, pointers };

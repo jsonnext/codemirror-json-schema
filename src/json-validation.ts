@@ -3,7 +3,7 @@ import type { Diagnostic } from "@codemirror/lint";
 import type { JSONSchema7 } from "json-schema";
 import { Draft04, type Draft, type JsonError } from "json-schema-library";
 import { joinWithOr } from "./utils/formatting";
-import { parseJSONDocument } from "./utils/jsonPointerForPosition";
+import { JSONPointerData, parseJSONDocument } from "./utils/jsonPointers";
 
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
@@ -72,7 +72,7 @@ export class JSONValidation {
     // reduce() because we want to filter out errors that don't have a pointer
     return errors.reduce((acc, error) => {
       const errorPath = getErrorPath(error);
-      const pointer = json.pointers.get(errorPath);
+      const pointer = json.pointers.get(errorPath) as JSONPointerData;
       if (pointer) {
         // if the error is a property error, use the key position
         const isPropertyError = error.name === "NoAdditionalPropertiesError";
@@ -90,33 +90,3 @@ export class JSONValidation {
     }, [] as Diagnostic[]);
   }
 }
-
-// TODO: this will probably be more performant.
-// An attempt at using codemirror AST instead of json-source-map
-// const document = syntaxTree(view.state);
-
-// const locations = {}
-
-// document.iterate({
-//   from: 0,
-//   to: view.state.doc.length,
-//   enter: (type, from, to) => {
-//     console.log(type.type.name)
-//     let key = ''
-//     if(type.type.name === 'Object') {
-//     }
-//     if(type.type.name === 'PropertyName') {
-//       const original = view.state.doc.sliceString(
-//         type.from,
-//         type.to
-//       );
-//       console.log(original)
-//       let parent = false;
-
-//       return true
-//     }
-//     return true
-//   },
-// })
-
-// return validate.errors

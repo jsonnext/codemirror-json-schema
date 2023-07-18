@@ -1,5 +1,6 @@
 import { JSONSchema7 } from "json-schema";
 import { JSONValidation } from "../json-validation";
+import type { Diagnostic } from "@codemirror/lint";
 import { describe, it, expect } from "vitest";
 import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
@@ -10,84 +11,62 @@ const getErrors = (jsonString: string, schema?: JSONSchema7) => {
   const view = new EditorView({ doc: jsonString, extensions: [json()] });
   return new JSONValidation(schema || testSchema).doValidation(view);
 };
+const expectErrors = (
+  jsonString: string,
+  errors: [from: number, to: number, message: string][],
+  schema?: JSONSchema7
+) => {
+  expect(getErrors(jsonString, schema)).toEqual(
+    errors.map(([from, to, message]) => ({ ...common, from, to, message }))
+  );
+};
 
-// console.log(getErrors('{"foo": "example", "bar": 123}', testSchema))
-// console.log(getErrors('{"foo": 3, "bar": 123}', testSchema))
-
-// console.log(getErrors('{"object": { "foo": true, "bar": true }, "foo": 3, "bar": 123 }', testSchema2))
+const common = {
+  severity: "error" as Diagnostic["severity"],
+  source: "json-schema",
+};
 
 describe("json-validation", () => {
   it("should provide range for a value error", () => {
-    expect(getErrors('{"foo": 123}', testSchema)).toEqual(
-      expect.arrayContaining([
-        {
-          from: 8,
-          to: 11,
-          message: "Expected `string` but received `number`",
-          severity: "error",
-          source: "json-schema",
-        },
-      ])
-    );
+    expectErrors('{"foo": 123}', [
+      [8, 11, "Expected `string` but received `number`"],
+    ]);
   });
   it("should provide range for an unknown key error", () => {
-    expect(getErrors('{"foo": "example", "bar": 123}', testSchema)).toEqual(
-      expect.arrayContaining([
-        {
-          from: 19,
-          to: 24,
-          message: "Additional property `bar` in `#` is not allowed",
-          severity: "error",
-          source: "json-schema",
-        },
-      ])
-    );
+    expectErrors('{"foo": "example", "bar": 123}', [
+      [19, 24, "Additional property `bar` in `#` is not allowed"],
+    ]);
   });
   it("should not handle invalid json", () => {
-    expect(getErrors('{"foo": "example" "bar": 123}', testSchema)).toEqual(
-      expect.arrayContaining([])
-    );
+    expectErrors('{"foo": "example" "bar": 123}', []);
   });
   it("should provide range for invalid multline json", () => {
-    expect(
-      getErrors(
-        `{
+    expectErrors(
+      `{
         "foo": "example",
     "bar": "something else"
   }`,
-        testSchema
-      )
-    ).toEqual(
-      expect.arrayContaining([
-        {
-          from: 32,
-          to: 37,
-          message: "Additional property `bar` in `#` is not allowed",
-          severity: "error",
-          source: "json-schema",
-        },
-      ])
+      [[32, 37, "Additional property `bar` in `#` is not allowed"]]
     );
   });
-  it("should provide formatted error message for oneOf fields", () => {
-    expect(
-      getErrors(
-        `{
+  it("should provide formatted error message for oneOf fields with more than 2 items", () => {
+    expectErrors(
+      `{
         "foo": "example",
     "oneOfEg": 123
   }`,
-        testSchema2
-      )
-    ).toEqual(
-      expect.arrayContaining([
-        {
-          from: 43,
-          to: 46,
-          message: 'Expected one of `"string"` or `"array"`',
-          severity: "error",
-          source: "json-schema",
-        },
-      ])
+      [[43, 46, 'Expected one of `"string"`, `"array"`, or `"boolean"`']],
+      testSchema2
+    );
+  });
+  it("should provide formatted error message for oneOf fields with less than 2 items", () => {
+    expectErrors(
+      `{
+        "foo": "example",
+    "oneOfEg2": 123
+  }`,
+      [[44, 47, 'Expected one of `"string"` or `"array"`']],
+      testSchema2
     );
   });
 });
