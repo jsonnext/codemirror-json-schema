@@ -3,7 +3,8 @@ import type { Diagnostic } from "@codemirror/lint";
 import type { JSONSchema7 } from "json-schema";
 import { Draft04, type Draft, type JsonError } from "json-schema-library";
 import { joinWithOr } from "./utils/formatting";
-import { JSONPointerData, parseJSONDocument } from "./utils/jsonPointers";
+import { JSONPointerData } from "./utils/jsonPointers";
+import { parseJSONDocumentState } from "./utils/parseJSONDocument";
 
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
@@ -61,7 +62,7 @@ export class JSONValidation {
     // ignore blank json strings
     if (!text || text.trim().length < 3) return [];
       
-    const json = parseJSONDocument(view);
+    const json = parseJSONDocumentState(view.state);
 
     let errors: JsonError[] = [];
     try {

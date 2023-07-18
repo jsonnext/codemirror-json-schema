@@ -24,7 +24,7 @@ export class JSONHover {
     pos: number,
     side: -1 | 1
   ): CursorData | null {
-    const pointer = jsonPointerForPosition(view, pos, side);
+    const pointer = jsonPointerForPosition(view.state, pos, side);
 
     if (!pointer) {
       return null;
