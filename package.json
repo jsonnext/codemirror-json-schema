@@ -33,6 +33,7 @@
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.14.1",
     "@lezer/common": "^1.0.3",
+    "@sagold/json-pointer": "^5.1.1",
     "@types/json-schema": "^7.0.12",
     "codemirror": "^6.0.1",
     "json-schema": "0.2.3",
@@ -58,10 +59,5 @@
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage",
     "release": "pnpm build && changeset publish"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "json-schema-library@8.0.0": "patches/json-schema-library@8.0.0.patch"
-    }
   }
 }

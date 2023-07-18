@@ -4,6 +4,7 @@ import type { JSONSchema7 } from "json-schema";
 
 import { jsonPointerForPosition } from "./utils/jsonPointers";
 import { joinWithOr } from "./utils/formatting";
+import getSchema from "./utils/schema-lib/getSchema";
 
 export type CursorData = { schema?: JsonSchema; pointer: string };
 
@@ -30,7 +31,7 @@ export class JSONHover {
     if (!pointer) {
       return null;
     }
-    const subSchema = this.schema.getSchema(pointer);
+    const subSchema = getSchema(this.schema, pointer);
     // doesn't work for oneOf - we need to give it a shape to tell it what kind of schema type to return
     if (subSchema.type === "error") {
       return { pointer };
