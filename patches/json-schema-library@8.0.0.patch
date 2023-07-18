@@ -1,0 +1,46 @@
+diff --git a/dist/module/lib/step.js b/dist/module/lib/step.js
+index 4df50c29f426c26bd555160101a6cdc606a7a37e..6d974334da7707d0cecbf6f10333b9b7e0d92829 100644
+--- a/dist/module/lib/step.js
++++ b/dist/module/lib/step.js
+@@ -71,12 +71,12 @@ const stepType = {
+             if (isJsonError(targetSchema)) {
+                 return targetSchema;
+             }
+-            // check if there is a oneOf selection, which must be resolved
+-            if (targetSchema && Array.isArray(targetSchema.oneOf)) {
+-                // @special case: this is a mix of a schema and optional definitions
+-                // we resolve the schema here and add the original schema to `oneOfSchema`
+-                return draft.resolveOneOf(data[key], targetSchema, `${pointer}/${key}`);
+-            }
++            // // check if there is a oneOf selection, which must be resolved
++            // if (targetSchema && Array.isArray(targetSchema.oneOf)) {
++            //     // @special case: this is a mix of a schema and optional definitions
++            //     // we resolve the schema here and add the original schema to `oneOfSchema`
++            //     return draft.resolveOneOf(data[key], targetSchema, `${pointer}/${key}`);
++            // }
+             // resolved schema or error
+             if (targetSchema) {
+                 return targetSchema;
+diff --git a/lib/step.ts b/lib/step.ts
+index 267029c811874c10c8f707640e0601582d73bdbd..af8a479dc645a26090033ff9387be6dbbbc7a209 100644
+--- a/lib/step.ts
++++ b/lib/step.ts
+@@ -99,12 +99,12 @@ const stepType: Record<string, StepFunction> = {
+                 return targetSchema;
+             }
+ 
+-            // check if there is a oneOf selection, which must be resolved
+-            if (targetSchema && Array.isArray(targetSchema.oneOf)) {
+-                // @special case: this is a mix of a schema and optional definitions
+-                // we resolve the schema here and add the original schema to `oneOfSchema`
+-                return draft.resolveOneOf(data[key], targetSchema, `${pointer}/${key}`);
+-            }
++            // // check if there is a oneOf selection, which must be resolved
++            // if (targetSchema && Array.isArray(targetSchema.oneOf)) {
++            //     // @special case: this is a mix of a schema and optional definitions
++            //     // we resolve the schema here and add the original schema to `oneOfSchema`
++            //     return draft.resolveOneOf(data[key], targetSchema, `${pointer}/${key}`);
++            // }
+ 
+             // resolved schema or error
+             if (targetSchema) {

@@ -66,12 +66,12 @@ describe("JSONHover#doHover", () => {
       "<div><div>an elegant string</div><div><code>string</code></div></div>"
     );
   });
-  it("should fail for oneOf", async () => {
+  it("should not fail for oneOf", async () => {
     const hoverResult = await getHoverResult(
       '{"oneOfEg": { "foo": true }, "bar": 123}',
       3,
       testSchema2
     );
-    expect(hoverResult).toEqual(null);
+    expect(hoverResult).toBeTruthy();
   });
 });

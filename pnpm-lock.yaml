@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  json-schema-library@8.0.0:
+    hash: m2montx3ebu3rigmtvhcxa6pku
+    path: patches/json-schema-library@8.0.0.patch
+
 dependencies:
   '@codemirror/autocomplete':
     specifier: ^6.8.1
@@ -46,7 +51,7 @@ dependencies:
     version: 0.2.3
   json-schema-library:
     specifier: ^8.0.0
-    version: 8.0.0
+    version: 8.0.0(patch_hash=m2montx3ebu3rigmtvhcxa6pku)
 
 devDependencies:
   '@vitest/coverage-v8':
@@ -1233,7 +1238,7 @@ packages:
       argparse: 2.0.1
     dev: false
 
-  /json-schema-library@8.0.0:
+  /json-schema-library@8.0.0(patch_hash=m2montx3ebu3rigmtvhcxa6pku):
     resolution: {integrity: sha512-qqsEdyhuA68YHzuWNGrOk9ViknRKw1NfIbhT9wQ0z6l5cpfuYoqKRkbu8tgHAXjahmLEkpNdGwHq+gCgIrMYeA==}
     dependencies:
       '@sagold/json-pointer': 5.1.1
@@ -1243,6 +1248,7 @@ packages:
       fast-deep-equal: 3.1.3
       valid-url: 1.0.9
     dev: false
+    patched: true
 
   /json-schema@0.2.3:
     resolution: {integrity: sha512-a3xHnILGMtk+hDOqNwHzF6e2fNbiMrXZvxKQiEv2MlgQP+pjIOzqAmKYD2mDpXYE/44M7g+n9p2bKkYWDUcXCQ==}

@@ -50,5 +50,10 @@
     "build": "tsc && vite build ./dev --outDir ../public",
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "json-schema-library@8.0.0": "patches/json-schema-library@8.0.0.patch"
+    }
   }
 }

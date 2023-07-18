@@ -28,6 +28,8 @@ export const testSchema2 = {
       additionalProperties: false,
     },
     oneOfEg: {
+      description: "an example oneOf",
+      title: "oneOfEg",
       oneOf: [{ type: "string" }, { type: "array" }, {type: 'boolean'}],
     },
     oneOfEg2: {
