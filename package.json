@@ -22,6 +22,7 @@
     "url": "https://github.com/acao/cm6-language-json-schema.git"
   },
   "dependencies": {
+    "@changesets/cli": "^2.26.2",
     "@codemirror/autocomplete": "^6.8.1",
     "@codemirror/buildhelper": "^1.0.0",
     "@codemirror/commands": "^6.2.4",
@@ -38,15 +39,15 @@
     "json-schema-library": "^8.0.0"
   },
   "optionalDependencies": {
-    "json5": "^2.2.3",
-    "codemirror-json5": "^1.0.3"
+    "codemirror-json5": "^1.0.3",
+    "json5": "^2.2.3"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^0.33.0",
-    "happy-dom": "^10.3.2",
-    "typescript": "^5.1.6",
-    "json5": "^2.2.3",
     "codemirror-json5": "^1.0.3",
+    "happy-dom": "^10.3.2",
+    "json5": "^2.2.3",
+    "typescript": "^5.1.6",
     "vite": "^4.4.4",
     "vitest": "0.33.0",
     "vitest-dom": "^0.1.0"
@@ -55,7 +56,8 @@
     "dev": "vite ./dev --port 3000",
     "build": "tsc && vite build ./dev --outDir ../public --emptyOutDir",
     "test": "vitest --dom",
-    "test:coverage": "vitest run --dom --coverage"
+    "test:coverage": "vitest run --dom --coverage",
+    "release": "pnpm build && changeset publish"
   },
   "pnpm": {
     "patchedDependencies": {
