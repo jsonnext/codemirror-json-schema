@@ -11,7 +11,8 @@ export type FoundCursorData = Required<CursorData>;
 
 export type HoverOptions = {
   formatHover?: (data: FoundCursorData) => HTMLElement;
-  onHover?: () => void;
+  // todo: handle hover events
+  // onHover?: () => void;
 };
 
 export class JSONHover {
