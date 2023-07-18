@@ -4,13 +4,7 @@ import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
 
 const VAL_NODE_NAME = /^(?:Null|True|False|Object|Array|String|Number)$/;
 
-type JSONMode = "json4" | "json5";
-
-
-// 
-// function json5PropNameParser(s: string) {
-//   return s.replaceAll('"', '').replaceAll("'", '');
-// }
+export type JSONMode = "json4" | "json5";
 
 // // borrowed from json5 mode, slightly slower than above, but safer
 // TODO: determine from spec if {"prop'name": example} is valid in json5

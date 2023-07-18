@@ -2,7 +2,7 @@ import { type EditorView, Tooltip } from "@codemirror/view";
 import { type Draft, Draft04, JsonSchema } from "json-schema-library";
 import type { JSONSchema7 } from "json-schema";
 
-import { jsonPointerForPosition } from "./utils/jsonPointers";
+import { JSONMode, jsonPointerForPosition } from "./utils/jsonPointers";
 import { joinWithOr } from "./utils/formatting";
 import getSchema from "./utils/schema-lib/getSchema";
 
@@ -11,11 +11,22 @@ export type CursorData = { schema?: JsonSchema; pointer: string };
 export type FoundCursorData = Required<CursorData>;
 
 export type HoverOptions = {
+  mode?: JSONMode;
   formatHover?: (data: FoundCursorData) => HTMLElement;
   // todo: handle hover events
   // onHover?: () => void;
 };
 
+export function hoverJsonSchema(schema: JSONSchema7, options?: HoverOptions) {
+  const hover = new JSONHover(schema, options);
+  return async function jsonDoHover(
+    view: EditorView,
+    pos: number,
+    side: -1 | 1
+  ) {
+    return hover.doHover(view, pos, side);
+  };
+}
 export class JSONHover {
   private schema: Draft;
   public constructor(schema: JSONSchema7, private opts?: HoverOptions) {
@@ -26,7 +37,12 @@ export class JSONHover {
     pos: number,
     side: -1 | 1
   ): CursorData | null {
-    const pointer = jsonPointerForPosition(view.state, pos, side);
+    const pointer = jsonPointerForPosition(
+      view.state,
+      pos,
+      side,
+      this.opts?.mode
+    );
 
     if (!pointer) {
       return null;
@@ -41,6 +57,7 @@ export class JSONHover {
   private formatMessage(data: FoundCursorData): HTMLElement {
     const { schema } = data;
     const hoverWrapper = document.createElement("div");
+    hoverWrapper.classList.add("cm6-json-schema-hover");
     const codeBlock = document.createElement("code");
     codeBlock.innerText = Array.isArray(schema.type)
       ? joinWithOr(schema.type)

@@ -20,9 +20,31 @@ const getErrorPath = (error: JsonError): string => {
   return "";
 };
 
+export type JSONValidationOptions = {
+  formatError?: (error: JsonError) => string;
+  jsonParser?: typeof parseJSONDocumentState;
+};
+/**
+ * Helper for simpler class instantiaton
+ */
+export function lintJSONSchema(
+  schema: JSONSchema7,
+  options?: JSONValidationOptions
+) {
+  const validation = new JSONValidation(schema, options);
+  return (view: EditorView) => {
+    return validation.doValidation(view);
+  };
+}
+
 export class JSONValidation {
   private schema: Draft;
-  public constructor(schema: JSONSchema7) {
+  private options: JSONValidationOptions;
+  public constructor(schema: JSONSchema7, options?: JSONValidationOptions) {
+    this.options = options ?? {};
+    if (!this.options.jsonParser) {
+      this.options.jsonParser = parseJSONDocumentState;
+    }
     // TODO: support other versions of json schema.
     // most standard schemas are draft 4 for some reason, probably
     // backwards compatibility
@@ -61,8 +83,8 @@ export class JSONValidation {
 
     // ignore blank json strings
     if (!text || text.trim().length < 3) return [];
-      
-    const json = parseJSONDocumentState(view.state);
+
+    const json = this.options.jsonParser!(view.state);
 
     let errors: JsonError[] = [];
     try {

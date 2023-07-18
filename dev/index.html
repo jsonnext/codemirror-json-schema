@@ -5,16 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
     <style>
+      body {
+        background-color: #282c34;
+        color: var(--fbc-light-gray);
+        font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+          "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+      }
+      code {
+        background-color: #1f2329;
+        color: var(--fbc-light-gray);
+        padding: 0.2rem;
+        font-family: "Lucida Console", Monaco, monospace;
+      }
+      /* cm6 styles */
       .cm-lintRange-error {
         text-decoration: underline wavy red;
       }
-      body {
-        background-color: #282c34;
+      .cm6-json-schema-hover,
+      .cm-editor .cm-diagnostic-error {
+        padding: 0.5rem;
       }
     </style>
   </head>
   <body class="replit-ui-theme-root dark">
+    <h1><code>codemirror-json-schema</code> demo</h1>
+    <h2><code>package.json</code> demo</h2>
+    <p>Supports simple completion, linting, hover</p>
     <div id="editor"></div>
+    <h2><code>package.json5</code> demo</h2>
+    <p>Supports linting, hover</p>
+    <div id="editor-json5"></div>
     <script type="module" src="./index.ts"></script>
   </body>
 </html>

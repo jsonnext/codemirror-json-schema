@@ -63,7 +63,7 @@ describe("JSONHover#doHover", () => {
     });
     const hoverEl = hoverResult?.create(new EditorView({})).dom;
     expect(hoverEl).toContainHTML(
-      "<div><div>an elegant string</div><div><code>string</code></div></div>"
+      '<div class="cm6-json-schema-hover"><div>an elegant string</div><div><code>string</code></div></div>'
     );
   });
   it("should not fail for oneOf", async () => {
