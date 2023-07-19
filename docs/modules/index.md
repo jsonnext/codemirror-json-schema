@@ -41,8 +41,8 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 #### Parameters
 
-| Name     | Type          |
-| :------- | :------------ |
+| Name | Type |
+| :------ | :------ |
 | `schema` | `JSONSchema7` |
 
 #### Returns
@@ -53,8 +53,8 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 ##### Parameters
 
-| Name  | Type                |
-| :---- | :------------------ |
+| Name | Type |
+| :------ | :------ |
 | `ctx` | `CompletionContext` |
 
 ##### Returns
@@ -63,46 +63,46 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 #### Defined in
 
-[json-completion.ts:820](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/json-completion.ts#L820)
+[json-completion.ts:820](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json-completion.ts#L820)
 
----
+___
 
 ### jsonSchemaHover
 
-▸ **jsonSchemaHover**(`schema`, `options?`): (`view`: `EditorView`, `pos`: `number`, `side`: `1` \| `-1`) => `Promise`<`null` \| `Tooltip`\>
+▸ **jsonSchemaHover**(`schema`, `options?`): (`view`: `EditorView`, `pos`: `number`, `side`: ``1`` \| ``-1``) => `Promise`<``null`` \| `Tooltip`\>
 
 provides a JSON schema enabled tooltip extension for codemirror
 
 #### Parameters
 
-| Name       | Type                                    |
-| :--------- | :-------------------------------------- |
-| `schema`   | `JSONSchema7`                           |
+| Name | Type |
+| :------ | :------ |
+| `schema` | `JSONSchema7` |
 | `options?` | [`HoverOptions`](index.md#hoveroptions) |
 
 #### Returns
 
 `fn`
 
-▸ (`view`, `pos`, `side`): `Promise`<`null` \| `Tooltip`\>
+▸ (`view`, `pos`, `side`): `Promise`<``null`` \| `Tooltip`\>
 
 ##### Parameters
 
-| Name   | Type         |
-| :----- | :----------- |
+| Name | Type |
+| :------ | :------ |
 | `view` | `EditorView` |
-| `pos`  | `number`     |
-| `side` | `1` \| `-1`  |
+| `pos` | `number` |
+| `side` | ``1`` \| ``-1`` |
 
 ##### Returns
 
-`Promise`<`null` \| `Tooltip`\>
+`Promise`<``null`` \| `Tooltip`\>
 
 #### Defined in
 
-[json-hover.ts:24](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/json-hover.ts#L24)
+[json-hover.ts:24](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json-hover.ts#L24)
 
----
+___
 
 ### jsonSchemaLinter
 
@@ -112,9 +112,9 @@ Helper for simpler class instantiaton
 
 #### Parameters
 
-| Name       | Type                                                      |
-| :--------- | :-------------------------------------------------------- |
-| `schema`   | `JSONSchema7`                                             |
+| Name | Type |
+| :------ | :------ |
+| `schema` | `JSONSchema7` |
 | `options?` | [`JSONValidationOptions`](index.md#jsonvalidationoptions) |
 
 #### Returns
@@ -125,8 +125,8 @@ Helper for simpler class instantiaton
 
 ##### Parameters
 
-| Name   | Type         |
-| :----- | :----------- |
+| Name | Type |
+| :------ | :------ |
 | `view` | `EditorView` |
 
 ##### Returns
@@ -135,7 +135,7 @@ Helper for simpler class instantiaton
 
 #### Defined in
 
-[json-validation.ts:35](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/json-validation.ts#L35)
+[json-validation.ts:35](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json-validation.ts#L35)
 
 ## Utilities
 
@@ -150,11 +150,11 @@ this could be useful for other things later!
 
 #### Parameters
 
-| Name      | Type                            | Default value |
-| :-------- | :------------------------------ | :------------ |
-| `docText` | `Text`                          | `undefined`   |
-| `node`    | `SyntaxNode`                    | `undefined`   |
-| `mode`    | [`JSONMode`](index.md#jsonmode) | `"json4"`     |
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `docText` | `Text` | `undefined` |
+| `node` | `SyntaxNode` | `undefined` |
+| `mode` | [`JSONMode`](index.md#jsonmode) | `"json4"` |
 
 #### Returns
 
@@ -162,9 +162,9 @@ this could be useful for other things later!
 
 #### Defined in
 
-[utils/jsonPointers.ts:37](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/utils/jsonPointers.ts#L37)
+[utils/jsonPointers.ts:37](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/utils/jsonPointers.ts#L37)
 
----
+___
 
 ### getJsonPointers
 
@@ -174,10 +174,10 @@ retrieve a Map of all the json pointers in a document
 
 #### Parameters
 
-| Name    | Type                            | Default value |
-| :------ | :------------------------------ | :------------ |
-| `state` | `EditorState`                   | `undefined`   |
-| `mode`  | [`JSONMode`](index.md#jsonmode) | `"json4"`     |
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `state` | `EditorState` | `undefined` |
+| `mode` | [`JSONMode`](index.md#jsonmode) | `"json4"` |
 
 #### Returns
 
@@ -185,9 +185,9 @@ retrieve a Map of all the json pointers in a document
 
 #### Defined in
 
-[utils/jsonPointers.ts:98](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/utils/jsonPointers.ts#L98)
+[utils/jsonPointers.ts:98](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/utils/jsonPointers.ts#L98)
 
----
+___
 
 ### jsonPointerForPosition
 
@@ -197,12 +197,12 @@ retrieve a JSON pointer for a given position in the editor
 
 #### Parameters
 
-| Name    | Type                            | Default value |
-| :------ | :------------------------------ | :------------ |
-| `state` | `EditorState`                   | `undefined`   |
-| `pos`   | `number`                        | `undefined`   |
-| `side`  | `1` \| `-1`                     | `undefined`   |
-| `mode`  | [`JSONMode`](index.md#jsonmode) | `"json4"`     |
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `state` | `EditorState` | `undefined` |
+| `pos` | `number` | `undefined` |
+| `side` | ``1`` \| ``-1`` | `undefined` |
+| `mode` | [`JSONMode`](index.md#jsonmode) | `"json4"` |
 
 #### Returns
 
@@ -210,9 +210,9 @@ retrieve a JSON pointer for a given position in the editor
 
 #### Defined in
 
-[utils/jsonPointers.ts:81](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/utils/jsonPointers.ts#L81)
+[utils/jsonPointers.ts:81](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/utils/jsonPointers.ts#L81)
 
----
+___
 
 ### parseJSON5Document
 
@@ -222,24 +222,24 @@ Mimics the behavior of `json-source-map`'s `parseJSONDocument` function, for jso
 
 #### Parameters
 
-| Name         | Type     |
-| :----------- | :------- |
+| Name | Type |
+| :------ | :------ |
 | `jsonString` | `string` |
 
 #### Returns
 
 `Object`
 
-| Name       | Type                                          |
-| :--------- | :-------------------------------------------- |
-| `data`     | `any`                                         |
+| Name | Type |
+| :------ | :------ |
+| `data` | `any` |
 | `pointers` | [`JSONPointersMap`](index.md#jsonpointersmap) |
 
 #### Defined in
 
-[utils/parseJSON5Document.ts:28](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/utils/parseJSON5Document.ts#L28)
+[utils/parseJSON5Document.ts:28](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/utils/parseJSON5Document.ts#L28)
 
----
+___
 
 ### parseJSON5DocumentState
 
@@ -249,24 +249,24 @@ Return parsed data and json5 pointers for a given codemirror EditorState
 
 #### Parameters
 
-| Name    | Type          |
-| :------ | :------------ |
+| Name | Type |
+| :------ | :------ |
 | `state` | `EditorState` |
 
 #### Returns
 
 `Object`
 
-| Name       | Type                                          |
-| :--------- | :-------------------------------------------- |
-| `data`     | `any`                                         |
+| Name | Type |
+| :------ | :------ |
+| `data` | `any` |
 | `pointers` | [`JSONPointersMap`](index.md#jsonpointersmap) |
 
 #### Defined in
 
-[utils/parseJSON5Document.ts:14](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/utils/parseJSON5Document.ts#L14)
+[utils/parseJSON5Document.ts:14](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/utils/parseJSON5Document.ts#L14)
 
----
+___
 
 ### parseJSONDocument
 
@@ -276,24 +276,24 @@ Mimics the behavior of `json-source-map`'s `parseJSONDocument` function using co
 
 #### Parameters
 
-| Name         | Type     |
-| :----------- | :------- |
+| Name | Type |
+| :------ | :------ |
 | `jsonString` | `string` |
 
 #### Returns
 
 `Object`
 
-| Name       | Type                                          |
-| :--------- | :-------------------------------------------- |
-| `data`     | `any`                                         |
+| Name | Type |
+| :------ | :------ |
+| `data` | `any` |
 | `pointers` | [`JSONPointersMap`](index.md#jsonpointersmap) |
 
 #### Defined in
 
-[utils/parseJSONDocument.ts:23](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/utils/parseJSONDocument.ts#L23)
+[utils/parseJSONDocument.ts:23](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/utils/parseJSONDocument.ts#L23)
 
----
+___
 
 ### parseJSONDocumentState
 
@@ -303,22 +303,22 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Parameters
 
-| Name    | Type          |
-| :------ | :------------ |
+| Name | Type |
+| :------ | :------ |
 | `state` | `EditorState` |
 
 #### Returns
 
 `Object`
 
-| Name       | Type                                          |
-| :--------- | :-------------------------------------------- |
-| `data`     | `any`                                         |
+| Name | Type |
+| :------ | :------ |
+| `data` | `any` |
 | `pointers` | [`JSONPointersMap`](index.md#jsonpointersmap) |
 
 #### Defined in
 
-[utils/parseJSONDocument.ts:9](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/utils/parseJSONDocument.ts#L9)
+[utils/parseJSONDocument.ts:9](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/utils/parseJSONDocument.ts#L9)
 
 ## Type Aliases
 
@@ -328,16 +328,16 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Type declaration
 
-| Name      | Type         |
-| :-------- | :----------- |
-| `pointer` | `string`     |
+| Name | Type |
+| :------ | :------ |
+| `pointer` | `string` |
 | `schema?` | `JsonSchema` |
 
 #### Defined in
 
-[json-hover.ts:9](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/json-hover.ts#L9)
+[json-hover.ts:9](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json-hover.ts#L9)
 
----
+___
 
 ### FoundCursorData
 
@@ -345,9 +345,9 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-hover.ts:11](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/json-hover.ts#L11)
+[json-hover.ts:11](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json-hover.ts#L11)
 
----
+___
 
 ### HoverOptions
 
@@ -355,26 +355,26 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Type declaration
 
-| Name           | Type                                                                     |
-| :------------- | :----------------------------------------------------------------------- |
+| Name | Type |
+| :------ | :------ |
 | `formatHover?` | (`data`: [`FoundCursorData`](index.md#foundcursordata)) => `HTMLElement` |
-| `mode?`        | [`JSONMode`](index.md#jsonmode)                                          |
+| `mode?` | [`JSONMode`](index.md#jsonmode) |
 
 #### Defined in
 
-[json-hover.ts:13](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/json-hover.ts#L13)
+[json-hover.ts:13](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json-hover.ts#L13)
 
----
+___
 
 ### JSONMode
 
-Ƭ **JSONMode**: `"json4"` \| `"json5"`
+Ƭ **JSONMode**: ``"json4"`` \| ``"json5"``
 
 #### Defined in
 
-[utils/jsonPointers.ts:8](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/utils/jsonPointers.ts#L8)
+[utils/jsonPointers.ts:8](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/utils/jsonPointers.ts#L8)
 
----
+___
 
 ### JSONPartialPointerData
 
@@ -382,16 +382,16 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Type declaration
 
-| Name      | Type     |
-| :-------- | :------- |
+| Name | Type |
+| :------ | :------ |
 | `keyFrom` | `number` |
-| `keyTo`   | `number` |
+| `keyTo` | `number` |
 
 #### Defined in
 
-[types.ts:3](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/types.ts#L3)
+[types.ts:3](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/types.ts#L3)
 
----
+___
 
 ### JSONPointerData
 
@@ -399,18 +399,18 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Type declaration
 
-| Name        | Type     |
-| :---------- | :------- |
-| `keyFrom`   | `number` |
-| `keyTo`     | `number` |
+| Name | Type |
+| :------ | :------ |
+| `keyFrom` | `number` |
+| `keyTo` | `number` |
 | `valueFrom` | `number` |
-| `valueTo`   | `number` |
+| `valueTo` | `number` |
 
 #### Defined in
 
-[types.ts:8](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/types.ts#L8)
+[types.ts:8](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/types.ts#L8)
 
----
+___
 
 ### JSONPointersMap
 
@@ -418,9 +418,9 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[types.ts:15](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/types.ts#L15)
+[types.ts:15](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/types.ts#L15)
 
----
+___
 
 ### JSONValidationOptions
 
@@ -428,11 +428,11 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Type declaration
 
-| Name           | Type                                                               |
-| :------------- | :----------------------------------------------------------------- |
-| `formatError?` | (`error`: `JsonError`) => `string`                                 |
-| `jsonParser?`  | typeof [`parseJSONDocumentState`](index.md#parsejsondocumentstate) |
+| Name | Type |
+| :------ | :------ |
+| `formatError?` | (`error`: `JsonError`) => `string` |
+| `jsonParser?` | typeof [`parseJSONDocumentState`](index.md#parsejsondocumentstate) |
 
 #### Defined in
 
-[json-validation.ts:24](https://github.com/acao/cm6-language-json-schema/blob/958509c/src/json-validation.ts#L24)
+[json-validation.ts:24](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json-validation.ts#L24)

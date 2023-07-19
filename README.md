@@ -19,17 +19,31 @@ It's at a very early stage, but usable.
 
 ## Usage
 
-You will need to install the relevant language mode for our library to use.
+To give you as much flexibility as possible, everything codemirror related is a peer or optional dependency
+
+Based on whether you want to support json4, json5 or both, you will need to install the relevant language mode for our library to use.
 
 ### json4
+
+with `auto-install-peers true` or similar:
 
 ```
 npm install --save @codemirror/lang-json codemirror-json-schema
 ```
 
+without `auto-install-peers true`:
+
+```
+npm install --save @codemirror/lang-json codemirror-json-schema @codemirror/language @codemirror/lint @codemirror/view @codemirror/state @lezer/common
+```
+
+#### Minimal Usage
+
 ```ts
-import { json } from "@codemirror/lang-json";
-import { jsonSchemaLinting, jsonSchemaHover } from "codemirror-json-schema";
+import { EditorState } from "@codemirror/state";
+import { linter } from "@codemirror/lint";
+import { json, jsonParseLinter } from "@codemirror/lang-json";
+import { jsonSchemaLinter, jsonSchemaHover } from "codemirror-json-schema";
 
 const schema = {
   type: "object",
@@ -56,15 +70,27 @@ const state = EditorState.create({
 
 ### json5
 
+with `auto-install-peers true` or similar:
+
 ```
-npm install --save codemirror-json codemirror-json-schema json5
+npm install --save codemirror-json5 codemirror-json-schema
 ```
 
+without `auto-install-peers true`:
+
+```
+npm install --save codemirror-json5 codemirror-json-schema @codemirror/language @codemirror/lint @codemirror/view @codemirror/state @lezer/common
+```
+
+#### Minimal Usage
+
 ```ts
-import { json5 } from "codemirror-json5";
+import { EditorState } from "@codemirror/state";
+import { linter } from "@codemirror/lint";
+import { json5, json5ParseLinter } from "codemirror-json5";
 import {
-  jsonSchemaLinting,
-  jsonSchemaHover,
+  json5SchemaLinter,
+  json5SchemaHover,
 } from "codemirror-json-schema/json5";
 
 const schema = {
