@@ -2,23 +2,27 @@
 
 Builds on `@codemirror/lang-json`'s and `codemirror-json5`'s grammars with JSONSchema support!
 
-## json4
+## Features
+
+It's at a very early stage, but usable.
+
+### json4
 
 - [x] `lint`s: validates json against schema
 - [x] `hint`s: provides code completion (no complex types yet)
 - [x] `info`s: provides hover tooltip
 
-## json5
+### json5
 
 - [x] `lint`s: validates json against schema
 - [x] `info`s: provides hover tooltip
 - [ ] `hint`s: provides code completion
 
-### Usage
+## Usage
 
 You will need to install the relevant language mode for our library to use.
 
-## json4
+### json4
 
 ```
 npm install --save @codemirror/lang-json codemirror-json-schema
@@ -42,7 +46,7 @@ const state = EditorState.create({
 })
 ```
 
-## json5
+### json5
 
 ```
 npm install --save codemirror-json codemirror-json-schema json5
@@ -67,7 +71,9 @@ const json5State = EditorState.create({
 });
 ```
 
-You can start with the [deployed example](https://github.com/acao/cm6-json-schema/blob/main/dev/index.ts) to learn advanced usage. Many more docs to come!
+You can start with the [deployed example](https://github.com/acao/cm6-json-schema/blob/main/dev/index.ts) to learn advanced usage. 
+
+Many more docs to come, including API docs!
 
 ## Current constraints:
 
