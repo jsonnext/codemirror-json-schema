@@ -7,6 +7,10 @@ import json5 from "json5";
 import { EditorState } from "@codemirror/state";
 import { getJsonPointers } from "./jsonPointers";
 
+/**
+ * Return parsed data and json5 pointers for a given codemirror EditorState
+ * @group Utilities
+ */
 export function parseJSON5DocumentState(state: EditorState) {
   let data = null;
   try {
@@ -19,6 +23,7 @@ export function parseJSON5DocumentState(state: EditorState) {
 
 /**
  * Mimics the behavior of `json-source-map`'s `parseJSONDocument` function, for json5!
+ * @group Utilities
  */
 export function parseJSON5Document(jsonString: string) {
   const state = EditorState.create({

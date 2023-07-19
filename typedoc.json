@@ -1,0 +1,6 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "groupOrder": ["Codemirror Extensions", "Utilities", "*"],
+  "plugin": ["typedoc-plugin-markdown"],
+  "readme": "none"
+}

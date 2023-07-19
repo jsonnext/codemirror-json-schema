@@ -1,8 +1,24 @@
 export { jsonCompletion } from "./json-completion";
-export { jsonSchemaLinter, type JSONValidationOptions } from "./json-validation";
-export { type HoverOptions, jsonSchemaHover } from "./json-hover";
+export {
+  jsonSchemaLinter,
+  type JSONValidationOptions,
+} from "./json-validation";
+export {
+  jsonSchemaHover,
+  type HoverOptions,
+  type FoundCursorData,
+  type CursorData,
+} from "./json-hover";
 
-// export utilities for general use
+export type {
+  JSONPointersMap,
+  JSONPointerData,
+  JSONPartialPointerData,
+} from "./types";
+
+/**
+ * @group Utilities
+ */
 export * from "./utils/parseJSONDocument";
 export * from "./utils/jsonPointers";
 export * from "./utils/parseJSON5Document";

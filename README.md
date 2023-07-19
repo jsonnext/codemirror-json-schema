@@ -1,6 +1,4 @@
-# `codemirror-json-schema`
-
-Builds on `@codemirror/lang-json`'s and `codemirror-json5`'s grammars with JSONSchema support!
+Codemirror extensions that add on `@codemirror/lang-json`'s and `codemirror-json5`'s grammars to add JSONSchema support!
 
 ![screenshot of the examples with json4 and json5 support enabled](./dev/public/example.png)
 
@@ -10,15 +8,14 @@ It's at a very early stage, but usable.
 
 ### json4
 
-- [x] `lint`s: validates json against schema
-- [x] `hint`s: provides code completion (no complex types yet)
-- [x] `info`s: provides hover tooltip
+- ✅ `lint`s: validates json against schema
+- ✅ `hint`s: provides code completion (no complex types yet)
+- ✅ `info`s: provides hover tooltip
 
 ### json5
 
-- [x] `lint`s: validates json against schema
-- [x] `info`s: provides hover tooltip
-- [ ] `hint`s: provides code completion
+- ✅ `lint`s: validates json against schema
+- ✅ `info`s: provides hover tooltip
 
 ## Usage
 
@@ -34,8 +31,17 @@ npm install --save @codemirror/lang-json codemirror-json-schema
 import { json } from "@codemirror/lang-json";
 import { jsonSchemaLinting, jsonSchemaHover } from "codemirror-json-schema";
 
+const schema = {
+  type: "object",
+  properties: {
+    example: {
+      type: "boolean",
+    },
+  },
+};
+
 const state = EditorState.create({
-  doc: jsonText,
+  doc: `{ "example": true }`,
   extensions: [
     json(),
     linter(jsonParseLinter()),
@@ -61,10 +67,18 @@ import {
   jsonSchemaHover,
 } from "codemirror-json-schema/json5";
 
+const schema = {
+  type: "object",
+  properties: {
+    example: {
+      type: "boolean",
+    },
+  },
+};
+
 const json5State = EditorState.create({
-  doc: json5Text,
+  doc: `{ example: true }`,
   extensions: [
-    ...commonExtensions,
     json5(),
     linter(json5ParseLinter()),
     linter(json5SchemaLinter(schema)),
@@ -73,11 +87,11 @@ const json5State = EditorState.create({
 });
 ```
 
-You can start with the [deployed example](https://github.com/acao/cm6-json-schema/blob/main/dev/index.ts) to learn advanced usage. 
+You can start with the [deployed example](https://github.com/acao/cm6-json-schema/blob/main/dev/index.ts) to see a more comprehensive setup.
 
 Many more docs to come, including API docs!
 
-## Current constraints:
+## Current Constraints:
 
 - only linting & hover is available for `oneOf`, `anyOf`, `allOf` and other [schema combination methods](https://json-schema.org/understanding-json-schema/reference/combining.html)
 - it only works with one json schema instance at a time, and doesn't yet fetch remote schemas. schema service coming soon!
