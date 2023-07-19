@@ -21,4 +21,3 @@ export type {
  */
 export * from "./utils/parseJSONDocument";
 export * from "./utils/jsonPointers";
-export * from "./utils/parseJSON5Document";
