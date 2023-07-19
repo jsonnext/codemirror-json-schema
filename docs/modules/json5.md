@@ -9,6 +9,11 @@
 - [json5SchemaHover](json5.md#json5schemahover)
 - [json5SchemaLinter](json5.md#json5schemalinter)
 
+### Utilities
+
+- [parseJSON5Document](json5.md#parsejson5document)
+- [parseJSON5DocumentState](json5.md#parsejson5documentstate)
+
 ## Codemirror Extensions
 
 ### json5SchemaHover
@@ -44,7 +49,7 @@ Instantiates a JSONHover instance with the JSON5 mode
 
 #### Defined in
 
-[json5-hover.ts:11](https://github.com/acao/codemirror-json-schema/blob/c97650d/src/json5-hover.ts#L11)
+[json5-hover.ts:11](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json5-hover.ts#L11)
 
 ---
 
@@ -79,4 +84,58 @@ Instantiates a JSONValidation instance with the JSON5 mode
 
 #### Defined in
 
-[json5-validation.ts:10](https://github.com/acao/codemirror-json-schema/blob/c97650d/src/json5-validation.ts#L10)
+[json5-validation.ts:10](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json5-validation.ts#L10)
+
+## Utilities
+
+### parseJSON5Document
+
+▸ **parseJSON5Document**(`jsonString`): `Object`
+
+Mimics the behavior of `json-source-map`'s `parseJSONDocument` function, for json5!
+
+#### Parameters
+
+| Name         | Type     |
+| :----------- | :------- |
+| `jsonString` | `string` |
+
+#### Returns
+
+`Object`
+
+| Name       | Type                                          |
+| :--------- | :-------------------------------------------- |
+| `data`     | `any`                                         |
+| `pointers` | [`JSONPointersMap`](index.md#jsonpointersmap) |
+
+#### Defined in
+
+[utils/parseJSON5Document.ts:28](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/utils/parseJSON5Document.ts#L28)
+
+---
+
+### parseJSON5DocumentState
+
+▸ **parseJSON5DocumentState**(`state`): `Object`
+
+Return parsed data and json5 pointers for a given codemirror EditorState
+
+#### Parameters
+
+| Name    | Type          |
+| :------ | :------------ |
+| `state` | `EditorState` |
+
+#### Returns
+
+`Object`
+
+| Name       | Type                                          |
+| :--------- | :-------------------------------------------- |
+| `data`     | `any`                                         |
+| `pointers` | [`JSONPointersMap`](index.md#jsonpointersmap) |
+
+#### Defined in
+
+[utils/parseJSON5Document.ts:14](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/utils/parseJSON5Document.ts#L14)
