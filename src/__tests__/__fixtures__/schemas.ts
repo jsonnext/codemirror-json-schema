@@ -30,7 +30,7 @@ export const testSchema2 = {
     oneOfEg: {
       description: "an example oneOf",
       title: "oneOfEg",
-      oneOf: [{ type: "string" }, { type: "array" }, {type: 'boolean'}],
+      oneOf: [{ type: "string" }, { type: "array" }, { type: "boolean" }],
     },
     oneOfEg2: {
       oneOf: [{ type: "string" }, { type: "array" }],

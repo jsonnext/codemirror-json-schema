@@ -5,11 +5,11 @@ import {
   JsonPointer,
   JsonError,
   isJsonError,
-  reduceSchema
+  reduceSchema,
 } from "json-schema-library";
 
 // @ts-expect-error
-import errors from 'json-schema-library/dist/module/lib/validation/errors'
+import errors from "json-schema-library/dist/module/lib/validation/errors";
 
 // @ts-expect-error
 import createSchemaOf from "json-schema-library/dist/module/lib/createSchemaOf";
@@ -123,8 +123,8 @@ const stepType: Record<string, StepFunction> = {
 
       // check if there is a oneOf selection, which must be resolved
       if (targetSchema && Array.isArray(targetSchema.oneOf)) {
-        if(data === undefined || data[key] === undefined) {
-            return targetSchema
+        if (data === undefined || data[key] === undefined) {
+          return targetSchema;
         }
         // @special case: this is a mix of a schema and optional definitions
         // we resolve the schema here and add the original schema to `oneOfSchema`
