@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.2.1
+
+### Patch Changes
+
+- 0b34915: fix: hover format for anyOf
+
 ## 0.2.0
 
 ### Minor Changes
