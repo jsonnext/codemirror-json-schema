@@ -87,9 +87,13 @@ const json5State = EditorState.create({
 });
 ```
 
+### Demo
+
 You can start with the [deployed example](https://github.com/acao/cm6-json-schema/blob/main/dev/index.ts) to see a more comprehensive setup.
 
-Many more docs to come, including API docs!
+### API Docs
+
+For more information, see the [API Docs](./docs/)
 
 ## Current Constraints:
 
