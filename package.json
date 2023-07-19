@@ -1,7 +1,7 @@
 {
   "name": "codemirror-json-schema",
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A JSONSchema enabled mode for codemirror 6, for both json4 and json5, inspired by monaco-json",
   "contributors": [
     {
