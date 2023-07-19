@@ -66,12 +66,22 @@ describe("JSONHover#doHover", () => {
       '<div class="cm6-json-schema-hover"><div>an elegant string</div><div><code>string</code></div></div>'
     );
   });
-  it("should not fail for oneOf", async () => {
+  it("should format oneOf", async () => {
     const hoverResult = await getHoverResult(
       '{"oneOfEg": { "foo": true }, "bar": 123}',
       3,
       testSchema2
     );
-    expect(hoverResult).toBeTruthy();
+    expect(hoverResult).toEqual({
+      above: true,
+      arrow: true,
+      end: 3,
+      pos: 3,
+      create: expect.any(Function),
+    });
+    const hoverEl = hoverResult?.create(new EditorView({})).dom;
+    expect(hoverEl).toContainHTML(
+      '<div class="cm6-json-schema-hover"><div>an example oneOf</div><div><code>oneOf: `string`, `array`, or `boolean`</code></div></div>'
+    );
   });
 });

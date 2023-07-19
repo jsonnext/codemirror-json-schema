@@ -79,10 +79,15 @@ Many more docs to come, including API docs!
 
 - only linting & hover is available for `oneOf`, `anyOf`, `allOf` and other [schema combination methods](https://json-schema.org/understanding-json-schema/reference/combining.html)
 - it only works with one json schema instance at a time, and doesn't yet fetch remote schemas. schema service coming soon!
+- currently only tested with standard schemas using json4 spec. results may vary
+- doesn't provide insert text on completion yet
+- currently you can override the rendering of a hover. we plan to add the same for validation errors and autocomplete
 
 ## Inspiration
 
 `monaco-json` and `monaco-yaml` both provide these features, and I want the nascent codemirror 6 to have them as well!
+
+also, json5 is slowly growing in usage, and it needs full language support!
 
 ## Our Goals
 

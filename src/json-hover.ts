@@ -27,6 +27,18 @@ export function jsonSchemaHover(schema: JSONSchema7, options?: HoverOptions) {
     return hover.doHover(view, pos, side);
   };
 }
+
+function formatComplexType(
+  schema: JsonSchema,
+  type: "oneOf" | "anyOf" | "allOf",
+  draft: Draft
+) {
+  return `${type}: ${joinWithOr(
+    schema[type].map((s: JsonSchema) => {
+      return s.type ?? draft.resolveRef(s).type;
+    })
+  )}`;
+}
 export class JSONHover {
   private schema: Draft;
   public constructor(schema: JSONSchema7, private opts?: HoverOptions) {
@@ -54,14 +66,28 @@ export class JSONHover {
     }
     return { schema: subSchema, pointer };
   }
-  private formatMessage(data: FoundCursorData): HTMLElement {
+
+  private formatMessage(data: FoundCursorData, draft: Draft): HTMLElement {
     const { schema } = data;
     const hoverWrapper = document.createElement("div");
     hoverWrapper.classList.add("cm6-json-schema-hover");
     const codeBlock = document.createElement("code");
-    codeBlock.innerText = Array.isArray(schema.type)
-      ? joinWithOr(schema.type)
-      : schema.type;
+
+    if (schema.type) {
+      codeBlock.innerText = Array.isArray(schema.type)
+        ? joinWithOr(schema.type)
+        : schema.type;
+    }
+    if (schema.oneOf) {
+      codeBlock.innerText = formatComplexType(schema, "oneOf", draft);
+    }
+    if (schema.allOf) {
+      codeBlock.innerText = formatComplexType(schema, "anyOf", draft);
+    }
+    if (schema.allOf) {
+      codeBlock.innerText = formatComplexType(schema, "allOf", draft);
+    }
+
     if (schema.description) {
       const descriptionBlock = document.createElement("div");
       const codeWrapper = document.createElement("div");
@@ -99,7 +125,7 @@ export class JSONHover {
         arrow: true,
         create: (view) => {
           return {
-            dom: formatter(cursorData as FoundCursorData),
+            dom: formatter(cursorData as FoundCursorData, this.schema),
           };
         },
       };
