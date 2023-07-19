@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.2.0
+
+### Minor Changes
+
+- 3a578e9: move everything codemirror related to a peer dependency. see readme for new install instructions
+
 ## 0.1.2
 
 ### Patch Changes
