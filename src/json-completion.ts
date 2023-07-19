@@ -813,3 +813,10 @@ export class JSONCompletion {
     return str.replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
   }
 }
+
+export function jsonCompletion(schema: JSONSchema7) {
+  const completion = new JSONCompletion(schema)
+  return function doJSONCompletion(ctx: CompletionContext) {
+    return completion.doComplete(ctx)
+  }
+}

@@ -3,8 +3,9 @@ import type { Diagnostic } from "@codemirror/lint";
 import type { JSONSchema7 } from "json-schema";
 import { Draft04, type Draft, type JsonError } from "json-schema-library";
 import { joinWithOr } from "./utils/formatting";
-import { JSONPointerData } from "./utils/jsonPointers";
+import { JSONPointerData } from "./types";
 import { parseJSONDocumentState } from "./utils/parseJSONDocument";
+import { RequiredPick } from "./types";
 
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
@@ -20,9 +21,34 @@ const getErrorPath = (error: JsonError): string => {
   return "";
 };
 
+export type JSONValidationOptions = {
+  formatError?: (error: JsonError) => string;
+  jsonParser?: typeof parseJSONDocumentState;
+};
+
+type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
+/**
+ * Helper for simpler class instantiaton
+ */
+export function jsonSchemaLinter(
+  schema: JSONSchema7,
+  options?: JSONValidationOptions
+) {
+  const validation = new JSONValidation(schema, options);
+  return (view: EditorView) => {
+    return validation.doValidation(view);
+  };
+}
+
 export class JSONValidation {
   private schema: Draft;
-  public constructor(schema: JSONSchema7) {
+  private options: JSONValidationSettings;
+  public constructor(schema: JSONSchema7, options?: JSONValidationOptions) {
+    this.options = {
+      jsonParser: parseJSONDocumentState,
+      ...options,
+    };
+
     // TODO: support other versions of json schema.
     // most standard schemas are draft 4 for some reason, probably
     // backwards compatibility
@@ -61,8 +87,8 @@ export class JSONValidation {
 
     // ignore blank json strings
     if (!text || text.trim().length < 3) return [];
-      
-    const json = parseJSONDocumentState(view.state);
+
+    const json = this.options.jsonParser(view.state);
 
     let errors: JsonError[] = [];
     try {
