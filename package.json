@@ -2,7 +2,7 @@
   "name": "codemirror-json-schema",
   "license": "MIT",
   "version": "0.1.0",
-  "description": "A JSONSchema enabled mode for codemirror 6, inspired by monaco-json",
+  "description": "A JSONSchema enabled mode for codemirror 6, for both json4 and json5, inspired by monaco-json",
   "contributors": [
     {
       "name": "Samuel Imolorhe",
@@ -12,6 +12,15 @@
       "name": "Rikki Schulte",
       "url": "https://rikki.dev"
     }
+  ],
+  "keywords": [
+    "codemirror",
+    "codemirror6",
+    "jsonschema",
+    "jsonschema-validation",
+    "json5",
+    "json",
+    "editor"
   ],
   "type": "module",
   "packageManager": "pnpm@8.6.6",
@@ -31,6 +40,7 @@
     "type": "git",
     "url": "https://github.com/acao/codemirror-json-schema.git"
   },
+  "homepage": "https://codemirror-json-schema.netlify.app/",
   "dependencies": {
     "@changesets/cli": "^2.26.2",
     "@codemirror/autocomplete": "^6.8.1",
