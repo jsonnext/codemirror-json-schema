@@ -1,4 +1,4 @@
-import { type EditorView } from "codemirror";
+import { type EditorView } from "@codemirror/view";
 import { type HoverOptions, JSONHover } from "./json-hover";
 import { type JSONSchema7 } from "json-schema";
 

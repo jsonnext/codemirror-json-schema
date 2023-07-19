@@ -7,7 +7,7 @@ import { syntaxTree } from "@codemirror/language";
 import { Text } from "@codemirror/state";
 import { SyntaxNode } from "@lezer/common";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { debug } from "./debug";
+import { debug } from "./utils/debug";
 
 export const TOKENS = {
   STRING: "String",

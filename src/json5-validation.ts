@@ -1,4 +1,4 @@
-import { EditorView } from "codemirror";
+import { EditorView } from "@codemirror/view";
 import { JSONValidation, type JSONValidationOptions } from "./json-validation";
 import type { JSONSchema7 } from "json-schema";
 import { parseJSON5DocumentState } from "./utils/parseJSON5Document";
