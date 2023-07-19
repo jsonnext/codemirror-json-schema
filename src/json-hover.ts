@@ -85,7 +85,7 @@ export class JSONHover {
     if (schema.oneOf) {
       codeBlock.innerText = formatComplexType(schema, "oneOf", draft);
     }
-    if (schema.allOf) {
+    if (schema.anyOf) {
       codeBlock.innerText = formatComplexType(schema, "anyOf", draft);
     }
     if (schema.allOf) {

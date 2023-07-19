@@ -85,7 +85,7 @@
     "build": "tsc && vite build ./dev --outDir ../public --emptyOutDir && pnpm typedoc",
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage",
-    "version-packages": "changeset version && pnpm prettier:write CHANGELOG.md",
+    "version-packages": "changeset version && pnpm prettier:write CHANGELOG.md && git add package.json pnpm-lock.yaml CHANGELOG.md",
     "release": "pnpm build && changeset publish",
     "typedoc": "typedoc --out docs src/index.ts src/json5.ts && pnpm prettier:write docs/**/*",
     "postinstall": "lefthook install",
