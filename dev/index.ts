@@ -1,10 +1,3 @@
-import {
-  JSONCompletion,
-  jsonSchemaLiner,
-  jsonSchemaHover,
-  json5SchemaLinter,
-  json5SchemaHover,
-} from "../src";
 import { EditorState } from "@codemirror/state";
 import {
   gutter,
@@ -14,23 +7,25 @@ import {
 } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { history } from "@codemirror/commands";
-import {
-  autocompletion,
-  closeBrackets,
-  CompletionContext,
-} from "@codemirror/autocomplete";
+import { autocompletion, closeBrackets } from "@codemirror/autocomplete";
 import { linter, lintGutter } from "@codemirror/lint";
 import { bracketMatching, syntaxHighlighting } from "@codemirror/language";
 import { oneDarkHighlightStyle, oneDark } from "@codemirror/theme-one-dark";
-import { json5, json5ParseLinter } from "codemirror-json5";
-import { jsonText, json5Text } from "./sample-text";
-import packageJsonSchema from "./package.schema.json";
-import { json, jsonLanguage, jsonParseLinter } from "@codemirror/lang-json";
 import { JSONSchema7 } from "json-schema";
 
-const schema = packageJsonSchema as JSONSchema7;
+// sample data
+import { jsonText, json5Text } from "./sample-text";
+import packageJsonSchema from "./package.schema.json";
 
-const jsonCompletion = new JSONCompletion(packageJsonSchema as JSONSchema7);
+// json4
+import { json, jsonLanguage, jsonParseLinter } from "@codemirror/lang-json";
+import { jsonSchemaLinter, jsonSchemaHover, jsonCompletion } from "../src";
+
+// json5
+import { json5, json5ParseLinter } from "codemirror-json5";
+import { json5SchemaLinter, json5SchemaHover } from "../src/json5";
+
+const schema = packageJsonSchema as JSONSchema7;
 
 const commonExtensions = [
   gutter({ class: "CodeMirror-lint-markers" }),
@@ -53,9 +48,9 @@ const state = EditorState.create({
     ...commonExtensions,
     json(),
     linter(jsonParseLinter()),
-    linter(jsonSchemaLiner(schema)),
+    linter(jsonSchemaLinter(schema)),
     jsonLanguage.data.of({
-      autocomplete: (ctx: CompletionContext) => jsonCompletion.doComplete(ctx),
+      autocomplete: jsonCompletion(schema),
     }),
     hoverTooltip(jsonSchemaHover(schema)),
   ],

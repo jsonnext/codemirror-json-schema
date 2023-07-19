@@ -1,6 +1,7 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
+import { JSONPointersMap } from "../types";
 
 const VAL_NODE_NAME = /^(?:Null|True|False|Object|Array|String|Number)$/;
 
@@ -9,11 +10,11 @@ export type JSONMode = "json4" | "json5";
 // // borrowed from json5 mode, slightly slower than above, but safer
 // TODO: determine from spec if {"prop'name": example} is valid in json5
 function json5PropNameParser(s: string) {
-  if(s.length < 2) return s;
+  if (s.length < 2) return s;
   let first = s[0];
   let last = s[s.length - 1];
   if ((first === `'` && last === `'`) || (first === `"` && last === `"`)) {
-      s = s.slice(1, -1);
+    s = s.slice(1, -1);
   }
   return s;
 }
@@ -79,22 +80,7 @@ export const jsonPointerForPosition = (
   );
 };
 
-export type JSONPartialPointerData = {
-  keyFrom: number;
-  keyTo: number;
-};
 
-export type JSONPointerData = {
-  keyFrom: number;
-  keyTo: number;
-  valueFrom: number;
-  valueTo: number;
-};
-
-export type JSONPointersMap = Map<
-  string,
-  JSONPointerData | JSONPartialPointerData
->;
 
 // retrieve a Map of all the json pointers in a document
 export const getJsonPointers = (
