@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.1.2
+
+### Patch Changes
+
+- d17f63f: fix readme
+
 ## 0.1.1
 
 ### Patch Changes
