@@ -42,10 +42,7 @@
       "types": "./dist/json5.d.ts"
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/acao/codemirror-json-schema.git"
-  },
+  "repository": "github:acao/codemirror-json-schema",
   "homepage": "https://codemirror-json-schema.netlify.app/",
   "dependencies": {
     "@sagold/json-pointer": "^5.1.1",
@@ -89,6 +86,7 @@
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage",
     "release": "pnpm build && changeset publish",
-    "typedoc": "typedoc --out docs src/index.ts src/json5.ts"
+    "typedoc": "typedoc --out docs src/index.ts src/json5.ts",
+    "postinstall": "lefthook install"
   }
 }

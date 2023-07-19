@@ -13,40 +13,40 @@
 
 ### json5SchemaHover
 
-▸ **json5SchemaHover**(`schema`, `options?`): (`view`: `EditorView`, `pos`: `number`, `side`: ``1`` \| ``-1``) => `Promise`<``null`` \| `Tooltip`\>
+▸ **json5SchemaHover**(`schema`, `options?`): (`view`: `EditorView`, `pos`: `number`, `side`: `1` \| `-1`) => `Promise`<`null` \| `Tooltip`\>
 
 Instantiates a JSONHover instance with the JSON5 mode
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `schema` | `JSONSchema7` |
+| Name       | Type                                    |
+| :--------- | :-------------------------------------- |
+| `schema`   | `JSONSchema7`                           |
 | `options?` | [`HoverOptions`](index.md#hoveroptions) |
 
 #### Returns
 
 `fn`
 
-▸ (`view`, `pos`, `side`): `Promise`<``null`` \| `Tooltip`\>
+▸ (`view`, `pos`, `side`): `Promise`<`null` \| `Tooltip`\>
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name   | Type         |
+| :----- | :----------- |
 | `view` | `EditorView` |
-| `pos` | `number` |
-| `side` | ``1`` \| ``-1`` |
+| `pos`  | `number`     |
+| `side` | `1` \| `-1`  |
 
 ##### Returns
 
-`Promise`<``null`` \| `Tooltip`\>
+`Promise`<`null` \| `Tooltip`\>
 
 #### Defined in
 
-[json5-hover.ts:11](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json5-hover.ts#L11)
+[json5-hover.ts:11](https://github.com/acao/codemirror-json-schema/blob/c97650d/src/json5-hover.ts#L11)
 
-___
+---
 
 ### json5SchemaLinter
 
@@ -56,9 +56,9 @@ Instantiates a JSONValidation instance with the JSON5 mode
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `schema` | `JSONSchema7` |
+| Name       | Type                                                      |
+| :--------- | :-------------------------------------------------------- |
+| `schema`   | `JSONSchema7`                                             |
 | `options?` | [`JSONValidationOptions`](index.md#jsonvalidationoptions) |
 
 #### Returns
@@ -69,8 +69,8 @@ Instantiates a JSONValidation instance with the JSON5 mode
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name   | Type         |
+| :----- | :----------- |
 | `view` | `EditorView` |
 
 ##### Returns
@@ -79,4 +79,4 @@ Instantiates a JSONValidation instance with the JSON5 mode
 
 #### Defined in
 
-[json5-validation.ts:10](https://github.com/acao/cm6-language-json-schema/blob/567a400/src/json5-validation.ts#L10)
+[json5-validation.ts:10](https://github.com/acao/codemirror-json-schema/blob/c97650d/src/json5-validation.ts#L10)
