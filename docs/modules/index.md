@@ -61,7 +61,7 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 #### Defined in
 
-[json-completion.ts:820](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json-completion.ts#L820)
+[json-completion.ts:820](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/json-completion.ts#L820)
 
 ---
 
@@ -98,7 +98,7 @@ provides a JSON schema enabled tooltip extension for codemirror
 
 #### Defined in
 
-[json-hover.ts:24](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json-hover.ts#L24)
+[json-hover.ts:24](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/json-hover.ts#L24)
 
 ---
 
@@ -133,7 +133,7 @@ Helper for simpler class instantiaton
 
 #### Defined in
 
-[json-validation.ts:35](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json-validation.ts#L35)
+[json-validation.ts:35](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/json-validation.ts#L35)
 
 ## Utilities
 
@@ -160,7 +160,7 @@ this could be useful for other things later!
 
 #### Defined in
 
-[utils/jsonPointers.ts:37](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/utils/jsonPointers.ts#L37)
+[utils/jsonPointers.ts:37](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/utils/jsonPointers.ts#L37)
 
 ---
 
@@ -183,7 +183,7 @@ retrieve a Map of all the json pointers in a document
 
 #### Defined in
 
-[utils/jsonPointers.ts:98](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/utils/jsonPointers.ts#L98)
+[utils/jsonPointers.ts:98](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/utils/jsonPointers.ts#L98)
 
 ---
 
@@ -208,7 +208,7 @@ retrieve a JSON pointer for a given position in the editor
 
 #### Defined in
 
-[utils/jsonPointers.ts:81](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/utils/jsonPointers.ts#L81)
+[utils/jsonPointers.ts:81](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/utils/jsonPointers.ts#L81)
 
 ---
 
@@ -235,7 +235,7 @@ Mimics the behavior of `json-source-map`'s `parseJSONDocument` function using co
 
 #### Defined in
 
-[utils/parseJSONDocument.ts:23](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/utils/parseJSONDocument.ts#L23)
+[utils/parseJSONDocument.ts:23](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/utils/parseJSONDocument.ts#L23)
 
 ---
 
@@ -262,7 +262,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[utils/parseJSONDocument.ts:9](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/utils/parseJSONDocument.ts#L9)
+[utils/parseJSONDocument.ts:9](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/utils/parseJSONDocument.ts#L9)
 
 ## Type Aliases
 
@@ -279,7 +279,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-hover.ts:9](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json-hover.ts#L9)
+[json-hover.ts:9](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/json-hover.ts#L9)
 
 ---
 
@@ -289,7 +289,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-hover.ts:11](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json-hover.ts#L11)
+[json-hover.ts:11](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/json-hover.ts#L11)
 
 ---
 
@@ -306,7 +306,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-hover.ts:13](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json-hover.ts#L13)
+[json-hover.ts:13](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/json-hover.ts#L13)
 
 ---
 
@@ -316,7 +316,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[utils/jsonPointers.ts:8](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/utils/jsonPointers.ts#L8)
+[utils/jsonPointers.ts:8](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/utils/jsonPointers.ts#L8)
 
 ---
 
@@ -333,7 +333,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[types.ts:3](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/types.ts#L3)
+[types.ts:4](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/types.ts#L4)
 
 ---
 
@@ -352,7 +352,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[types.ts:8](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/types.ts#L8)
+[types.ts:9](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/types.ts#L9)
 
 ---
 
@@ -362,7 +362,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[types.ts:15](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/types.ts#L15)
+[types.ts:16](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/types.ts#L16)
 
 ---
 
@@ -379,4 +379,4 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-validation.ts:24](https://github.com/acao/codemirror-json-schema/blob/3a578e9/src/json-validation.ts#L24)
+[json-validation.ts:24](https://github.com/acao/codemirror-json-schema/blob/924e0e4/src/json-validation.ts#L24)

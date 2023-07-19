@@ -22,7 +22,7 @@ describe("parseJSON5Document", () => {
     expect(Array.from(doc.pointers.keys())).toEqual([
       '/obj"ect',
       '/obj"ect/foo',
-      '/bar',
+      "/bar",
     ]);
   });
 });

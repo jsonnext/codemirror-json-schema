@@ -12,7 +12,7 @@ const getPointer = (jsonString: string, pos: number) => {
 
 const getJSON5Pointer = (jsonString: string, pos: number) => {
   const state = EditorState.create({ doc: jsonString, extensions: [json5()] });
-  return jsonPointerForPosition(state, pos, 1, 'json5');
+  return jsonPointerForPosition(state, pos, 1, "json5");
 };
 
 describe("jsonPointerForPosition", () => {
@@ -28,16 +28,19 @@ describe("jsonPointerForPosition", () => {
   });
   it("should return full pointer path for a position for a deep associative array", () => {
     expect(
-      getPointer('[{"object": [{ "foo": { "example": true } }], "bar": 123}]', 27)
+      getPointer(
+        '[{"object": [{ "foo": { "example": true } }], "bar": 123}]',
+        27
+      )
     ).toEqual("/0/object/0/foo/example");
   });
 });
 
 describe("jsonPointerForPosition for json5", () => {
   it("should return full pointer path for a position", () => {
-    expect(getJSON5Pointer('{"object": { "foo": true }, "bar": 123}', 14)).toEqual(
-      "/object/foo"
-    );
+    expect(
+      getJSON5Pointer('{"object": { "foo": true }, "bar": 123}', 14)
+    ).toEqual("/object/foo");
   });
   it("should return full pointer path for a position for associative array", () => {
     expect(
@@ -46,7 +49,10 @@ describe("jsonPointerForPosition for json5", () => {
   });
   it("should return full pointer path for a position for a deep associative array", () => {
     expect(
-      getJSON5Pointer('[{"object": [{ "foo": { example: true } }], "bar": 123}]', 25)
+      getJSON5Pointer(
+        '[{"object": [{ "foo": { example: true } }], "bar": 123}]',
+        25
+      )
     ).toEqual("/0/object/0/foo/example");
   });
 });
@@ -56,7 +62,7 @@ describe("getJsonPointers", () => {
     const state = EditorState.create({
       doc: '{"object": { "foo": true }, "bar": 123}',
       extensions: [json()],
-    })
+    });
     const pointers = getJsonPointers(state);
     expect(pointers.get("/object/foo")).toEqual({
       keyFrom: 13,
@@ -78,9 +84,9 @@ describe("getJsonPointers for json5", () => {
     const state = EditorState.create({
       doc: '{"object": { foo: true }, bar: 123}',
       extensions: [json5()],
-    })
+    });
 
-    const pointers = getJsonPointers(state, 'json5');
+    const pointers = getJsonPointers(state, "json5");
     expect(pointers.get("/object/foo")).toEqual({
       keyFrom: 13,
       keyTo: 16,
