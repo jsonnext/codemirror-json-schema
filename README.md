@@ -2,6 +2,8 @@
 
 Builds on `@codemirror/lang-json`'s and `codemirror-json5`'s grammars with JSONSchema support!
 
+![screenshot of the examples with json4 and json5 support enabled](./dev/public/example.png)
+
 ## Features
 
 It's at a very early stage, but usable.

@@ -75,7 +75,7 @@ export class JSONValidation {
           : error?.data?.expected
       }\` but received \`${error?.data?.received}\``;
     }
-    const message = error.message.replaceAll("#/", "").replace("/", ".");
+    const message = error.message.replaceAll("#/", "").replaceAll("/", ".");
 
     return message;
   };
