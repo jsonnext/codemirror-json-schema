@@ -1,7 +1,7 @@
 {
   "name": "codemirror-json-schema",
   "license": "MIT",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A JSONSchema enabled mode for codemirror 6, for both json4 and json5, inspired by monaco-json",
   "contributors": [
     {
@@ -26,6 +26,12 @@
   "packageManager": "pnpm@8.6.6",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "docs"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.js",
