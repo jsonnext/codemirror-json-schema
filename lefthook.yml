@@ -1,0 +1,18 @@
+# EXAMPLE USAGE:
+#
+#   Refer for explanation to following link:
+#   https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+#
+
+pre-commit:
+  parallel: true
+  commands:
+    prettier:
+      glob: "*.{js,ts,jsx,tsx,json,css,html,yml,mdx,md}"
+      run: pnpm prettier --write {staged_files}
+    typedoc:
+      run: pnpm typedoc
+      glob: "*.{js,ts,jsx,tsx}"
+    test:
+      run: pnpm test:coverage
+      glob: "*.{js,ts,jsx,tsx}"

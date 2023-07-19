@@ -17,6 +17,10 @@ export type HoverOptions = {
   // onHover?: () => void;
 };
 
+/**
+ * provides a JSON schema enabled tooltip extension for codemirror
+ * @group Codemirror Extensions
+ */
 export function jsonSchemaHover(schema: JSONSchema7, options?: HoverOptions) {
   const hover = new JSONHover(schema, options);
   return async function jsonDoHover(

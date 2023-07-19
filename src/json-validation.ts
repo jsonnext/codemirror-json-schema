@@ -27,15 +27,17 @@ export type JSONValidationOptions = {
 };
 
 type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
+
 /**
  * Helper for simpler class instantiaton
+ * @group Codemirror Extensions
  */
 export function jsonSchemaLinter(
   schema: JSONSchema7,
   options?: JSONValidationOptions
 ) {
   const validation = new JSONValidation(schema, options);
-  return (view: EditorView) => {
+  return function jsonDoValidation(view: EditorView) {
     return validation.doValidation(view);
   };
 }

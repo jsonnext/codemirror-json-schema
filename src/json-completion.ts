@@ -2,25 +2,25 @@ import {
   Completion,
   CompletionContext,
   CompletionResult,
-} from '@codemirror/autocomplete';
-import { syntaxTree } from '@codemirror/language';
-import { Text } from '@codemirror/state';
-import { SyntaxNode } from '@lezer/common';
-import { JSONSchema7, JSONSchema7Definition } from 'json-schema';
-import { debug } from './debug';
+} from "@codemirror/autocomplete";
+import { syntaxTree } from "@codemirror/language";
+import { Text } from "@codemirror/state";
+import { SyntaxNode } from "@lezer/common";
+import { JSONSchema7, JSONSchema7Definition } from "json-schema";
+import { debug } from "./debug";
 
 export const TOKENS = {
-  STRING: 'String',
-  NUMBER: 'Number',
-  TRUE: 'True',
-  FALSE: 'False',
-  NULL: 'Null',
-  OBJECT: 'Object',
-  ARRAY: 'Array',
-  PROPERTY: 'Property',
-  PROPERTY_NAME: 'PropertyName',
-  JSON_TEXT: 'JsonText',
-  INVALID: '⚠',
+  STRING: "String",
+  NUMBER: "Number",
+  TRUE: "True",
+  FALSE: "False",
+  NULL: "Null",
+  OBJECT: "Object",
+  ARRAY: "Array",
+  PROPERTY: "Property",
+  PROPERTY_NAME: "PropertyName",
+  JSON_TEXT: "JsonText",
+  INVALID: "⚠",
 };
 export const VALUE_TYPES = [
   TOKENS.STRING,
@@ -65,7 +65,7 @@ export class JSONCompletion {
     );
 
     // position node word prefix (without quotes) for matching
-    const prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^("|')/, '');
+    const prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^("|')/, "");
 
     // Only show completions if we are filling out a word or right after the starting quote, or if explicitly requested
     if (
@@ -88,20 +88,20 @@ export class JSONCompletion {
       //   debug.log('xxx', 'overwriteStart--', overwriteStart);
       // }
       debug.log(
-        'xxx',
-        'overwriteStart after',
+        "xxx",
+        "overwriteStart after",
         overwriteStart,
-        'ctx.pos',
+        "ctx.pos",
         ctx.pos,
-        'word',
+        "word",
         word,
-        'currentWord',
+        "currentWord",
         currentWord,
-        '=>',
+        "=>",
         text[overwriteStart - 1],
-        '..',
+        "..",
         text[overwriteStart],
-        '..',
+        "..",
         text
       );
       result.from =
@@ -129,7 +129,7 @@ export class JSONCompletion {
       }
     }
 
-    debug.log('xxx', node, currentWord, ctx);
+    debug.log("xxx", node, currentWord, ctx);
 
     // proposals for properties
     if (
@@ -156,14 +156,14 @@ export class JSONCompletion {
       this.stripSurrondingQuotes(v.label).startsWith(prefix)
     );
     debug.log(
-      'xxx',
-      'result',
+      "xxx",
+      "result",
       result,
-      'prefix',
+      "prefix",
       prefix,
-      'collector.completions',
+      "collector.completions",
       collector.completions,
-      'reservedKeys',
+      "reservedKeys",
       collector.reservedKeys
     );
     return result;
@@ -192,15 +192,15 @@ export class JSONCompletion {
       const properties = s.properties;
       if (properties) {
         Object.entries(properties).forEach(([key, value]) => {
-          if (typeof value === 'object') {
-            const description = value.description || '';
-            const type = value.type || '';
+          if (typeof value === "object") {
+            const description = value.description || "";
+            const type = value.type || "";
             const typeStr = Array.isArray(type) ? type.toString() : type;
             const completion: Completion = {
               // label is the unquoted key which will be displayed.
               label: key,
               apply: this.getInsertTextForProperty(key, addValue, value),
-              type: 'property',
+              type: "property",
               detail: typeStr,
               info: description,
             };
@@ -209,7 +209,7 @@ export class JSONCompletion {
         });
       }
       const propertyNames = s.propertyNames;
-      if (typeof propertyNames === 'object') {
+      if (typeof propertyNames === "object") {
         if (propertyNames.enum) {
           propertyNames.enum.forEach((v) => {
             const label = v?.toString();
@@ -217,7 +217,7 @@ export class JSONCompletion {
               const completion: Completion = {
                 label,
                 apply: this.getInsertTextForProperty(label, addValue),
-                type: 'property',
+                type: "property",
               };
               collector.add(completion);
             }
@@ -229,7 +229,7 @@ export class JSONCompletion {
           const completion: Completion = {
             label,
             apply: this.getInsertTextForProperty(label, addValue),
-            type: 'property',
+            type: "property",
           };
           collector.add(completion);
         }
@@ -257,26 +257,26 @@ export class JSONCompletion {
     if (!addValue) {
       return resultText;
     }
-    resultText += ': ';
+    resultText += ": ";
 
     let value;
     let nValueProposals = 0;
-    if (typeof propertySchema === 'object') {
+    if (typeof propertySchema === "object") {
       if (propertySchema.enum) {
         if (!value && propertySchema.enum.length === 1) {
-          value = this.getInsertTextForGuessedValue(propertySchema.enum[0], '');
+          value = this.getInsertTextForGuessedValue(propertySchema.enum[0], "");
         }
         nValueProposals += propertySchema.enum.length;
       }
-      if (typeof propertySchema.const !== 'undefined') {
+      if (typeof propertySchema.const !== "undefined") {
         if (!value) {
-          value = this.getInsertTextForGuessedValue(propertySchema.const, '');
+          value = this.getInsertTextForGuessedValue(propertySchema.const, "");
         }
         nValueProposals++;
       }
-      if (typeof propertySchema.default !== 'undefined') {
+      if (typeof propertySchema.default !== "undefined") {
         if (!value) {
-          value = this.getInsertTextForGuessedValue(propertySchema.default, '');
+          value = this.getInsertTextForGuessedValue(propertySchema.default, "");
         }
         nValueProposals++;
       }
@@ -287,7 +287,7 @@ export class JSONCompletion {
         if (!value) {
           value = this.getInsertTextForGuessedValue(
             propertySchema.examples[0],
-            ''
+            ""
           );
         }
         nValueProposals += propertySchema.examples.length;
@@ -298,30 +298,30 @@ export class JSONCompletion {
           : propertySchema.type;
         if (!type) {
           if (propertySchema.properties) {
-            type = 'object';
+            type = "object";
           } else if (propertySchema.items) {
-            type = 'array';
+            type = "array";
           }
         }
         switch (type) {
-          case 'boolean':
-            value = '#{}';
+          case "boolean":
+            value = "#{}";
             break;
-          case 'string':
+          case "string":
             value = '"#{}"';
             break;
-          case 'object':
-            value = '{#{}}';
+          case "object":
+            value = "{#{}}";
             break;
-          case 'array':
-            value = '[#{}]';
+          case "array":
+            value = "[#{}]";
             break;
-          case 'number':
-          case 'integer':
-            value = '#{0}';
+          case "number":
+          case "integer":
+            value = "#{0}";
             break;
-          case 'null':
-            value = '#{null}';
+          case "null":
+            value = "#{null}";
             break;
           default:
             return resultText;
@@ -329,7 +329,7 @@ export class JSONCompletion {
       }
     }
     if (!value || nValueProposals > 1) {
-      value = '$1';
+      value = "$1";
     }
 
     // TODO: Use this instead to handle insert value + position cursor e.g. "key": "#{}" when using snippetCompletion
@@ -340,36 +340,36 @@ export class JSONCompletion {
 
   private getInsertTextForGuessedValue(
     value: any,
-    separatorAfter = ''
+    separatorAfter = ""
   ): string {
     switch (typeof value) {
-      case 'object':
+      case "object":
         if (value === null) {
-          return '${null}' + separatorAfter;
+          return "${null}" + separatorAfter;
         }
         return this.getInsertTextForValue(value, separatorAfter);
-      case 'string': {
+      case "string": {
         let snippetValue = JSON.stringify(value);
         snippetValue = snippetValue.substr(1, snippetValue.length - 2); // remove quotes
         snippetValue = this.getInsertTextForPlainText(snippetValue); // escape \ and }
         return '"${' + snippetValue + '}"' + separatorAfter;
       }
-      case 'number':
-      case 'boolean':
-        return '${' + JSON.stringify(value) + '}' + separatorAfter;
+      case "number":
+      case "boolean":
+        return "${" + JSON.stringify(value) + "}" + separatorAfter;
     }
     return this.getInsertTextForValue(value, separatorAfter);
   }
   private getInsertTextForPlainText(text: string): string {
-    return text.replace(/[\\$}]/g, '\\$&'); // escape $, \ and }
+    return text.replace(/[\\$}]/g, "\\$&"); // escape $, \ and }
   }
 
   private getInsertTextForValue(value: any, separatorAfter: string): string {
-    const text = JSON.stringify(value, null, '\t');
-    if (text === '{}') {
-      return '{#{}}' + separatorAfter;
-    } else if (text === '[]') {
-      return '[#{}]' + separatorAfter;
+    const text = JSON.stringify(value, null, "\t");
+    if (text === "{}") {
+      return "{#{}}" + separatorAfter;
+    } else if (text === "[]") {
+      return "[#{}]" + separatorAfter;
     }
     return this.getInsertTextForPlainText(text + separatorAfter);
   }
@@ -474,11 +474,11 @@ export class JSONCompletion {
             this.addSchemaValueCompletions(propertySchema, types, collector);
           }
         }
-        if (types['boolean']) {
+        if (types["boolean"]) {
           this.addBooleanValueCompletion(true, collector);
           this.addBooleanValueCompletion(false, collector);
         }
-        if (types['null']) {
+        if (types["null"]) {
           this.addNullValueCompletion(collector);
         }
       }
@@ -490,7 +490,7 @@ export class JSONCompletion {
     types: { [type: string]: boolean },
     collector: CompletionCollector
   ) {
-    if (typeof schema === 'object') {
+    if (typeof schema === "object") {
       this.addEnumValueCompletions(schema, collector);
       this.addDefaultValueCompletions(schema, collector);
       this.collectTypes(schema, types);
@@ -517,17 +517,17 @@ export class JSONCompletion {
     arrayDepth = 0
   ): void {
     let hasProposals = false;
-    if (typeof schema.default !== 'undefined') {
+    if (typeof schema.default !== "undefined") {
       let type = schema.type;
       let value = schema.default;
       for (let i = arrayDepth; i > 0; i--) {
         value = [value];
-        type = 'array';
+        type = "array";
       }
       const completionItem: Completion = {
         type: type?.toString(),
         label: this.getLabelForValue(value),
-        detail: 'Default value',
+        detail: "Default value",
       };
       collector.add(completionItem);
       hasProposals = true;
@@ -538,7 +538,7 @@ export class JSONCompletion {
         let value = example;
         for (let i = arrayDepth; i > 0; i--) {
           value = [value];
-          type = 'array';
+          type = "array";
         }
         collector.add({
           type: type?.toString(),
@@ -549,7 +549,7 @@ export class JSONCompletion {
     }
     if (
       !hasProposals &&
-      typeof schema.items === 'object' &&
+      typeof schema.items === "object" &&
       !Array.isArray(schema.items) &&
       arrayDepth < 5 /* beware of recursion */
     ) {
@@ -561,7 +561,7 @@ export class JSONCompletion {
     schema: JSONSchema7,
     collector: CompletionCollector
   ): void {
-    if (typeof schema.const !== 'undefined') {
+    if (typeof schema.const !== "undefined") {
       collector.add({
         type: schema.type?.toString(),
         label: this.getLabelForValue(schema.const),
@@ -587,15 +587,15 @@ export class JSONCompletion {
     collector: CompletionCollector
   ): void {
     collector.add({
-      type: 'boolean',
-      label: value ? 'true' : 'false',
+      type: "boolean",
+      label: value ? "true" : "false",
     });
   }
 
   private addNullValueCompletion(collector: CompletionCollector): void {
     collector.add({
-      type: 'null',
-      label: 'null',
+      type: "null",
+      label: "null",
     });
   }
 
@@ -603,7 +603,7 @@ export class JSONCompletion {
     schema: JSONSchema7,
     types: { [type: string]: boolean }
   ) {
-    if (Array.isArray(schema.enum) || typeof schema.const !== 'undefined') {
+    if (Array.isArray(schema.enum) || typeof schema.const !== "undefined") {
       return;
     }
     const type = schema.type;
@@ -639,8 +639,8 @@ export class JSONCompletion {
       node = node.parent;
     }
     debug.log(
-      'xxxn',
-      'nodes',
+      "xxxn",
+      "nodes",
       nodes.map((n) => n.name),
       nodes
     );
@@ -662,7 +662,7 @@ export class JSONCompletion {
           curSchema = schema;
           return;
         case TOKENS.ARRAY: {
-          if (typeof curSchema === 'object') {
+          if (typeof curSchema === "object") {
             const nextNodey = nodes[idx + 1];
             let arrayIndex = 0;
             if (nextNodey) {
@@ -689,7 +689,7 @@ export class JSONCompletion {
           const propertyNameNode = n.getChild(TOKENS.PROPERTY_NAME);
           if (propertyNameNode) {
             const propertyName = this.getWord(ctx.state.doc, propertyNameNode);
-            if (typeof curSchema === 'object') {
+            if (typeof curSchema === "object") {
               const propertySchema = curSchema.properties?.[propertyName];
               if (propertySchema) {
                 curSchema = this.expandSchemaProperty(propertySchema, schema);
@@ -701,7 +701,7 @@ export class JSONCompletion {
       }
     });
 
-    debug.log('xxxn', 'curSchema', curSchema);
+    debug.log("xxxn", "curSchema", curSchema);
 
     return [curSchema];
   }
@@ -710,14 +710,14 @@ export class JSONCompletion {
     property: JSONSchema7Definition,
     schema: JSONSchema7
   ) {
-    if (typeof property === 'object' && property.$ref) {
+    if (typeof property === "object" && property.$ref) {
       const refSchema = this.getReferenceSchema(schema, property.$ref);
-      if (typeof refSchema === 'object') {
+      if (typeof refSchema === "object") {
         const dereferenced = {
           ...property,
           ...refSchema,
         };
-        Reflect.deleteProperty(dereferenced, '$ref');
+        Reflect.deleteProperty(dereferenced, "$ref");
 
         return dereferenced;
       }
@@ -726,17 +726,17 @@ export class JSONCompletion {
   }
 
   private getReferenceSchema(schema: JSONSchema7, ref: string) {
-    const refPath = ref.split('/');
+    const refPath = ref.split("/");
     let curReference: Record<string, any> | undefined = schema;
     refPath.forEach((cur) => {
       if (!cur) {
         return;
       }
-      if (cur === '#') {
+      if (cur === "#") {
         curReference = schema;
         return;
       }
-      if (typeof curReference === 'object') {
+      if (typeof curReference === "object") {
         curReference = curReference[cur];
       }
     });
@@ -745,7 +745,7 @@ export class JSONCompletion {
   }
 
   private getWord(doc: Text, node: SyntaxNode | null, stripQuotes = true) {
-    const word = node ? doc.sliceString(node.from, node.to) : '';
+    const word = node ? doc.sliceString(node.from, node.to) : "";
     return stripQuotes ? this.stripSurrondingQuotes(word) : word;
   }
 
@@ -791,13 +791,13 @@ export class JSONCompletion {
   }
 
   private extendedRegExp(pattern: string): RegExp | undefined {
-    let flags = '';
-    if (pattern.startsWith('(?i)')) {
+    let flags = "";
+    if (pattern.startsWith("(?i)")) {
       pattern = pattern.substring(4);
-      flags = 'i';
+      flags = "i";
     }
     try {
-      return new RegExp(pattern, flags + 'u');
+      return new RegExp(pattern, flags + "u");
     } catch (e) {
       // could be an exception due to the 'u ' flag
       try {
@@ -810,13 +810,16 @@ export class JSONCompletion {
   }
 
   private stripSurrondingQuotes(str: string) {
-    return str.replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
+    return str.replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
   }
 }
-
+/**
+ * provides a JSON schema enabled autocomplete extension for codemirror
+ * @group Codemirror Extensions
+ */
 export function jsonCompletion(schema: JSONSchema7) {
-  const completion = new JSONCompletion(schema)
-  return function doJSONCompletion(ctx: CompletionContext) {
-    return completion.doComplete(ctx)
-  }
+  const completion = new JSONCompletion(schema);
+  return function jsonDoCompletion(ctx: CompletionContext) {
+    return completion.doComplete(ctx);
+  };
 }

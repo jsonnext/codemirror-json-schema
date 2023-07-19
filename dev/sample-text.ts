@@ -6,7 +6,7 @@ export const jsonText = `{
     "email": "email",
     "url": "h"
   }],
-  "type":
+  "type": ""
 }`;
 export const json5Text = `{
   "name": "lexunicon",

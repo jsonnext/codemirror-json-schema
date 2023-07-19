@@ -7,8 +7,10 @@ const VAL_NODE_NAME = /^(?:Null|True|False|Object|Array|String|Number)$/;
 
 export type JSONMode = "json4" | "json5";
 
-// // borrowed from json5 mode, slightly slower than above, but safer
+// borrowed from `codemirror-json5`
 // TODO: determine from spec if {"prop'name": example} is valid in json5
+// JSON5 parse doesn't support parsing individual strings like JSON.parse does
+
 function json5PropNameParser(s: string) {
   if (s.length < 2) return s;
   let first = s[0];
@@ -21,12 +23,17 @@ function json5PropNameParser(s: string) {
 
 const propNameParsers: Record<JSONMode, typeof JSON.parse> = {
   json4: JSON.parse,
-  // JSON5 parse doesn't support parsing individual strings like JSON.parse does
   json5: json5PropNameParser,
 };
 
-// adapted from https://discuss.codemirror.net/t/json-pointer-at-cursor-seeking-implementation-critique/4793/3
-// this could be useful for other things later!
+/**
+ * get a JSON4/5 pointer for a given node in the editor
+ *
+ * adapted from https://discuss.codemirror.net/t/json-pointer-at-cursor-seeking-implementation-critique/4793/3
+ * this could be useful for other things later!
+ * @group Utilities
+ * @internal
+ */
 export function getJsonPointerAt(
   docText: Text,
   node: SyntaxNode,
@@ -67,6 +74,10 @@ export function getJsonPointerAt(
   return path.join("/");
 }
 
+/**
+ * retrieve a JSON pointer for a given position in the editor
+ * @group Utilities
+ */
 export const jsonPointerForPosition = (
   state: EditorState,
   pos: number,
@@ -80,9 +91,10 @@ export const jsonPointerForPosition = (
   );
 };
 
-
-
-// retrieve a Map of all the json pointers in a document
+/**
+ * retrieve a Map of all the json pointers in a document
+ * @group Utilities
+ */
 export const getJsonPointers = (
   state: EditorState,
   mode: JSONMode = "json4"
