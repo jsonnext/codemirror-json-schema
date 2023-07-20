@@ -4,11 +4,12 @@ expect.extend(matchers);
 import "vitest-dom/extend-expect";
 
 import { JSONSchema7 } from "json-schema";
-import { JSONHover } from "../json-hover";
+import { FoundCursorData, JSONHover } from "../json-hover";
 
 import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
 import { testSchema, testSchema2 } from "./__fixtures__/schemas";
+import { Draft } from "json-schema-library";
 
 const getHoverData = (
   jsonString: string,
@@ -33,6 +34,18 @@ const getHoverResult = async (
   return hoverResult;
 };
 
+const getHoverTexts = async (
+  jsonString: string,
+  pos: number,
+  schema?: JSONSchema7
+) => {
+  const view = new EditorView({ doc: jsonString, extensions: [json()] });
+  const hover = new JSONHover(schema || testSchema);
+  const data = hover.getDataForCursor(view, pos, 1) as FoundCursorData;
+  const hoverResult = hover.getHoverTexts(data, hover.schema as Draft);
+  return hoverResult;
+};
+
 describe("JSONHover#getDataForCursor", () => {
   it("should return schema descriptions as expected", () => {
     expect(
@@ -47,6 +60,31 @@ describe("JSONHover#getDataForCursor", () => {
   });
 });
 
+describe("JSONHover#getHoverTexts", () => {
+  it("should provide oneOf texts despite invalid values", async () => {
+    const hoverTexts = await getHoverTexts(
+      '{"oneOfEg": { "foo": true }, "bar": 123}',
+      3,
+      testSchema2
+    );
+    expect(hoverTexts).toEqual({
+      message: "an example oneOf",
+      typeInfo: "oneOf: `string`, `array`, or `boolean`",
+    });
+  });
+  it("should provide oneOf texts with valid values", async () => {
+    const hoverTexts = await getHoverTexts(
+      '{"oneOfEg": { "foo": "example" }, "bar": 123}',
+      3,
+      testSchema2
+    );
+    expect(hoverTexts).toEqual({
+      message: "an example oneOf",
+      typeInfo: "oneOf: `string`, `array`, or `boolean`",
+    });
+  });
+});
+
 describe("JSONHover#doHover", () => {
   it("should return Tooltip data", async () => {
     const hoverResult = await getHoverResult(
@@ -55,7 +93,6 @@ describe("JSONHover#doHover", () => {
       testSchema2
     );
     expect(hoverResult).toEqual({
-      above: true,
       arrow: true,
       end: 14,
       pos: 14,
@@ -63,25 +100,25 @@ describe("JSONHover#doHover", () => {
     });
     const hoverEl = hoverResult?.create(new EditorView({})).dom;
     expect(hoverEl).toContainHTML(
-      '<div class="cm6-json-schema-hover"><div>an elegant string</div><div><code>string</code></div></div>'
+      [
+        `<div class="cm6-json-schema-hover"><div class="cm6-json-schema-hover--description">an elegant string</div>`,
+        `<div class="cm6-json-schema-hover--code-wrapper"><code class="cm6-json-schema-hover--code">string</code></div></div>`,
+      ].join("")
     );
   });
-  it("should format oneOf", async () => {
-    const hoverResult = await getHoverResult(
-      '{"oneOfEg": { "foo": true }, "bar": 123}',
-      3,
-      testSchema2
-    );
+
+  it("should return just typeInfo if there is no description", async () => {
+    const hoverResult = await getHoverResult('{ "foo": true }', 4, testSchema2);
     expect(hoverResult).toEqual({
-      above: true,
       arrow: true,
-      end: 3,
-      pos: 3,
+      end: 4,
+      pos: 4,
       create: expect.any(Function),
     });
-    const hoverEl = hoverResult?.create(new EditorView({})).dom;
-    expect(hoverEl).toContainHTML(
-      '<div class="cm6-json-schema-hover"><div>an example oneOf</div><div><code>oneOf: `string`, `array`, or `boolean`</code></div></div>'
-    );
+    const hoverEl = hoverResult?.create(new EditorView({})).dom.toString();
+    expect(hoverEl).toContain("cm6-json-schema-hover--code-wrapper");
+    expect(hoverEl).toContain("cm6-json-schema-hover--code");
+    expect(hoverEl).toContain("string</code>");
+    expect(hoverEl).not.toContain("cm6-json-schema-hover--description");
   });
 });

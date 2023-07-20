@@ -1,7 +1,7 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import { JSONPointersMap } from "../types";
+import { JSONPointersMap, Side } from "../types";
 
 const VAL_NODE_NAME = /^(?:Null|True|False|Object|Array|String|Number)$/;
 
@@ -81,7 +81,7 @@ export function getJsonPointerAt(
 export const jsonPointerForPosition = (
   state: EditorState,
   pos: number,
-  side: -1 | 1,
+  side: Side,
   mode: JSONMode = "json4"
 ) => {
   return getJsonPointerAt(
@@ -116,6 +116,10 @@ export const getJsonPointers = (
           mode === "json4"
             ? type.node?.nextSibling?.node
             : type.node?.nextSibling?.node?.nextSibling?.node;
+        if (!nextNode) {
+          pointers.set(pointer, { keyFrom, keyTo });
+          return true;
+        }
         const { from: valueFrom, to: valueTo } = nextNode as SyntaxNode;
         pointers.set(pointer, { keyFrom, keyTo, valueFrom, valueTo });
         return true;

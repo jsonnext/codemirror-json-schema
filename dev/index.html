@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>codemirror-json-schema example</title>
+    <title>codemirror-json-schema demo</title>
     <meta
       name="description"
       content="A demo of the codemirror-json-schema package that supports json schema for json4 and json5"
@@ -47,16 +47,36 @@
       .cm-editor .cm-diagnostic-error {
         padding: 0.5rem;
       }
+      .cm6-json-schema-hover--description {
+        margin-bottom: 0.5rem;
+      }
+      .grid-row {
+        display: grid;
+        grid-auto-columns: 50%;
+        grid-template-areas: "a a";
+      }
+      @media screen and (max-width: 768px) {
+        .grid-row {
+          grid-auto-columns: 100%;
+          grid-template-areas: "a" "b";
+        }
+      }
     </style>
   </head>
   <body class="replit-ui-theme-root dark">
     <h1><code>codemirror-json-schema</code> demo</h1>
-    <h2><code>package.json</code> demo</h2>
-    <p>Supports simple completion, linting, hover</p>
-    <div id="editor"></div>
-    <h2><code>package.json5</code> demo</h2>
-    <p>Supports linting, hover</p>
-    <div id="editor-json5"></div>
+    <div class="grid-row">
+      <div>
+        <h2><code>package.json</code> demo</h2>
+        <p>Supports simple completion, linting, hover</p>
+        <div id="editor"></div>
+      </div>
+      <div>
+        <h2><code>package.json5</code> demo</h2>
+        <p>Supports linting, hover</p>
+        <div id="editor-json5"></div>
+      </div>
+    </div>
     <script type="module" src="./index.ts"></script>
   </body>
 </html>

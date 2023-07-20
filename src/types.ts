@@ -13,6 +13,8 @@ export type JSONPointerData = {
   valueTo: number;
 };
 
+export type Side = -1 | 1 | 0 | undefined;
+
 export type JSONPointersMap = Map<
   string,
   JSONPointerData | JSONPartialPointerData
