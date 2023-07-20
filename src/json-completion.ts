@@ -4,7 +4,6 @@ import {
   CompletionResult,
 } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
-import { Text } from "@codemirror/state";
 import { SyntaxNode } from "@lezer/common";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { debug } from "./utils/debug";
@@ -676,82 +675,6 @@ export class JSONCompletion {
 
   isJsonError(d: JSONSchema7 | JsonError): d is JsonError {
     return d.type === "error";
-  }
-
-  private getSchemasOld(schema: JSONSchema7, ctx: CompletionContext) {
-    let node: SyntaxNode = syntaxTree(ctx.state).resolveInner(ctx.pos, -1);
-    if (!node) {
-      return [];
-    }
-    const nodes = [node];
-    while (node.parent) {
-      nodes.push(node.parent);
-      node = node.parent;
-    }
-    debug.log(
-      "xxxn",
-      "nodes",
-      nodes.map((n) => n.name),
-      nodes
-    );
-    const reverseNodes = [...nodes].reverse();
-
-    return this.getSchemasForNodes(reverseNodes, schema, ctx);
-  }
-
-  private getSchemasForNodes(
-    // nodes are from the root to the current node
-    nodes: SyntaxNode[],
-    schema: JSONSchema7,
-    ctx: CompletionContext
-  ) {
-    let curSchema: JSONSchema7 | JSONSchema7Definition = schema;
-    nodes.forEach((n, idx) => {
-      switch (n.name) {
-        case TOKENS.JSON_TEXT:
-          curSchema = schema;
-          return;
-        case TOKENS.ARRAY: {
-          if (typeof curSchema === "object") {
-            const nextNodey = nodes[idx + 1];
-            let arrayIndex = 0;
-            if (nextNodey) {
-              // get index of next node in array
-              const foundIdx = findNodeIndexInArrayNode(n, nextNodey);
-
-              if (foundIdx >= 0) {
-                arrayIndex = foundIdx;
-              }
-            }
-            const itemSchema = Array.isArray(curSchema.items)
-              ? curSchema.items[arrayIndex]
-              : curSchema.items;
-
-            if (itemSchema) {
-              curSchema = itemSchema;
-            }
-          }
-          return;
-        }
-        case TOKENS.PROPERTY: {
-          const propertyNameNode = n.getChild(TOKENS.PROPERTY_NAME);
-          if (propertyNameNode) {
-            const propertyName = getWord(ctx.state.doc, propertyNameNode);
-            if (typeof curSchema === "object") {
-              const propertySchema = curSchema.properties?.[propertyName];
-              if (propertySchema) {
-                curSchema = this.expandSchemaProperty(propertySchema, schema);
-              }
-            }
-          }
-          return;
-        }
-      }
-    });
-
-    debug.log("xxxn", "curSchema", curSchema);
-
-    return [curSchema];
   }
 
   private expandSchemaProperty(

@@ -5,68 +5,8 @@ import { JSONPointersMap, Side } from "../types";
 import { TOKENS } from "../constants";
 import { findNodeIndexInArrayNode, getWord, isValueNode } from "./node";
 
-const VAL_NODE_NAME = /^(?:Null|True|False|Object|Array|String|Number)$/;
-
 export type JSONMode = "json4" | "json5";
 
-// borrowed from `codemirror-json5`
-// TODO: determine from spec if {"prop'name": example} is valid in json5
-// JSON5 parse doesn't support parsing individual strings like JSON.parse does
-
-function json5PropNameParser(s: string) {
-  if (s.length < 2) return s;
-  let first = s[0];
-  let last = s[s.length - 1];
-  if ((first === `'` && last === `'`) || (first === `"` && last === `"`)) {
-    s = s.slice(1, -1);
-  }
-  return s;
-}
-
-const propNameParsers: Record<JSONMode, typeof JSON.parse> = {
-  json4: JSON.parse,
-  json5: json5PropNameParser,
-};
-
-export function getJsonPointerAtOld(
-  docText: Text,
-  node: SyntaxNode,
-  mode: JSONMode = "json4"
-): string {
-  const path: string[] = [];
-  // retrieve a simple parser for parsing the property name
-  const parse = propNameParsers[mode];
-  for (let n: SyntaxNode | null = node; n && n.parent; n = n.parent) {
-    switch (n.parent.name) {
-      case "Property": {
-        const name = n.parent.getChild("PropertyName");
-        if (name) {
-          path.unshift(
-            parse(docText.sliceString(name.from, name.to)).replace(
-              /[\/~]/g,
-              (v: string) => (v === "~" ? "~0" : "~1")
-            )
-          );
-        }
-        break;
-      }
-      case "Array": {
-        if (VAL_NODE_NAME.test(n.name)) {
-          let index = 0;
-          for (let s = n.prevSibling; s; s = s.prevSibling) {
-            if (VAL_NODE_NAME.test(s.name)) {
-              index++;
-            }
-          }
-          path.unshift("" + index);
-        }
-        break;
-      }
-    }
-  }
-  path.unshift("");
-  return path.join("/");
-}
 // adapted from https://discuss.codemirror.net/t/json-pointer-at-cursor-seeking-implementation-critique/4793/3
 // this could be useful for other things later!
 export function getJsonPointerAt(
@@ -95,14 +35,6 @@ export function getJsonPointerAt(
         }
         break;
       }
-      // case TOKENS.OBJECT: {
-      //   // Attempt to handle empty object case
-      //   const childPropertyNode = n.getChild(TOKENS.PROPERTY) || n.getChild(TOKENS.PROPERTY_NAME);
-      //   if (!childPropertyNode) {
-      //     path.unshift("");
-      //   }
-      //   break;
-      // }
     }
   }
   path.unshift("");
@@ -126,7 +58,10 @@ export const jsonPointerForPosition = (
   );
 };
 
-// retrieve a Map of all the json pointers in a document
+/**
+ * retrieve a Map of all the json pointers in a document
+ * @group Utilities
+ */
 export const getJsonPointers = (
   state: EditorState,
   mode: JSONMode = "json4"
