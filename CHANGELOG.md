@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.2.2
+
+### Patch Changes
+
+- 4e80f37: hover bugs with complex types #26
+
 ## 0.2.1
 
 ### Patch Changes
