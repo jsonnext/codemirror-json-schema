@@ -1,7 +1,14 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import { JSONPointersMap } from "../types";
+import { TOKENS } from "../constants";
+import {
+  findNodeIndexInArrayNode,
+  getWord,
+  isPropertyNameNode,
+  isPrimitiveValueNode,
+  isValueNode,
+} from "./node";
 
 const VAL_NODE_NAME = /^(?:Null|True|False|Object|Array|String|Number)$/;
 
@@ -26,15 +33,7 @@ const propNameParsers: Record<JSONMode, typeof JSON.parse> = {
   json5: json5PropNameParser,
 };
 
-/**
- * get a JSON4/5 pointer for a given node in the editor
- *
- * adapted from https://discuss.codemirror.net/t/json-pointer-at-cursor-seeking-implementation-critique/4793/3
- * this could be useful for other things later!
- * @group Utilities
- * @internal
- */
-export function getJsonPointerAt(
+export function getJsonPointerAtOld(
   docText: Text,
   node: SyntaxNode,
   mode: JSONMode = "json4"
@@ -73,6 +72,47 @@ export function getJsonPointerAt(
   path.unshift("");
   return path.join("/");
 }
+// adapted from https://discuss.codemirror.net/t/json-pointer-at-cursor-seeking-implementation-critique/4793/3
+// this could be useful for other things later!
+export function getJsonPointerAt(
+  docText: Text,
+  node: SyntaxNode,
+  mode: JSONMode = "json4"
+): string {
+  const path: string[] = [];
+  for (let n: SyntaxNode | null = node; n?.parent; n = n.parent) {
+    switch (n.parent.name) {
+      case TOKENS.PROPERTY: {
+        const name = n.parent.getChild(TOKENS.PROPERTY_NAME);
+        if (name) {
+          path.unshift(
+            getWord(docText, name).replace(/[/~]/g, (v: string) =>
+              v === "~" ? "~0" : "~1"
+            )
+          );
+        }
+        break;
+      }
+      case TOKENS.ARRAY: {
+        if (isValueNode(n)) {
+          const index = findNodeIndexInArrayNode(n.parent, n);
+          path.unshift(`${index}`);
+        }
+        break;
+      }
+      // case TOKENS.OBJECT: {
+      //   // Attempt to handle empty object case
+      //   const childPropertyNode = n.getChild(TOKENS.PROPERTY) || n.getChild(TOKENS.PROPERTY_NAME);
+      //   if (!childPropertyNode) {
+      //     path.unshift("");
+      //   }
+      //   break;
+      // }
+    }
+  }
+  path.unshift("");
+  return path.join("/");
+}
 
 /**
  * retrieve a JSON pointer for a given position in the editor
@@ -81,7 +121,7 @@ export function getJsonPointerAt(
 export const jsonPointerForPosition = (
   state: EditorState,
   pos: number,
-  side: -1 | 1,
+  side: -1 | 1 = -1,
   mode: JSONMode = "json4"
 ) => {
   return getJsonPointerAt(
@@ -91,10 +131,24 @@ export const jsonPointerForPosition = (
   );
 };
 
-/**
- * retrieve a Map of all the json pointers in a document
- * @group Utilities
- */
+export type JSONPartialPointerData = {
+  keyFrom: number;
+  keyTo: number;
+};
+
+export type JSONPointerData = {
+  keyFrom: number;
+  keyTo: number;
+  valueFrom: number;
+  valueTo: number;
+};
+
+export type JSONPointersMap = Map<
+  string,
+  JSONPointerData | JSONPartialPointerData
+>;
+
+// retrieve a Map of all the json pointers in a document
 export const getJsonPointers = (
   state: EditorState,
   mode: JSONMode = "json4"
