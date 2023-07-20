@@ -5,16 +5,29 @@ import type { JSONSchema7 } from "json-schema";
 import { JSONMode, jsonPointerForPosition } from "./utils/jsonPointers";
 import { joinWithOr } from "./utils/formatting";
 import getSchema from "./utils/schema-lib/getSchema";
+import { debug } from "./utils/debug";
 
 export type CursorData = { schema?: JsonSchema; pointer: string };
 
 export type FoundCursorData = Required<CursorData>;
 
+export type HoverTexts = { message: string; typeInfo: string };
+
 export type HoverOptions = {
   mode?: JSONMode;
-  formatHover?: (data: FoundCursorData) => HTMLElement;
-  // todo: handle hover events
-  // onHover?: () => void;
+  /**
+   * Generate the text to display in the hover tooltip
+   */
+  getHoverTexts?: (data: FoundCursorData) => HoverTexts;
+  /**
+   * Generate the hover tooltip HTML
+   */
+  formatHover?: (data: HoverTexts) => HTMLElement;
+  /**
+   * Provide a custom parser for the document
+   * @default JSON.parse
+   */
+  parser?: (text: string) => any;
 };
 
 /**
@@ -47,6 +60,10 @@ export class JSONHover {
   private schema: Draft;
   public constructor(schema: JSONSchema7, private opts?: HoverOptions) {
     this.schema = new Draft04(schema);
+    this.opts = {
+      parser: JSON.parse,
+      ...this.opts,
+    };
   }
   public getDataForCursor(
     view: EditorView,
@@ -60,42 +77,39 @@ export class JSONHover {
       this.opts?.mode
     );
 
+    let data = undefined;
+    // TODO: use the AST tree to return the right hand, data so that we don't have to parse the doc
+    try {
+      data = this.opts!.parser!(view.state.doc.toString());
+    } catch {}
+
     if (!pointer) {
       return null;
     }
-    const subSchema = getSchema(this.schema, pointer);
-    // doesn't work for oneOf - we need to give it a shape to tell it what kind of schema type to return
-    if (subSchema.type === "error") {
-      return { pointer };
+    // if the data is valid, we can infer a type for complex types
+    let subSchema = getSchema(this.schema, pointer, data);
+    if (subSchema.type === "error" && data !== undefined) {
+      // if the data is invalid, we won't get the type - try again without the data
+      subSchema = getSchema(this.schema, pointer, undefined);
+      if (subSchema.type === "error") {
+        return { pointer };
+      }
     }
+
     return { schema: subSchema, pointer };
   }
 
-  private formatMessage(data: FoundCursorData, draft: Draft): HTMLElement {
-    const { schema } = data;
+  private formatMessage(texts: HoverTexts): HTMLElement {
+    const { message, typeInfo } = texts;
     const hoverWrapper = document.createElement("div");
     hoverWrapper.classList.add("cm6-json-schema-hover");
     const codeBlock = document.createElement("code");
+    codeBlock.innerText = typeInfo;
 
-    if (schema.type) {
-      codeBlock.innerText = Array.isArray(schema.type)
-        ? joinWithOr(schema.type)
-        : schema.type;
-    }
-    if (schema.oneOf) {
-      codeBlock.innerText = formatComplexType(schema, "oneOf", draft);
-    }
-    if (schema.anyOf) {
-      codeBlock.innerText = formatComplexType(schema, "anyOf", draft);
-    }
-    if (schema.allOf) {
-      codeBlock.innerText = formatComplexType(schema, "allOf", draft);
-    }
-
-    if (schema.description) {
+    if (message) {
       const descriptionBlock = document.createElement("div");
       const codeWrapper = document.createElement("div");
-      descriptionBlock.innerText = schema.description;
+      descriptionBlock.innerText = message;
       hoverWrapper.appendChild(descriptionBlock);
       codeWrapper.appendChild(codeBlock);
       hoverWrapper.appendChild(codeWrapper);
@@ -105,6 +119,31 @@ export class JSONHover {
     }
 
     return hoverWrapper;
+  }
+
+  public getHoverTexts(data: FoundCursorData, draft: Draft): HoverTexts {
+    let typeInfo = null;
+    let message = null;
+
+    const { schema } = data;
+    if (schema.oneOf) {
+      typeInfo = formatComplexType(schema, "oneOf", draft);
+    }
+    if (schema.anyOf) {
+      typeInfo = formatComplexType(schema, "anyOf", draft);
+    }
+    if (schema.allOf) {
+      typeInfo = formatComplexType(schema, "allOf", draft);
+    }
+    if (schema.type) {
+      typeInfo = Array.isArray(schema.type)
+        ? joinWithOr(schema.type)
+        : schema.type;
+    }
+    if (schema.description) {
+      message = schema.description;
+    }
+    return { message, typeInfo };
   }
 
   // return hover state for the current json schema property
@@ -117,23 +156,27 @@ export class JSONHover {
       end = pos;
     try {
       const cursorData = this.getDataForCursor(view, pos, side);
-      if (!cursorData?.schema) {
-        return null;
-      }
+
+      const getHoverTexts = this.opts?.getHoverTexts ?? this.getHoverTexts;
+      const hoverTexts = getHoverTexts(
+        cursorData as FoundCursorData,
+        this.schema
+      );
       // allow users to override the hover
       const formatter = this.opts?.formatHover ?? this.formatMessage;
+      const formattedDom = formatter(hoverTexts);
       return {
         pos: start,
         end,
-        above: true,
         arrow: true,
         create: (view) => {
           return {
-            dom: formatter(cursorData as FoundCursorData, this.schema),
+            dom: formattedDom,
           };
         },
       };
-    } catch {
+    } catch (err) {
+      debug.log(err);
       return null;
     }
   }

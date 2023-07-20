@@ -116,6 +116,10 @@ export const getJsonPointers = (
           mode === "json4"
             ? type.node?.nextSibling?.node
             : type.node?.nextSibling?.node?.nextSibling?.node;
+        if (!nextNode) {
+          pointers.set(pointer, { keyFrom, keyTo });
+          return true;
+        }
         const { from: valueFrom, to: valueTo } = nextNode as SyntaxNode;
         pointers.set(pointer, { keyFrom, keyTo, valueFrom, valueTo });
         return true;
