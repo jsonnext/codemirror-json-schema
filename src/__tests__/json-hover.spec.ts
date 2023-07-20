@@ -60,24 +60,7 @@ describe("JSONHover#getDataForCursor", () => {
   });
 });
 
-describe("JSONHover#doHover", () => {
-  it("should return Tooltip data", async () => {
-    const hoverResult = await getHoverResult(
-      '{"object": { "foo": true }, "bar": 123}',
-      14,
-      testSchema2
-    );
-    expect(hoverResult).toEqual({
-      arrow: true,
-      end: 14,
-      pos: 14,
-      create: expect.any(Function),
-    });
-    const hoverEl = hoverResult?.create(new EditorView({})).dom;
-    expect(hoverEl).toContainHTML(
-      '<div class="cm6-json-schema-hover"><div>an elegant string</div><div><code>string</code></div></div>'
-    );
-  });
+describe("JSONHover#getHoverTexts", () => {
   it("should provide oneOf texts despite invalid values", async () => {
     const hoverTexts = await getHoverTexts(
       '{"oneOfEg": { "foo": true }, "bar": 123}',
@@ -100,6 +83,30 @@ describe("JSONHover#doHover", () => {
       typeInfo: "oneOf: `string`, `array`, or `boolean`",
     });
   });
+});
+
+describe("JSONHover#doHover", () => {
+  it("should return Tooltip data", async () => {
+    const hoverResult = await getHoverResult(
+      '{"object": { "foo": true }, "bar": 123}',
+      14,
+      testSchema2
+    );
+    expect(hoverResult).toEqual({
+      arrow: true,
+      end: 14,
+      pos: 14,
+      create: expect.any(Function),
+    });
+    const hoverEl = hoverResult?.create(new EditorView({})).dom;
+    expect(hoverEl).toContainHTML(
+      [
+        `<div class="cm6-json-schema-hover"><div class="cm6-json-schema-hover--description">an elegant string</div>`,
+        `<div class="cm6-json-schema-hover--code-wrapper"><code class="cm6-json-schema-hover--code">string</code></div></div>`,
+      ].join("")
+    );
+  });
+
   it("should return just typeInfo if there is no description", async () => {
     const hoverResult = await getHoverResult('{ "foo": true }', 4, testSchema2);
     expect(hoverResult).toEqual({
@@ -108,9 +115,10 @@ describe("JSONHover#doHover", () => {
       pos: 4,
       create: expect.any(Function),
     });
-    const hoverEl = hoverResult?.create(new EditorView({})).dom;
-    expect(hoverEl).toContainHTML(
-      '<div class="cm6-json-schema-hover"><code>string</code></div>'
-    );
+    const hoverEl = hoverResult?.create(new EditorView({})).dom.toString();
+    expect(hoverEl).toContain("cm6-json-schema-hover--code-wrapper");
+    expect(hoverEl).toContain("cm6-json-schema-hover--code");
+    expect(hoverEl).toContain("string</code>");
+    expect(hoverEl).not.toContain("cm6-json-schema-hover--description");
   });
 });

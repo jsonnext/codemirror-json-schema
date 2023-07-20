@@ -6,6 +6,8 @@ import { JSONMode, jsonPointerForPosition } from "./utils/jsonPointers";
 import { joinWithOr } from "./utils/formatting";
 import getSchema from "./utils/schema-lib/getSchema";
 import { debug } from "./utils/debug";
+import { Side } from "./types";
+import { el } from "./utils/dom";
 
 export type CursorData = { schema?: JsonSchema; pointer: string };
 
@@ -36,11 +38,7 @@ export type HoverOptions = {
  */
 export function jsonSchemaHover(schema: JSONSchema7, options?: HoverOptions) {
   const hover = new JSONHover(schema, options);
-  return async function jsonDoHover(
-    view: EditorView,
-    pos: number,
-    side: -1 | 1
-  ) {
+  return async function jsonDoHover(view: EditorView, pos: number, side: Side) {
     return hover.doHover(view, pos, side);
   };
 }
@@ -56,6 +54,7 @@ function formatComplexType(
     })
   )}`;
 }
+
 export class JSONHover {
   private schema: Draft;
   public constructor(schema: JSONSchema7, private opts?: HoverOptions) {
@@ -68,7 +67,7 @@ export class JSONHover {
   public getDataForCursor(
     view: EditorView,
     pos: number,
-    side: -1 | 1
+    side: Side
   ): CursorData | null {
     const pointer = jsonPointerForPosition(
       view.state,
@@ -101,24 +100,22 @@ export class JSONHover {
 
   private formatMessage(texts: HoverTexts): HTMLElement {
     const { message, typeInfo } = texts;
-    const hoverWrapper = document.createElement("div");
-    hoverWrapper.classList.add("cm6-json-schema-hover");
-    const codeBlock = document.createElement("code");
-    codeBlock.innerText = typeInfo;
-
     if (message) {
-      const descriptionBlock = document.createElement("div");
-      const codeWrapper = document.createElement("div");
-      descriptionBlock.innerText = message;
-      hoverWrapper.appendChild(descriptionBlock);
-      codeWrapper.appendChild(codeBlock);
-      hoverWrapper.appendChild(codeWrapper);
-      return hoverWrapper;
-    } else {
-      hoverWrapper.appendChild(codeBlock);
+      return el("div", { class: "cm6-json-schema-hover" }, [
+        el("div", {
+          class: "cm6-json-schema-hover--description",
+          text: message,
+        }),
+        el("div", { class: "cm6-json-schema-hover--code-wrapper" }, [
+          el("code", { class: "cm6-json-schema-hover--code", text: typeInfo }),
+        ]),
+      ]);
     }
-
-    return hoverWrapper;
+    return el("div", { class: "cm6-json-schema-hover" }, [
+      el("div", { class: "cm6-json-schema-hover--code-wrapper" }, [
+        el("code", { class: "cm6-json-schema-hover--code", text: typeInfo }),
+      ]),
+    ]);
   }
 
   public getHoverTexts(data: FoundCursorData, draft: Draft): HoverTexts {
@@ -150,9 +147,9 @@ export class JSONHover {
   public async doHover(
     view: EditorView,
     pos: number,
-    side: 1 | -1
+    side: Side
   ): Promise<Tooltip | null> {
-    let start = pos,
+    const start = pos,
       end = pos;
     try {
       const cursorData = this.getDataForCursor(view, pos, side);

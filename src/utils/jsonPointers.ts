@@ -1,7 +1,7 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import { JSONPointersMap } from "../types";
+import { JSONPointersMap, Side } from "../types";
 
 const VAL_NODE_NAME = /^(?:Null|True|False|Object|Array|String|Number)$/;
 
@@ -81,7 +81,7 @@ export function getJsonPointerAt(
 export const jsonPointerForPosition = (
   state: EditorState,
   pos: number,
-  side: -1 | 1,
+  side: Side,
   mode: JSONMode = "json4"
 ) => {
   return getJsonPointerAt(
