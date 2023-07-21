@@ -16,7 +16,6 @@ export function json5SchemaHover(
 ) {
   const hover = new JSONHover(schema, {
     ...options,
-    mode: "json5",
     parser: json5.parse,
   });
   return async function jsonDoHover(view: EditorView, pos: number, side: Side) {

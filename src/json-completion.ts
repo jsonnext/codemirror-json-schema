@@ -4,32 +4,21 @@ import {
   CompletionResult,
 } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
-import { Text } from "@codemirror/state";
 import { SyntaxNode } from "@lezer/common";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { debug } from "./utils/debug";
-
-export const TOKENS = {
-  STRING: "String",
-  NUMBER: "Number",
-  TRUE: "True",
-  FALSE: "False",
-  NULL: "Null",
-  OBJECT: "Object",
-  ARRAY: "Array",
-  PROPERTY: "Property",
-  PROPERTY_NAME: "PropertyName",
-  JSON_TEXT: "JsonText",
-  INVALID: "⚠",
-};
-export const VALUE_TYPES = [
-  TOKENS.STRING,
-  TOKENS.NUMBER,
-  TOKENS.TRUE,
-  TOKENS.FALSE,
-  TOKENS.NULL,
-];
-const COMPLEX_TYPES = [TOKENS.OBJECT, TOKENS.ARRAY];
+import {
+  findNodeIndexInArrayNode,
+  getChildValueNode,
+  getWord,
+  isPropertyNameNode,
+  isPrimitiveValueNode,
+  stripSurrondingQuotes,
+} from "./utils/node";
+import { Draft07, JsonError } from "json-schema-library";
+import { jsonPointerForPosition } from "./utils/jsonPointers";
+import { TOKENS } from "./constants";
+import getSchema from "./utils/schema-lib/getSchema";
 
 class CompletionCollector {
   completions = new Map<string, Completion>();
@@ -67,17 +56,19 @@ export class JSONCompletion {
     // position node word prefix (without quotes) for matching
     const prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^("|')/, "");
 
+    debug.log("xxx", "node", node, "prefix", prefix, "ctx", ctx);
+
     // Only show completions if we are filling out a word or right after the starting quote, or if explicitly requested
     if (
-      !(this.isValueNode(node) || this.isPropertyNameNode(node)) &&
+      !(isPrimitiveValueNode(node) || isPropertyNameNode(node)) &&
       !ctx.explicit
     ) {
       return result;
     }
 
-    const currentWord = this.getWord(ctx.state.doc, node);
+    const currentWord = getWord(ctx.state.doc, node);
     // Calculate overwrite range
-    if (node && (this.isValueNode(node) || this.isPropertyNameNode(node))) {
+    if (node && (isPrimitiveValueNode(node) || isPropertyNameNode(node))) {
       result.from = node.from;
       result.to = node.to;
     } else {
@@ -113,11 +104,16 @@ export class JSONCompletion {
 
     let addValue = true;
 
-    if (this.isPropertyNameNode(node)) {
+    if (isPropertyNameNode(node)) {
       const parent = node.parent;
       if (parent) {
         // get value node from parent
-        addValue = !this.getChildValueNode(parent);
+        const valueNode = getChildValueNode(parent);
+        addValue =
+          !valueNode ||
+          (valueNode.name === TOKENS.INVALID &&
+            valueNode.from - valueNode.to === 0);
+        debug.log("xxx", "addValue", addValue, getChildValueNode(parent), node);
         // find object node
         node =
           [parent, parent.parent].find((p) => {
@@ -149,11 +145,11 @@ export class JSONCompletion {
     const types: { [type: string]: boolean } = {};
 
     // value proposals with schema
-    this.getValueCompletions(this.schema, ctx, node, types, collector);
+    this.getValueCompletions(this.schema, ctx, types, collector);
 
     // handle filtering
     result.options = Array.from(collector.completions.values()).filter((v) =>
-      this.stripSurrondingQuotes(v.label).startsWith(prefix)
+      stripSurrondingQuotes(v.label).startsWith(prefix)
     );
     debug.log(
       "xxx",
@@ -179,22 +175,26 @@ export class JSONCompletion {
     // don't suggest properties that are already present
     const properties = node.getChildren(TOKENS.PROPERTY);
     properties.forEach((p) => {
-      const key = this.getWord(ctx.state.doc, p.getChild(TOKENS.PROPERTY_NAME));
-      collector.reserve(this.stripSurrondingQuotes(key));
+      const key = getWord(ctx.state.doc, p.getChild(TOKENS.PROPERTY_NAME));
+      collector.reserve(stripSurrondingQuotes(key));
     });
 
     // TODO: Handle separatorAfter
 
     // Get matching schemas
-    const schemas = this.getSchemas(schema, ctx);
+    const schemas = this.getSchemas(schema, ctx, true);
 
     schemas.forEach((s) => {
+      if (typeof s !== "object") {
+        return;
+      }
+
       const properties = s.properties;
       if (properties) {
         Object.entries(properties).forEach(([key, value]) => {
           if (typeof value === "object") {
-            const description = value.description || "";
-            const type = value.type || "";
+            const description = value.description ?? "";
+            const type = value.type ?? "";
             const typeStr = Array.isArray(type) ? type.toString() : type;
             const completion: Completion = {
               // label is the unquoted key which will be displayed.
@@ -377,14 +377,17 @@ export class JSONCompletion {
   private getValueCompletions(
     schema: JSONSchema7,
     ctx: CompletionContext,
-    node: SyntaxNode | null,
     types: { [type: string]: boolean },
     collector: CompletionCollector
   ) {
+    let node: SyntaxNode | null = syntaxTree(ctx.state).resolveInner(
+      ctx.pos,
+      -1
+    );
     let valueNode: SyntaxNode | null = null;
     let parentKey: string | undefined = undefined;
 
-    if (node && this.isValueNode(node)) {
+    if (node && isPrimitiveValueNode(node)) {
       valueNode = node;
       node = node.parent;
     }
@@ -397,17 +400,19 @@ export class JSONCompletion {
     if (node.name === TOKENS.PROPERTY) {
       const keyNode = node.getChild(TOKENS.PROPERTY_NAME);
       if (keyNode) {
-        parentKey = this.getWord(ctx.state.doc, keyNode);
+        parentKey = getWord(ctx.state.doc, keyNode);
         node = node.parent;
       }
     }
 
+    debug.log("xxx", "node", node, "parentKey", parentKey);
     if (node && (parentKey !== undefined || node.name === TOKENS.ARRAY)) {
       // Get matching schemas
       const schemas = this.getSchemas(schema, ctx);
       for (const s of schemas) {
-        // TODO: Adding this temporarily while figuring out the parentKey !== undefined case
-        this.addSchemaValueCompletions(s, types, collector);
+        if (typeof s !== "object") {
+          return;
+        }
 
         if (node.name === TOKENS.ARRAY && s.items) {
           let c = collector;
@@ -428,7 +433,7 @@ export class JSONCompletion {
             let arrayIndex = 0;
             if (valueNode) {
               // get index of next node in array
-              const foundIdx = this.findNodeIndexInArrayNode(node, valueNode);
+              const foundIdx = findNodeIndexInArrayNode(node, valueNode);
 
               if (foundIdx >= 0) {
                 arrayIndex = foundIdx;
@@ -443,7 +448,6 @@ export class JSONCompletion {
           }
         }
 
-        // TODO: Look into this -- doesn't work as expected. Need to somehow hold the parent schema and use that to get the property schema (required to also check additionalProperties)
         if (parentKey !== undefined) {
           let propertyMatched = false;
           if (s.properties) {
@@ -614,96 +618,63 @@ export class JSONCompletion {
     }
   }
 
-  private getArrayNodeChildren(node: SyntaxNode) {
-    return this.getChildrenNodes(node).filter(
-      (n) => VALUE_TYPES.includes(n.name) || COMPLEX_TYPES.includes(n.name)
-    );
-  }
-  private findNodeIndexInArrayNode(
-    arrayNode: SyntaxNode,
-    valueNode: SyntaxNode
-  ) {
-    return this.getArrayNodeChildren(arrayNode).findIndex(
-      (nd) => nd.from === valueNode.from && nd.to === valueNode.to
-    );
-  }
+  private getSchemas(
+    schema: JSONSchema7,
+    ctx: CompletionContext,
+    forValue = false
+  ): JSONSchema7Definition[] {
+    const originalPointer = jsonPointerForPosition(ctx.state, ctx.pos);
+    // since we are providing completion for property names, we need to get the parent schema. so strip the last part of the pointer
+    const pointer = forValue
+      ? originalPointer
+      : originalPointer.replace(/\/[^/]*$/, "/");
 
-  private getSchemas(schema: JSONSchema7, ctx: CompletionContext) {
-    let node: SyntaxNode = syntaxTree(ctx.state).resolveInner(ctx.pos, -1);
-    if (!node) {
+    debug.log(
+      "xxx",
+      "pointer..",
+      JSON.stringify(pointer),
+      "originalPointer",
+      JSON.stringify(originalPointer)
+    );
+
+    // For some reason, it returns undefined schema for the root pointer
+    if (!pointer || pointer === "/") {
+      return [schema];
+    }
+
+    const draft = new Draft07(this.schema);
+    // const subSchema = new Draft07(this.schema).getSchema(pointer);
+    const subSchema = getSchema(draft, pointer);
+    debug.log("xxx", "subSchema..", subSchema);
+
+    if (this.isJsonError(subSchema)) {
       return [];
     }
-    const nodes = [node];
-    while (node.parent) {
-      nodes.push(node.parent);
-      node = node.parent;
-    }
-    debug.log(
-      "xxxn",
-      "nodes",
-      nodes.map((n) => n.name),
-      nodes
-    );
-    const reverseNodes = [...nodes].reverse();
 
-    return this.getSchemasForNodes(reverseNodes, schema, ctx);
+    if (Array.isArray(subSchema.allOf)) {
+      return [
+        subSchema,
+        ...subSchema.allOf.map((s) => this.expandSchemaProperty(s, schema)),
+      ];
+    }
+    if (Array.isArray(subSchema.oneOf)) {
+      return [
+        subSchema,
+        ...subSchema.oneOf.map((s) => this.expandSchemaProperty(s, schema)),
+      ];
+    }
+    if (Array.isArray(subSchema.anyOf)) {
+      return [
+        subSchema,
+        ...subSchema.anyOf.map((s) => this.expandSchemaProperty(s, schema)),
+      ];
+    }
+
+    return [subSchema as JSONSchema7];
   }
 
-  private getSchemasForNodes(
-    // nodes are from the root to the current node
-    nodes: SyntaxNode[],
-    schema: JSONSchema7,
-    ctx: CompletionContext
-  ) {
-    let curSchema: JSONSchema7 | JSONSchema7Definition = schema;
-    nodes.forEach((n, idx) => {
-      switch (n.name) {
-        case TOKENS.JSON_TEXT:
-          curSchema = schema;
-          return;
-        case TOKENS.ARRAY: {
-          if (typeof curSchema === "object") {
-            const nextNodey = nodes[idx + 1];
-            let arrayIndex = 0;
-            if (nextNodey) {
-              // get index of next node in array
-              const foundIdx = this.getArrayNodeChildren(n).findIndex(
-                (nd) => nd.from === nextNodey.from && nd.to === nextNodey.to
-              );
-
-              if (foundIdx >= 0) {
-                arrayIndex = foundIdx;
-              }
-            }
-            const itemSchema = Array.isArray(curSchema.items)
-              ? curSchema.items[arrayIndex]
-              : curSchema.items;
-
-            if (itemSchema) {
-              curSchema = itemSchema;
-            }
-          }
-          return;
-        }
-        case TOKENS.PROPERTY: {
-          const propertyNameNode = n.getChild(TOKENS.PROPERTY_NAME);
-          if (propertyNameNode) {
-            const propertyName = this.getWord(ctx.state.doc, propertyNameNode);
-            if (typeof curSchema === "object") {
-              const propertySchema = curSchema.properties?.[propertyName];
-              if (propertySchema) {
-                curSchema = this.expandSchemaProperty(propertySchema, schema);
-              }
-            }
-          }
-          return;
-        }
-      }
-    });
-
-    debug.log("xxxn", "curSchema", curSchema);
-
-    return [curSchema];
+  isJsonError(d: JSONSchema7 | JsonError): d is JsonError {
+    return d.type === "error";
   }
 
   private expandSchemaProperty(
@@ -744,44 +715,6 @@ export class JSONCompletion {
     return curReference;
   }
 
-  private getWord(doc: Text, node: SyntaxNode | null, stripQuotes = true) {
-    const word = node ? doc.sliceString(node.from, node.to) : "";
-    return stripQuotes ? this.stripSurrondingQuotes(word) : word;
-  }
-
-  private getChildrenNodes(node: SyntaxNode) {
-    const children = [];
-    let child = node.firstChild;
-    while (child) {
-      if (child) {
-        children.push(child);
-      }
-      child = child?.nextSibling;
-    }
-
-    return children;
-  }
-
-  private getChildValueNode(node: SyntaxNode) {
-    return this.getChildrenNodes(node).find((n) => this.isValueNode(n));
-  }
-
-  private isValueNode(node: SyntaxNode) {
-    return (
-      VALUE_TYPES.includes(node.name) ||
-      (node.name === TOKENS.INVALID &&
-        node.prevSibling?.name === TOKENS.PROPERTY_NAME)
-    );
-  }
-
-  private isPropertyNameNode(node: SyntaxNode) {
-    return (
-      node.name === TOKENS.PROPERTY_NAME ||
-      (node.name === TOKENS.INVALID &&
-        node.prevSibling?.name === TOKENS.PROPERTY)
-    );
-  }
-
   private getLabelForValue(value: any): string {
     return JSON.stringify(value);
   }
@@ -807,10 +740,6 @@ export class JSONCompletion {
         return undefined;
       }
     }
-  }
-
-  private stripSurrondingQuotes(str: string) {
-    return str.replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
   }
 }
 /**
