@@ -83,12 +83,14 @@
   },
   "scripts": {
     "dev": "vite ./dev --port 3000",
-    "build": "tsc && vite build ./dev --outDir ../public --emptyOutDir && pnpm typedoc",
+    "build": "pnpm tsc && vite build ./dev --outDir ../public --emptyOutDir && pnpm typedoc",
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage",
+    "tsc": "tsc && pnpm replace:env",
     "version-packages": "changeset version && pnpm prettier:write CHANGELOG.md && git add package.json pnpm-lock.yaml CHANGELOG.md",
     "release": "pnpm build && changeset publish",
     "typedoc": "typedoc --out docs src/index.ts src/json5.ts && pnpm prettier:write docs/**/*",
-    "prettier:write": "prettier --ignore-path .gitignore --write"
+    "prettier:write": "prettier --ignore-path .gitignore --write",
+    "replace:env": "sh scripts/replace-env.sh"
   }
 }
