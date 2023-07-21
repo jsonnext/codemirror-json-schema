@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.3.0
+
+### Minor Changes
+
+- d4cfe11: improve autocompletion with support for allOf, anyOf, oneOf
+
 ## 0.2.3
 
 ### Patch Changes
