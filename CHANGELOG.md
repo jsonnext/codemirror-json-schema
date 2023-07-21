@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.2.3
+
+### Patch Changes
+
+- 69ab7be: Fix bug on p/npm/yarn install with postinstall
+
 ## 0.2.2
 
 ### Patch Changes
