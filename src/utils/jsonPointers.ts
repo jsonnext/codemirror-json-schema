@@ -9,11 +9,7 @@ export type JSONMode = "json4" | "json5";
 
 // adapted from https://discuss.codemirror.net/t/json-pointer-at-cursor-seeking-implementation-critique/4793/3
 // this could be useful for other things later!
-export function getJsonPointerAt(
-  docText: Text,
-  node: SyntaxNode,
-  mode: JSONMode = "json4"
-): string {
+export function getJsonPointerAt(docText: Text, node: SyntaxNode): string {
   const path: string[] = [];
   for (let n: SyntaxNode | null = node; n?.parent; n = n.parent) {
     switch (n.parent.name) {
@@ -48,14 +44,9 @@ export function getJsonPointerAt(
 export const jsonPointerForPosition = (
   state: EditorState,
   pos: number,
-  side: Side = -1,
-  mode: JSONMode = "json4"
+  side: Side = -1
 ) => {
-  return getJsonPointerAt(
-    state.doc,
-    syntaxTree(state).resolve(pos, side),
-    mode
-  );
+  return getJsonPointerAt(state.doc, syntaxTree(state).resolve(pos, side));
 };
 
 /**
@@ -71,7 +62,7 @@ export const getJsonPointers = (
   json.iterate({
     enter: (type: SyntaxNodeRef) => {
       if (type.name === "PropertyName") {
-        const pointer = getJsonPointerAt(state.doc, type.node, mode);
+        const pointer = getJsonPointerAt(state.doc, type.node);
 
         const { from: keyFrom, to: keyTo } = type.node;
         // if there's no value, we can't get the valueFrom/to

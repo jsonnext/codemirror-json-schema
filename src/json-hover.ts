@@ -16,7 +16,6 @@ export type FoundCursorData = Required<CursorData>;
 export type HoverTexts = { message: string; typeInfo: string };
 
 export type HoverOptions = {
-  mode?: JSONMode;
   /**
    * Generate the text to display in the hover tooltip
    */
@@ -69,12 +68,7 @@ export class JSONHover {
     pos: number,
     side: Side
   ): CursorData | null {
-    const pointer = jsonPointerForPosition(
-      view.state,
-      pos,
-      side,
-      this.opts?.mode
-    );
+    const pointer = jsonPointerForPosition(view.state, pos, side);
 
     let data = undefined;
     // TODO: use the AST tree to return the right hand, data so that we don't have to parse the doc
