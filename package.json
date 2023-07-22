@@ -84,7 +84,7 @@
   },
   "scripts": {
     "dev": "vite ./dev --port 3000",
-    "build": "pnpm tsc && vite build ./dev --outDir ../public --emptyOutDir && pnpm typedoc",
+    "build": "pnpm tsc && vite build ./dev --outDir ../public --emptyOutDir",
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage",
     "tsc": "tsc && pnpm replace:env",
