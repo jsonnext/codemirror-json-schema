@@ -46,6 +46,32 @@ npm install --save @codemirror/lang-json codemirror-json-schema @codemirror/lang
 
 #### Minimal Usage
 
+This sets up `@codemirror/lang-json` and our extension for you.
+If you'd like to have more control over the related configurations, see custom usage below
+
+```ts
+import { EditorState } from "@codemirror/state";
+import { jsonSchema } from "codemirror-json-schema";
+
+const schema = {
+  type: "object",
+  properties: {
+    example: {
+      type: "boolean",
+    },
+  },
+};
+
+const json5State = EditorState.create({
+  doc: "{ example: true }",
+  extensions: [jsonSchema(schema)],
+});
+```
+
+#### Custom Usage
+
+This approach allows you to configure the json mode and parse linter, as well as our linter, hovers, etc more specifically.
+
 ```ts
 import { EditorState } from "@codemirror/state";
 import { linter } from "@codemirror/lint";
@@ -65,7 +91,10 @@ const state = EditorState.create({
   doc: `{ "example": true }`,
   extensions: [
     json(),
-    linter(jsonParseLinter()),
+    linter(jsonParseLinter(), {
+      // default is 750ms
+      delay: 300
+    }),
     linter(jsonSchemaLinter(schema)),
     jsonLanguage.data.of({
       autocomplete: jsonCompletion(schema),
@@ -91,6 +120,35 @@ npm install --save codemirror-json5 codemirror-json-schema @codemirror/language 
 
 #### Minimal Usage
 
+This sets up `codemirror-json5` mode for you.
+If you'd like to have more control over the related configurations, see custom usage below
+
+```ts
+import { EditorState } from "@codemirror/state";
+import { json5Schema } from "codemirror-json-schema/json5";
+
+const schema = {
+  type: "object",
+  properties: {
+    example: {
+      type: "boolean",
+    },
+  },
+};
+
+const json5State = EditorState.create({
+  doc: `{
+    example: true,
+    // json5 is awesome!
+  }`,
+  extensions: [json5Schema(schema)],
+});
+```
+
+#### Custom Usage
+
+This approach allows you to configure the json5 mode and parse linter, as well as our linter, hovers, etc more specifically.
+
 ```ts
 import { EditorState } from "@codemirror/state";
 import { linter } from "@codemirror/lint";
@@ -111,10 +169,16 @@ const schema = {
 };
 
 const json5State = EditorState.create({
-  doc: `{ example: true }`,
+  doc: `{
+    example: true,
+    // json5 is awesome!
+  }`,
   extensions: [
     json5(),
-    linter(json5ParseLinter()),
+    linter(json5ParseLinter(), {
+      // the default linting delay is 750ms
+      delay: 300,
+    }),
     linter(json5SchemaLinter(schema)),
     hoverTooltip(json5SchemaHover(schema)),
     json5Language.data.of({

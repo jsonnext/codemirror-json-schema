@@ -1,6 +1,11 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "groupOrder": ["Codemirror Extensions", "Utilities", "*"],
+  "groupOrder": [
+    "Bundled Codemirror Extensions",
+    "Codemirror Extensions",
+    "Utilities",
+    "*"
+  ],
   "plugin": ["typedoc-plugin-markdown"],
   "readme": "none"
 }

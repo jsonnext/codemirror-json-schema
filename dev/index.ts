@@ -1,14 +1,9 @@
 import { EditorState } from "@codemirror/state";
-import {
-  gutter,
-  EditorView,
-  lineNumbers,
-  hoverTooltip,
-} from "@codemirror/view";
+import { gutter, EditorView, lineNumbers } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { history } from "@codemirror/commands";
 import { autocompletion, closeBrackets } from "@codemirror/autocomplete";
-import { linter, lintGutter } from "@codemirror/lint";
+import { lintGutter } from "@codemirror/lint";
 import { bracketMatching, syntaxHighlighting } from "@codemirror/language";
 import { oneDarkHighlightStyle, oneDark } from "@codemirror/theme-one-dark";
 import { JSONSchema7 } from "json-schema";
@@ -18,15 +13,17 @@ import { jsonText, json5Text } from "./sample-text";
 import packageJsonSchema from "./package.schema.json";
 
 // json4
-import { json, jsonLanguage, jsonParseLinter } from "@codemirror/lang-json";
-import { jsonSchemaLinter, jsonSchemaHover, jsonCompletion } from "../src";
+import { jsonSchema } from "../src";
 
 // json5
-import { json5, json5Language, json5ParseLinter } from "codemirror-json5";
-import { json5SchemaLinter, json5SchemaHover } from "../src/json5";
+import { json5Schema } from "../src/json5";
 
 const schema = packageJsonSchema as JSONSchema7;
 
+/**
+ * none of these are required for json4 or 5
+ * but they will improve the DX
+ */
 const commonExtensions = [
   gutter({ class: "CodeMirror-lint-markers" }),
   bracketMatching(),
@@ -42,18 +39,13 @@ const commonExtensions = [
   syntaxHighlighting(oneDarkHighlightStyle),
 ];
 
+/**
+ * json4!
+ */
+
 const state = EditorState.create({
   doc: jsonText,
-  extensions: [
-    ...commonExtensions,
-    json(),
-    linter(jsonParseLinter()),
-    linter(jsonSchemaLinter(schema)),
-    jsonLanguage.data.of({
-      autocomplete: jsonCompletion(schema),
-    }),
-    hoverTooltip(jsonSchemaHover(schema)),
-  ],
+  extensions: [commonExtensions, jsonSchema(schema)],
 });
 
 new EditorView({
@@ -61,18 +53,12 @@ new EditorView({
   parent: document.querySelector("#editor")!,
 });
 
+/**
+ * json5!
+ */
 const json5State = EditorState.create({
   doc: json5Text,
-  extensions: [
-    ...commonExtensions,
-    json5(),
-    linter(json5ParseLinter()),
-    linter(json5SchemaLinter(schema)),
-    json5Language.data.of({
-      autocomplete: jsonCompletion(schema),
-    }),
-    hoverTooltip(json5SchemaHover(schema)),
-  ],
+  extensions: [commonExtensions, json5Schema(schema)],
 });
 
 new EditorView({
