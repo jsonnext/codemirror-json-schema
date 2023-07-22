@@ -1,21 +1,28 @@
-Codemirror extensions that add on `@codemirror/lang-json`'s and `codemirror-json5`'s grammars to add JSONSchema support!
+Codemirror 6 extensions that provide full [JSON Schema](https://json-schema.org/) support for `@codemirror/lang-json` & `codemirror-json5` language modes
+
+<a href="https://npmjs.com/codemirror-json-schema">
+<img alt="npm" src="https://img.shields.io/npm/dm/codemirror-json-schema?label=npm%20downloads">
+</a>
 
 ![screenshot of the examples with json4 and json5 support enabled](./dev/public/example.png)
 
 ## Features
 
-It's at a very early stage, but usable.
+This is now a full-featured library for both json4 (aka json) and json5, but the APIs may still have breakages.
+
+So far mostly tested with standard json4 schema specs. See
 
 ### json4
 
-- ✅ `lint`s: validates json against schema
-- ✅ `hint`s: provides code completion (no complex types yet)
-- ✅ `info`s: provides hover tooltip
+- ✅ validates json
+- ✅ autocompletion
+- ✅ hover tooltips from schema
 
 ### json5
 
-- ✅ `lint`s: validates json against schema
-- ✅ `info`s: provides hover tooltip
+- ✅ validates json5
+- ✅ autocompletion
+- ✅ hover tooltips
 
 ## Usage
 
@@ -87,7 +94,8 @@ npm install --save codemirror-json5 codemirror-json-schema @codemirror/language 
 ```ts
 import { EditorState } from "@codemirror/state";
 import { linter } from "@codemirror/lint";
-import { json5, json5ParseLinter } from "codemirror-json5";
+import { json5, json5ParseLinter, json5Language } from "codemirror-json5";
+import { jsonCompletion } from "codemirror-json-schema";
 import {
   json5SchemaLinter,
   json5SchemaHover,
@@ -109,11 +117,14 @@ const json5State = EditorState.create({
     linter(json5ParseLinter()),
     linter(json5SchemaLinter(schema)),
     hoverTooltip(json5SchemaHover(schema)),
+    json5Language.data.of({
+      autocomplete: jsonCompletion(schema),
+    }),
   ],
 });
 ```
 
-### Demo
+### Complete demo
 
 You can start with the [deployed example](https://github.com/acao/cm6-json-schema/blob/main/dev/index.ts) to see a more comprehensive setup.
 
@@ -123,20 +134,22 @@ For more information, see the [API Docs](./docs/)
 
 ## Current Constraints:
 
-- only linting & hover is available for `oneOf`, `anyOf`, `allOf` and other [schema combination methods](https://json-schema.org/understanding-json-schema/reference/combining.html)
 - it only works with one json schema instance at a time, and doesn't yet fetch remote schemas. schema service coming soon!
 - currently only tested with standard schemas using json4 spec. results may vary
-- doesn't provide insert text on completion yet
-- currently you can override the rendering of a hover. we plan to add the same for validation errors and autocomplete
+- doesn't place cursor inside known insert text yet
+- currently you can only override the texts and rendering of a hover. we plan to add the same for validation errors and autocomplete
+- json5 properties on autocompletion selection will insert surrounding double quotes, but we plan to make it insert without delimiters
 
 ## Inspiration
 
-`monaco-json` and `monaco-yaml` both provide these features, and I want the nascent codemirror 6 to have them as well!
+`monaco-json` and `monaco-yaml` both provide json schema features for json, cson and yaml, and we want the nascent codemirror 6 to have them as well!
 
-also, json5 is slowly growing in usage, and it needs full language support!
+Also, json5 is slowly growing in usage, and it needs full language support for the browser!
 
 ## Our Goals
 
 - working GeoJSON spec linter & completion
 - working variables json mode for `cm6-graphql`, ala `monaco-graphql`
+- json5 support for `graphiql` as a plugin!
+- perhaps use @lezer to make a json5 language service for monaco-editor + json5?
 - json5 + json4 json schema features for all!

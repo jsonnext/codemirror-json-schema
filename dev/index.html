@@ -54,11 +54,13 @@
         display: grid;
         grid-auto-columns: 50%;
         grid-template-areas: "a a";
+        gap: 1rem;
       }
       @media screen and (max-width: 768px) {
         .grid-row {
           grid-auto-columns: 100%;
           grid-template-areas: "a" "b";
+          gap: 0;
         }
       }
     </style>
@@ -68,12 +70,10 @@
     <div class="grid-row">
       <div>
         <h2><code>package.json</code> demo</h2>
-        <p>Supports simple completion, linting, hover</p>
         <div id="editor"></div>
       </div>
       <div>
         <h2><code>package.json5</code> demo</h2>
-        <p>Supports linting, hover</p>
         <div id="editor-json5"></div>
       </div>
     </div>
