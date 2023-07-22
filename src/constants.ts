@@ -8,6 +8,7 @@ export const TOKENS = {
   ARRAY: "Array",
   PROPERTY: "Property",
   PROPERTY_NAME: "PropertyName",
+  PROPERTY_COLON: "PropertyColon", // used in json5 grammar
   JSON_TEXT: "JsonText",
   INVALID: "⚠",
 };

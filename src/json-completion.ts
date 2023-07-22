@@ -14,6 +14,7 @@ import {
   isPropertyNameNode,
   isPrimitiveValueNode,
   stripSurrondingQuotes,
+  getNodeAtPosition,
 } from "./utils/node";
 import { Draft07, JsonError } from "json-schema-library";
 import { jsonPointerForPosition } from "./utils/jsonPointers";
@@ -48,10 +49,7 @@ export class JSONCompletion {
     };
 
     const text = ctx.state.doc.sliceString(0);
-    let node: SyntaxNode | null = syntaxTree(ctx.state).resolveInner(
-      ctx.pos,
-      -1
-    );
+    let node: SyntaxNode | null = getNodeAtPosition(ctx.state, ctx.pos);
 
     // position node word prefix (without quotes) for matching
     const prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^("|')/, "");
@@ -130,7 +128,8 @@ export class JSONCompletion {
     // proposals for properties
     if (
       node &&
-      (node.name === TOKENS.OBJECT || node.name === TOKENS.JSON_TEXT)
+      (node.name === TOKENS.OBJECT || node.name === TOKENS.JSON_TEXT) &&
+      isPropertyNameNode(getNodeAtPosition(ctx.state, ctx.pos))
     ) {
       // don't suggest keys when the cursor is just before the opening curly brace
       if (node.from === ctx.pos) {
@@ -139,13 +138,13 @@ export class JSONCompletion {
 
       // property proposals with schema
       this.getPropertyCompletions(this.schema, ctx, node, collector, addValue);
+    } else {
+      // proposals for values
+      const types: { [type: string]: boolean } = {};
+
+      // value proposals with schema
+      this.getValueCompletions(this.schema, ctx, types, collector);
     }
-
-    // proposals for values
-    const types: { [type: string]: boolean } = {};
-
-    // value proposals with schema
-    this.getValueCompletions(this.schema, ctx, types, collector);
 
     // handle filtering
     result.options = Array.from(collector.completions.values()).filter((v) =>
@@ -174,6 +173,7 @@ export class JSONCompletion {
   ) {
     // don't suggest properties that are already present
     const properties = node.getChildren(TOKENS.PROPERTY);
+    debug.log("xxx", "getPropertyCompletions", node, ctx, properties);
     properties.forEach((p) => {
       const key = getWord(ctx.state.doc, p.getChild(TOKENS.PROPERTY_NAME));
       collector.reserve(stripSurrondingQuotes(key));
@@ -182,7 +182,7 @@ export class JSONCompletion {
     // TODO: Handle separatorAfter
 
     // Get matching schemas
-    const schemas = this.getSchemas(schema, ctx, true);
+    const schemas = this.getSchemas(schema, ctx);
 
     schemas.forEach((s) => {
       if (typeof s !== "object") {
@@ -386,6 +386,8 @@ export class JSONCompletion {
     );
     let valueNode: SyntaxNode | null = null;
     let parentKey: string | undefined = undefined;
+
+    debug.log("xxx", "getValueCompletions", node, ctx);
 
     if (node && isPrimitiveValueNode(node)) {
       valueNode = node;
@@ -620,14 +622,10 @@ export class JSONCompletion {
 
   private getSchemas(
     schema: JSONSchema7,
-    ctx: CompletionContext,
-    forValue = false
+    ctx: CompletionContext
   ): JSONSchema7Definition[] {
     const originalPointer = jsonPointerForPosition(ctx.state, ctx.pos);
-    // since we are providing completion for property names, we need to get the parent schema. so strip the last part of the pointer
-    const pointer = forValue
-      ? originalPointer
-      : originalPointer.replace(/\/[^/]*$/, "/");
+    const pointer = originalPointer.replace(/\/[^/]*$/, "/");
 
     debug.log(
       "xxx",
