@@ -11,9 +11,6 @@ pre-commit:
       glob: "*.{js,ts,jsx,tsx,json,css,html,yml,mdx,md}"
       run: pnpm prettier:write {staged_files}
       stage_fixed: true
-    typedoc:
-      run: pnpm typedoc && git add docs
-      glob: "*.{js,ts,jsx,tsx}"
     test:
       run: pnpm vitest related --run --dom {staged_files}
       glob: "*.{js,ts,jsx,tsx}"
