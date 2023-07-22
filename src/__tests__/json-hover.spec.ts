@@ -96,6 +96,7 @@ describe("JSONHover#doHover", () => {
       arrow: true,
       end: 14,
       pos: 14,
+      above: true,
       create: expect.any(Function),
     });
     const hoverEl = hoverResult?.create(new EditorView({})).dom;
@@ -113,6 +114,7 @@ describe("JSONHover#doHover", () => {
       arrow: true,
       end: 4,
       pos: 4,
+      above: true,
       create: expect.any(Function),
     });
     const hoverEl = hoverResult?.create(new EditorView({})).dom.toString();
