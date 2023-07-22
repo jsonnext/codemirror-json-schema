@@ -12,7 +12,7 @@ pre-commit:
       run: pnpm prettier:write {staged_files}
       stage_fixed: true
     test:
-      run: pnpm vitest related --run --dom {staged_files}
+      run: pnpm vitest --run --dom related {staged_files}
       glob: "*.{js,ts,jsx,tsx}"
       fail_text: Tests failed or not found on {staged_files}
     check:
