@@ -12,7 +12,7 @@ const getPointer = (jsonString: string, pos: number) => {
 
 const getJSON5Pointer = (jsonString: string, pos: number) => {
   const state = EditorState.create({ doc: jsonString, extensions: [json5()] });
-  return jsonPointerForPosition(state, pos, 1, "json5");
+  return jsonPointerForPosition(state, pos, 1);
 };
 
 describe("jsonPointerForPosition", () => {

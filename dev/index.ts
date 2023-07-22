@@ -22,7 +22,7 @@ import { json, jsonLanguage, jsonParseLinter } from "@codemirror/lang-json";
 import { jsonSchemaLinter, jsonSchemaHover, jsonCompletion } from "../src";
 
 // json5
-import { json5, json5ParseLinter } from "codemirror-json5";
+import { json5, json5Language, json5ParseLinter } from "codemirror-json5";
 import { json5SchemaLinter, json5SchemaHover } from "../src/json5";
 
 const schema = packageJsonSchema as JSONSchema7;
@@ -68,6 +68,9 @@ const json5State = EditorState.create({
     json5(),
     linter(json5ParseLinter()),
     linter(json5SchemaLinter(schema)),
+    json5Language.data.of({
+      autocomplete: jsonCompletion(schema),
+    }),
     hoverTooltip(json5SchemaHover(schema)),
   ],
 });

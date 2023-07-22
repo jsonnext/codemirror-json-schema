@@ -1,6 +1,16 @@
 import { SyntaxNode } from "@lezer/common";
 import { COMPLEX_TYPES, TOKENS, PRIMITIVE_TYPES } from "../constants";
-import { Text } from "@codemirror/state";
+import { EditorState, Text } from "@codemirror/state";
+import { syntaxTree } from "@codemirror/language";
+import { Side } from "../types";
+
+export const getNodeAtPosition = (
+  state: EditorState,
+  pos: number,
+  side: Side = -1
+) => {
+  return syntaxTree(state).resolveInner(pos, side);
+};
 
 export const stripSurrondingQuotes = (str: string) => {
   return str.replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
@@ -15,19 +25,22 @@ export const getWord = (
   return stripQuotes ? stripSurrondingQuotes(word) : word;
 };
 
-export const isPrimitiveValueNode = (node: SyntaxNode) => {
+export const isInvalidValueNode = (node: SyntaxNode) => {
   return (
-    PRIMITIVE_TYPES.includes(node.name) ||
-    (node.name === TOKENS.INVALID &&
-      node.prevSibling?.name === TOKENS.PROPERTY_NAME)
+    node.name === TOKENS.INVALID &&
+    (node.prevSibling?.name === TOKENS.PROPERTY_NAME ||
+      node.prevSibling?.name === TOKENS.PROPERTY_COLON)
   );
+};
+
+export const isPrimitiveValueNode = (node: SyntaxNode) => {
+  return PRIMITIVE_TYPES.includes(node.name) || isInvalidValueNode(node);
 };
 
 export const isValueNode = (node: SyntaxNode) => {
   return (
     [...PRIMITIVE_TYPES, ...COMPLEX_TYPES].includes(node.name) ||
-    (node.name === TOKENS.INVALID &&
-      node.prevSibling?.name === TOKENS.PROPERTY_NAME)
+    isInvalidValueNode(node)
   );
 };
 
@@ -35,8 +48,8 @@ export const isPropertyNameNode = (node: SyntaxNode) => {
   return (
     node.name === TOKENS.PROPERTY_NAME ||
     (node.name === TOKENS.INVALID &&
-      node.prevSibling?.name === TOKENS.PROPERTY) ||
-    "{"
+      (node.prevSibling?.name === TOKENS.PROPERTY ||
+        node.prevSibling?.name === "{"))
   );
 };
 
