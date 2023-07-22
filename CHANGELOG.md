@@ -1,5 +1,15 @@
 # codemirror-json-schema
 
+## 0.3.1
+
+### Patch Changes
+
+- [#37](https://github.com/acao/codemirror-json-schema/pull/37) [`1220706`](https://github.com/acao/codemirror-json-schema/commit/12207063b8243caae814ec87b0c2dbb0ba7cddf6) Thanks [@acao](https://github.com/acao)! - - fix hover on undefined schema props
+
+  - configure `above: true` for the hover tooltip, to have vscode-like behavior, and prevent z-index clash with completion on smaller viewports
+
+- [#36](https://github.com/acao/codemirror-json-schema/pull/36) [`23e5721`](https://github.com/acao/codemirror-json-schema/commit/23e572147a3b8d718d52761ee431186a8b297b9d) Thanks [@imolorhe](https://github.com/imolorhe)! - fixed autocompletion in object roots, etc, for json4 and json5
+
 ## 0.3.0
 
 ### Minor Changes
