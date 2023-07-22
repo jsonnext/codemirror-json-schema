@@ -147,6 +147,8 @@ export class JSONHover {
       end = pos;
     try {
       const cursorData = this.getDataForCursor(view, pos, side);
+      // if we don't have a (sub)schema, we can't show anything
+      if (!cursorData?.schema) return null;
 
       const getHoverTexts = this.opts?.getHoverTexts ?? this.getHoverTexts;
       const hoverTexts = getHoverTexts(
@@ -160,6 +162,9 @@ export class JSONHover {
         pos: start,
         end,
         arrow: true,
+        // to mimic similar modes for other editors
+        // otherwise, it gets into a z-index battle with completion/etc
+        above: true,
         create: (view) => {
           return {
             dom: formattedDom,
