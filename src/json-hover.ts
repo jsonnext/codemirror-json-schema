@@ -147,6 +147,7 @@ export class JSONHover {
       end = pos;
     try {
       const cursorData = this.getDataForCursor(view, pos, side);
+      if (!cursorData?.schema) return null;
 
       const getHoverTexts = this.opts?.getHoverTexts ?? this.getHoverTexts;
       const hoverTexts = getHoverTexts(
@@ -160,9 +161,11 @@ export class JSONHover {
         pos: start,
         end,
         arrow: true,
+        above: true,
         create: (view) => {
           return {
             dom: formattedDom,
+            hoverTime: 100,
           };
         },
       };

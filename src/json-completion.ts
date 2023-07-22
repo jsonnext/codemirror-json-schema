@@ -125,7 +125,7 @@ export class JSONCompletion {
       }
     }
 
-    debug.log("xxx", node, currentWord, ctx);
+    debug.log("xxx1", node, currentWord, ctx);
 
     // proposals for properties
     if (
@@ -146,11 +146,19 @@ export class JSONCompletion {
 
     // value proposals with schema
     this.getValueCompletions(this.schema, ctx, types, collector);
+    // if the prefix is empty, return all results
+    // should this be a configurable option? this is a popular
+    // request in graphql
+    // this works with empty '' or "" in json4/json5
+    result.options = Array.from(collector.completions.values());
+    // if prefix isn't empty, filter the results
+    debug.log("currentWord", currentWord, "prefix", prefix, result.options);
+    if (currentWord !== "") {
+      result.options = result.options.filter((v) => {
+        return stripSurrondingQuotes(v.label).startsWith(prefix);
+      });
+    }
 
-    // handle filtering
-    result.options = Array.from(collector.completions.values()).filter((v) =>
-      stripSurrondingQuotes(v.label).startsWith(prefix)
-    );
     debug.log(
       "xxx",
       "result",
@@ -644,8 +652,25 @@ export class JSONCompletion {
 
     const draft = new Draft07(this.schema);
     // const subSchema = new Draft07(this.schema).getSchema(pointer);
-    const subSchema = getSchema(draft, pointer);
+    let subSchema = getSchema(draft, pointer);
     debug.log("xxx", "subSchema..", subSchema);
+    // if the pointer wasn't valid to the schema
+    if (subSchema.type === "undefined") {
+      const parentPointer = pointer.replace(/\/[^/]*$/, "/");
+      // and the parent pointer is the root pointer, return like above
+      if (!parentPointer || parentPointer === "/") {
+        return [schema];
+      }
+      // otherwise, return the subscehma for the parent pointer
+      subSchema = getSchema(draft, parentPointer);
+      debug.log(
+        "xxx",
+        "parentSubSchema..",
+        subSchema,
+        "pointer",
+        parentPointer
+      );
+    }
 
     if (this.isJsonError(subSchema)) {
       return [];

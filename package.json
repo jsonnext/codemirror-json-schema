@@ -64,11 +64,11 @@
     "@lezer/common": "^1.0.3"
   },
   "devDependencies": {
-    "@evilmartians/lefthook": "^1.4.6",
     "@changesets/cli": "^2.26.2",
     "@codemirror/autocomplete": "^6.8.1",
     "@codemirror/commands": "^6.2.4",
     "@codemirror/theme-one-dark": "^6.1.2",
+    "@evilmartians/lefthook": "^1.4.6",
     "@vitest/coverage-v8": "^0.33.0",
     "codemirror": "^6.0.1",
     "codemirror-json5": "^1.0.3",

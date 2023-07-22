@@ -1,8 +1,10 @@
 export { jsonCompletion } from "./json-completion";
+
 export {
   jsonSchemaLinter,
   type JSONValidationOptions,
 } from "./json-validation";
+
 export {
   jsonSchemaHover,
   type HoverOptions,

@@ -22,10 +22,14 @@ import { json, jsonLanguage, jsonParseLinter } from "@codemirror/lang-json";
 import { jsonSchemaLinter, jsonSchemaHover, jsonCompletion } from "../src";
 
 // json5
-import { json5, json5ParseLinter } from "codemirror-json5";
+import { json5, json5ParseLinter, json5Language } from "codemirror-json5";
 import { json5SchemaLinter, json5SchemaHover } from "../src/json5";
 
 const schema = packageJsonSchema as JSONSchema7;
+
+const customLinterOptions = {
+  delay: 200,
+};
 
 const commonExtensions = [
   gutter({ class: "CodeMirror-lint-markers" }),
@@ -45,10 +49,10 @@ const commonExtensions = [
 const state = EditorState.create({
   doc: jsonText,
   extensions: [
-    ...commonExtensions,
+    commonExtensions,
     json(),
-    linter(jsonParseLinter()),
-    linter(jsonSchemaLinter(schema)),
+    linter(jsonParseLinter(), customLinterOptions),
+    linter(jsonSchemaLinter(schema), customLinterOptions),
     jsonLanguage.data.of({
       autocomplete: jsonCompletion(schema),
     }),
@@ -64,10 +68,14 @@ new EditorView({
 const json5State = EditorState.create({
   doc: json5Text,
   extensions: [
-    ...commonExtensions,
+    commonExtensions,
     json5(),
-    linter(json5ParseLinter()),
-    linter(json5SchemaLinter(schema)),
+
+    linter(json5ParseLinter(), customLinterOptions),
+    linter(json5SchemaLinter(schema), customLinterOptions),
+    json5Language.data.of({
+      autocomplete: jsonCompletion(schema),
+    }),
     hoverTooltip(json5SchemaHover(schema)),
   ],
 });
