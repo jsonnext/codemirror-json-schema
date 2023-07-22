@@ -1,7 +1,7 @@
 {
   "name": "codemirror-json-schema",
   "license": "MIT",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Codemirror 6 extensions that provide full JSONSchema support for `@codemirror/lang-json` and `codemirror-json5`",
   "contributors": [
     {

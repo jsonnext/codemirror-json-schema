@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.3.2
+
+### Patch Changes
+
+- [#42](https://github.com/acao/codemirror-json-schema/pull/42) [`a08101a`](https://github.com/acao/codemirror-json-schema/commit/a08101a9fbae0979bc0cf11307102ce8bddd2572) Thanks [@acao](https://github.com/acao)! - simpler export patterns
+
 ## 0.3.1
 
 ### Patch Changes
