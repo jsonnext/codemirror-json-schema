@@ -2,6 +2,7 @@ import {
   Completion,
   CompletionContext,
   CompletionResult,
+  snippetCompletion,
 } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { SyntaxNode } from "@lezer/common";
@@ -72,10 +73,6 @@ export class JSONCompletion {
     } else {
       const word = ctx.matchBefore(/[A-Za-z0-9._]*/);
       const overwriteStart = ctx.pos - currentWord.length;
-      // if (overwriteStart > 0 && text[overwriteStart - 1] === '"') {
-      //   overwriteStart--;
-      //   debug.log('xxx', 'overwriteStart--', overwriteStart);
-      // }
       debug.log(
         "xxx",
         "overwriteStart after",
@@ -163,6 +160,14 @@ export class JSONCompletion {
     );
     return result;
   }
+  private applySnippetCompletion(completion: Completion) {
+    return snippetCompletion(
+      typeof completion.apply !== "string"
+        ? completion.label
+        : completion.apply,
+      completion
+    );
+  }
 
   private getPropertyCompletions(
     schema: JSONSchema7,
@@ -204,7 +209,7 @@ export class JSONCompletion {
               detail: typeStr,
               info: description,
             };
-            collector.add(completion);
+            collector.add(this.applySnippetCompletion(completion));
           }
         });
       }
@@ -219,7 +224,7 @@ export class JSONCompletion {
                 apply: this.getInsertTextForProperty(label, addValue),
                 type: "property",
               };
-              collector.add(completion);
+              collector.add(this.applySnippetCompletion(completion));
             }
           });
         }
@@ -231,7 +236,7 @@ export class JSONCompletion {
             apply: this.getInsertTextForProperty(label, addValue),
             type: "property",
           };
-          collector.add(completion);
+          collector.add(this.applySnippetCompletion(completion));
         }
       }
     });
@@ -245,7 +250,7 @@ export class JSONCompletion {
   // just use the unquoted key as the label, which is nicer
   // and gives us more control.
   // If no property value is present, then we add the colon as well.
-  // TODO: Use snippetCompletion to handle insert value + position cursor e.g. "key": "#{}"
+  // Use snippetCompletion to handle insert value + position cursor e.g. "key": "#{}"
   // doc: https://codemirror.net/docs/ref/#autocomplete.snippetCompletion
   // idea: https://discuss.codemirror.net/t/autocomplete-cursor-position-in-apply-function/4088/3
   private getInsertTextForProperty(
@@ -329,13 +334,10 @@ export class JSONCompletion {
       }
     }
     if (!value || nValueProposals > 1) {
-      value = "$1";
+      value = "#{}";
     }
 
-    // TODO: Use this instead to handle insert value + position cursor e.g. "key": "#{}" when using snippetCompletion
-    // return resultText + value;
-
-    return resultText;
+    return resultText + value;
   }
 
   private getInsertTextForGuessedValue(
