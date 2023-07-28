@@ -38,7 +38,7 @@ Full featured cm6 extension for json5, including `codemirror-json5`
 
 #### Defined in
 
-[json5-bundled.ts:14](https://github.com/acao/codemirror-json-schema/blob/a08101a/src/json5-bundled.ts#L14)
+[json5-bundled.ts:14](https://github.com/acao/codemirror-json-schema/blob/b227106/src/json5-bundled.ts#L14)
 
 ## Codemirror Extensions
 
@@ -75,7 +75,7 @@ Instantiates a JSONHover instance with the JSON5 mode
 
 #### Defined in
 
-[json5-hover.ts:13](https://github.com/acao/codemirror-json-schema/blob/a08101a/src/json5-hover.ts#L13)
+[json5-hover.ts:13](https://github.com/acao/codemirror-json-schema/blob/b227106/src/json5-hover.ts#L13)
 
 ---
 
@@ -110,7 +110,7 @@ Instantiates a JSONValidation instance with the JSON5 mode
 
 #### Defined in
 
-[json5-validation.ts:10](https://github.com/acao/codemirror-json-schema/blob/a08101a/src/json5-validation.ts#L10)
+[json5-validation.ts:10](https://github.com/acao/codemirror-json-schema/blob/b227106/src/json5-validation.ts#L10)
 
 ## Utilities
 
@@ -137,7 +137,7 @@ Mimics the behavior of `json-source-map`'s `parseJSONDocument` function, for jso
 
 #### Defined in
 
-[utils/parseJSON5Document.ts:28](https://github.com/acao/codemirror-json-schema/blob/a08101a/src/utils/parseJSON5Document.ts#L28)
+[utils/parseJSON5Document.ts:28](https://github.com/acao/codemirror-json-schema/blob/b227106/src/utils/parseJSON5Document.ts#L28)
 
 ---
 
@@ -164,4 +164,4 @@ Return parsed data and json5 pointers for a given codemirror EditorState
 
 #### Defined in
 
-[utils/parseJSON5Document.ts:14](https://github.com/acao/codemirror-json-schema/blob/a08101a/src/utils/parseJSON5Document.ts#L14)
+[utils/parseJSON5Document.ts:14](https://github.com/acao/codemirror-json-schema/blob/b227106/src/utils/parseJSON5Document.ts#L14)

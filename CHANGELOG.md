@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.4.0
+
+### Minor Changes
+
+- [`b227106`](https://github.com/acao/codemirror-json-schema/commit/b2271065dc9d2273094d0d193ceef2ad4248d62d) Thanks [@imolorhe](https://github.com/imolorhe)! - Applied `snippetCompletion` to property completions
+
 ## 0.3.2
 
 ### Patch Changes
