@@ -17,7 +17,7 @@ export function json5Schema(schema: JSONSchema7) {
     linter(json5ParseLinter()),
     linter(json5SchemaLinter(schema)),
     json5Language.data.of({
-      autocomplete: jsonCompletion(schema),
+      autocomplete: jsonCompletion(schema, { mode: "json5" }),
     }),
     hoverTooltip(json5SchemaHover(schema)),
   ];
