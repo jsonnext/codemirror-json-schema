@@ -153,10 +153,10 @@ This approach allows you to configure the json5 mode and parse linter, as well a
 import { EditorState } from "@codemirror/state";
 import { linter } from "@codemirror/lint";
 import { json5, json5ParseLinter, json5Language } from "codemirror-json5";
-import { jsonCompletion } from "codemirror-json-schema";
 import {
   json5SchemaLinter,
   json5SchemaHover,
+  json5Completion,
 } from "codemirror-json-schema/json5";
 
 const schema = {
@@ -182,7 +182,7 @@ const json5State = EditorState.create({
     linter(json5SchemaLinter(schema)),
     hoverTooltip(json5SchemaHover(schema)),
     json5Language.data.of({
-      autocomplete: jsonCompletion(schema),
+      autocomplete: json5Completion(schema),
     }),
   ],
 });

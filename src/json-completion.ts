@@ -806,3 +806,17 @@ export function jsonCompletion(
     return completion.doComplete(ctx);
   };
 }
+
+/**
+ * provides a JSON schema enabled autocomplete extension for codemirror and json5
+ * @group Codemirror Extensions
+ */
+export function json5Completion(
+  schema: JSONSchema7,
+  opts: Omit<JSONCompletionOptions, "mode"> = {}
+) {
+  const completion = new JSONCompletion(schema, { ...opts, mode: "json5" });
+  return function jsonDoCompletion(ctx: CompletionContext) {
+    return completion.doComplete(ctx);
+  };
+}
