@@ -1,48 +1,35 @@
-import { it, describe, expect } from "vitest";
-import { JSONCompletion } from "../json-completion";
-import { CompletionResult, autocompletion } from "@codemirror/autocomplete";
-import { testSchema } from "./__fixtures__/schemas";
-import { EditorView } from "@codemirror/view";
-import { json, jsonLanguage } from "@codemirror/lang-json";
-import { EditorState } from "@codemirror/state";
+import { describe, it } from "vitest";
 
-describe("json-completion", () => {
+import { expectCompletion } from "./__helpers__/completion";
+
+describe("jsonCompletion", () => {
   it("should return completion data for simple types", async () => {
-    expect(true).toEqual(true);
+    await expectCompletion('{ "f| }', [
+      {
+        label: "foo",
+        type: "property",
+        detail: "string",
+        info: "",
+        template: '"foo": "#{}"',
+      },
+    ]);
+  });
+  it("should return completion data for simple types", async () => {
+    await expectCompletion('{ "one| }', [
+      {
+        label: "oneOfEg",
+        type: "property",
+        detail: "",
+        info: "an example oneOf",
+        template: '"oneOfEg": ',
+      },
+      {
+        label: "oneOfEg2",
+        type: "property",
+        detail: "",
+        info: "",
+        template: '"oneOfEg2": ',
+      },
+    ]);
   });
 });
-
-// const getCompletionResult = (
-//   jsonString: string,
-//   pos: number
-// ): Promise<CompletionResult | undefined> => {
-//   return new Promise((resolve, reject) => {
-//     console.log("hello1");
-//     const completionInstance = new JSONCompletion(testSchema);
-//     const state = EditorState.create({
-//       doc: jsonString,
-//       selection: { anchor: pos, head: pos },
-//       extensions: [
-//         json(),
-//         jsonLanguage.data.of({
-//           autocomplete: () => {
-//             const result =
-//               completionInstance.doComplete.bind(completionInstance);
-//               console.log(result)
-//             resolve(result);
-//             return result;
-//           },
-//         }),
-//       ],
-//     });
-//   });
-// };
-
-// describe("json-completion", () => {
-//   console.log("hello");
-//   it("should return completion data for simple types", async () => {
-//     const completionResult = await getCompletionResult('{ "f }', 5);
-//     console.log(completionResult);
-//     expect(completionResult).toEqual(true);
-//   });
-// });
