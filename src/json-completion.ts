@@ -258,6 +258,11 @@ export class JSONCompletion {
     addValue: boolean,
     propertySchema?: JSONSchema7Definition
   ) {
+    // expand schema property if it is a reference
+    propertySchema = propertySchema
+      ? this.expandSchemaProperty(propertySchema, this.schema)
+      : propertySchema;
+
     let resultText = `"${key}"`;
     if (!addValue) {
       return resultText;
@@ -334,6 +339,14 @@ export class JSONCompletion {
       }
     }
     if (!value || nValueProposals > 1) {
+      debug.log(
+        "xxx",
+        "value",
+        value,
+        "nValueProposals",
+        nValueProposals,
+        propertySchema
+      );
       value = "#{}";
     }
 
