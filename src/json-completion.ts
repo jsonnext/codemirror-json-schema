@@ -405,7 +405,7 @@ export class JSONCompletion {
         let snippetValue = JSON.stringify(value);
         snippetValue = snippetValue.substr(1, snippetValue.length - 2); // remove quotes
         snippetValue = this.getInsertTextForPlainText(snippetValue); // escape \ and }
-        return '"${' + snippetValue + '}"';
+        return '"${' + snippetValue + '}"' + separatorAfter;
       }
       case "number":
       case "boolean":
