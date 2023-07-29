@@ -315,64 +315,68 @@ export class JSONCompletion {
           value = this.getInsertTextForGuessedValue(propertySchema.default, "");
         }
         nValueProposals++;
-      }
-      if (propertySchema.enum) {
-        if (!value && propertySchema.enum.length === 1) {
-          value = this.getInsertTextForGuessedValue(propertySchema.enum[0], "");
-        }
-        nValueProposals += propertySchema.enum.length;
-      }
-      if (typeof propertySchema.const !== "undefined") {
-        if (!value) {
-          value = this.getInsertTextForGuessedValue(propertySchema.const, "");
-        }
-        nValueProposals++;
-      }
-      if (
-        Array.isArray(propertySchema.examples) &&
-        propertySchema.examples.length
-      ) {
-        if (!value) {
-          value = this.getInsertTextForGuessedValue(
-            propertySchema.examples[0],
-            ""
-          );
-        }
-        nValueProposals += propertySchema.examples.length;
-      }
-      if (value === undefined && nValueProposals === 0) {
-        let type = Array.isArray(propertySchema.type)
-          ? propertySchema.type[0]
-          : propertySchema.type;
-        if (!type) {
-          if (propertySchema.properties) {
-            type = "object";
-          } else if (propertySchema.items) {
-            type = "array";
+      } else {
+        if (propertySchema.enum) {
+          if (!value && propertySchema.enum.length === 1) {
+            value = this.getInsertTextForGuessedValue(
+              propertySchema.enum[0],
+              ""
+            );
           }
+          nValueProposals += propertySchema.enum.length;
         }
-        switch (type) {
-          case "boolean":
-            value = "#{}";
-            break;
-          case "string":
-            value = isJSON5 ? "'#{}'" : '"#{}"';
-            break;
-          case "object":
-            value = "{#{}}";
-            break;
-          case "array":
-            value = "[#{}]";
-            break;
-          case "number":
-          case "integer":
-            value = "#{0}";
-            break;
-          case "null":
-            value = "#{null}";
-            break;
-          default:
-            return resultText;
+        if (typeof propertySchema.const !== "undefined") {
+          if (!value) {
+            value = this.getInsertTextForGuessedValue(propertySchema.const, "");
+          }
+          nValueProposals++;
+        }
+        if (
+          Array.isArray(propertySchema.examples) &&
+          propertySchema.examples.length
+        ) {
+          if (!value) {
+            value = this.getInsertTextForGuessedValue(
+              propertySchema.examples[0],
+              ""
+            );
+          }
+          nValueProposals += propertySchema.examples.length;
+        }
+        if (value === undefined && nValueProposals === 0) {
+          let type = Array.isArray(propertySchema.type)
+            ? propertySchema.type[0]
+            : propertySchema.type;
+          if (!type) {
+            if (propertySchema.properties) {
+              type = "object";
+            } else if (propertySchema.items) {
+              type = "array";
+            }
+          }
+          switch (type) {
+            case "boolean":
+              value = "#{}";
+              break;
+            case "string":
+              value = isJSON5 ? "'#{}'" : '"#{}"';
+              break;
+            case "object":
+              value = "{#{}}";
+              break;
+            case "array":
+              value = "[#{}]";
+              break;
+            case "number":
+            case "integer":
+              value = "#{0}";
+              break;
+            case "null":
+              value = "#{null}";
+              break;
+            default:
+              return resultText;
+          }
         }
       }
     }
