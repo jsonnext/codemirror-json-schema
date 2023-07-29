@@ -85,8 +85,8 @@
   "scripts": {
     "dev": "vite ./dev --port 3000",
     "build": "pnpm tsc && vite build ./dev --outDir ../public --emptyOutDir",
-    "test": "vitest --dom",
-    "test:coverage": "vitest run --dom --coverage",
+    "test": "NODE_ENV=production vitest --dom",
+    "test:coverage": "NODE_ENV=production vitest run --dom --coverage",
     "tsc": "tsc && pnpm replace:env",
     "version-packages": "changeset version && pnpm typedoc && pnpm prettier:write CHANGELOG.md && git add package.json pnpm-lock.yaml CHANGELOG.md",
     "release": "pnpm build && changeset publish",
