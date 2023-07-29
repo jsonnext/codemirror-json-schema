@@ -14,7 +14,7 @@ import {
   getWord,
   isPropertyNameNode,
   isPrimitiveValueNode,
-  stripSurrondingQuotes,
+  stripSurroundingQuotes,
   getNodeAtPosition,
 } from "./utils/node";
 import { Draft07, JsonError } from "json-schema-library";
@@ -169,10 +169,8 @@ export class JSONCompletion {
     }
 
     // handle filtering
-    result.options = Array.from(collector.completions.values()).filter(
-      (v) =>
-        stripSurrondingQuotes(v.label).startsWith(prefix) ||
-        stripSurrondingQuotes(v.label) === prefix
+    result.options = Array.from(collector.completions.values()).filter((v) =>
+      stripSurroundingQuotes(v.label).startsWith(prefix)
     );
     debug.log(
       "xxx",
@@ -209,7 +207,7 @@ export class JSONCompletion {
     debug.log("xxx", "getPropertyCompletions", node, ctx, properties);
     properties.forEach((p) => {
       const key = getWord(ctx.state.doc, p.getChild(TOKENS.PROPERTY_NAME));
-      collector.reserve(stripSurrondingQuotes(key));
+      collector.reserve(stripSurroundingQuotes(key));
     });
 
     // TODO: Handle separatorAfter
