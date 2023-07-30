@@ -308,7 +308,6 @@ export class JSONCompletion {
     let nValueProposals = 0;
     if (typeof propertySchema === "object") {
       if (typeof propertySchema.default !== "undefined") {
-        console.log("default", propertySchema.default, value);
         if (!value) {
           value = this.getInsertTextForGuessedValue(propertySchema.default, "");
         }
