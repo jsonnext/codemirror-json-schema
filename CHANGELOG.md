@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.4.1
+
+### Patch Changes
+
+- [#49](https://github.com/acao/codemirror-json-schema/pull/49) [`8d7fa57`](https://github.com/acao/codemirror-json-schema/commit/8d7fa578d74e31d3ec0d6bde6dd55fdbd570c586) Thanks [@imolorhe](https://github.com/imolorhe)! - expand property schema when inserting text
+
 ## 0.4.0
 
 ### Minor Changes
