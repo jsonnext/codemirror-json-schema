@@ -1,5 +1,7 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "coverage-gutters.coverageBaseDir": "**",
+  "coverage-gutters.coverageFileNames": ["clover.xml"]
 }

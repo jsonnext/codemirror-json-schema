@@ -12,7 +12,7 @@ export const getNodeAtPosition = (
   return syntaxTree(state).resolveInner(pos, side);
 };
 
-export const stripSurrondingQuotes = (str: string) => {
+export const stripSurroundingQuotes = (str: string) => {
   return str.replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
 };
 
@@ -22,7 +22,7 @@ export const getWord = (
   stripQuotes = true
 ) => {
   const word = node ? doc.sliceString(node.from, node.to) : "";
-  return stripQuotes ? stripSurrondingQuotes(word) : word;
+  return stripQuotes ? stripSurroundingQuotes(word) : word;
 };
 
 export const isInvalidValueNode = (node: SyntaxNode) => {

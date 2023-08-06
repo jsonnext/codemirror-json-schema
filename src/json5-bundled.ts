@@ -1,7 +1,7 @@
 import { JSONSchema7 } from "json-schema";
 import { json5, json5Language, json5ParseLinter } from "codemirror-json5";
 import { hoverTooltip } from "@codemirror/view";
-import { jsonCompletion } from "./json-completion";
+import { json5Completion } from "./json-completion";
 import { json5SchemaLinter } from "./json5-validation";
 import { json5SchemaHover } from "./json5-hover";
 
@@ -17,7 +17,7 @@ export function json5Schema(schema: JSONSchema7) {
     linter(json5ParseLinter()),
     linter(json5SchemaLinter(schema)),
     json5Language.data.of({
-      autocomplete: jsonCompletion(schema),
+      autocomplete: json5Completion(schema),
     }),
     hoverTooltip(json5SchemaHover(schema)),
   ];
