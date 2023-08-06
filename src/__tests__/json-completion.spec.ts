@@ -32,4 +32,16 @@ describe("jsonCompletion", () => {
       },
     ]);
   });
+  // TODO: fix this failing case
+  it("should include insert text for nested object properties", async () => {
+    await expectCompletion(`{ "object": { '| } }`, [
+      {
+        detail: "string",
+        info: "an elegant string",
+        label: "foo",
+        template: '"foo": "#{}"',
+        type: "property",
+      },
+    ]);
+  });
 });
