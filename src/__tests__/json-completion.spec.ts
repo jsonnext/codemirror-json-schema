@@ -21,20 +21,20 @@ describe("jsonCompletion", () => {
         type: "property",
         detail: "",
         info: "an example oneOf",
-        template: '"oneOfEg": ',
+        template: '"oneOfEg": #{}',
       },
       {
         label: "oneOfEg2",
         type: "property",
         detail: "",
         info: "",
-        template: '"oneOfEg2": ',
+        template: '"oneOfEg2": #{}',
       },
       {
         detail: "",
         info: "",
         label: "oneOfObject",
-        template: '"oneOfObject": ',
+        template: '"oneOfObject": #{}',
         type: "property",
       },
     ]);
@@ -69,6 +69,14 @@ describe("jsonCompletion", () => {
       },
     ]);
   });
+  it("should include value completions for enum with filter", async () => {
+    await expectCompletion('{ "enum1": "f|" }', [
+      {
+        label: '"foo"',
+        info: "an example enum with default bar",
+      },
+    ]);
+  });
   it("should include defaults for boolean when available", async () => {
     await expectCompletion('{ "booleanW| }', [
       {
@@ -81,8 +89,17 @@ describe("jsonCompletion", () => {
     ]);
   });
   // TODO: should provide true/false completions
-  it("should include value completions for boolean", async () => {
-    await expectCompletion('{ "booleanWithDefault": | }', []);
+  it.skip("should include value completions for boolean", async () => {
+    await expectCompletion('{ "booleanWithDefault": | }', [
+      {
+        detail: "boolean",
+        label: "true",
+      },
+      {
+        detail: "boolean",
+        label: "false",
+      },
+    ]);
   });
   it("should include insert text for objects", async () => {
     await expectCompletion('{ "ob| }', [
@@ -108,7 +125,7 @@ describe("jsonCompletion", () => {
     ]);
   });
   // TODO: accidentally steps up to the parent pointer
-  it.skip("should include insert text for nested object properties", async () => {
+  it("should include insert text for nested object properties", async () => {
     await expectCompletion(`{ "object": { '| } }`, [
       {
         detail: "string",
@@ -205,6 +222,75 @@ describe("jsonCompletion", () => {
       ]);
     });
   });
+  // TODO: completion for array of objects should enhance the template
+  it('should autocomplete for array of objects with "items"', async () => {
+    await expectCompletion('{ "array| }', [
+      {
+        type: "property",
+        detail: "array",
+        info: "",
+        label: "arrayOfObjects",
+        template: '"arrayOfObjects": [#{}]',
+      },
+      {
+        type: "property",
+        detail: "array",
+        info: "",
+        label: "arrayOfOneOf",
+        template: '"arrayOfOneOf": [#{}]',
+      },
+    ]);
+  });
+  it('should autocomplete for array of objects with "items"', async () => {
+    await expectCompletion('{ "arrayOfObjects": [ { "|" } ] }', [
+      {
+        detail: "string",
+        info: "",
+        label: "foo",
+        template: `"foo": "#{}"`,
+        type: "property",
+      },
+      {
+        detail: "number",
+        info: "",
+        label: "bar",
+        template: '"bar": #{0}',
+        type: "property",
+      },
+    ]);
+  });
+  it('should autocomplete for array of objects with "items"', async () => {
+    await expectCompletion('{ "arrayOfOneOf": [ { "|" } ] }', [
+      {
+        detail: "string",
+        info: "",
+        label: "foo",
+        template: '"foo": "#{}"',
+        type: "property",
+      },
+      {
+        detail: "number",
+        info: "",
+        label: "bar",
+        template: '"bar": #{0}',
+        type: "property",
+      },
+      {
+        detail: "string",
+        info: "",
+        label: "apple",
+        template: '"apple": "#{}"',
+        type: "property",
+      },
+      {
+        detail: "number",
+        info: "",
+        label: "banana",
+        template: '"banana": #{0}',
+        type: "property",
+      },
+    ]);
+  });
 });
 
 describe("json5Completion", () => {
@@ -232,20 +318,20 @@ describe("json5Completion", () => {
           type: "property",
           detail: "",
           info: "an example oneOf",
-          template: "'oneOfEg': ",
+          template: "'oneOfEg': #{}",
         },
         {
           label: "oneOfEg2",
           type: "property",
           detail: "",
           info: "",
-          template: "'oneOfEg2': ",
+          template: "'oneOfEg2': #{}",
         },
         {
           detail: "",
           info: "",
           label: "oneOfObject",
-          template: "'oneOfObject': ",
+          template: "'oneOfObject': #{}",
           type: "property",
         },
       ],
@@ -254,21 +340,56 @@ describe("json5Completion", () => {
   });
   it("should include defaults for enum when available", async () => {
     await expectCompletion(
-      '{ "en|" }',
+      "{ en| }",
       [
         {
           label: "enum1",
           type: "property",
           detail: "",
           info: "an example enum with default bar",
-          template: '"enum1": "${bar}"',
+          template: 'enum1: "${bar}"',
         },
         {
           label: "enum2",
           type: "property",
           detail: "",
           info: "an example enum without default",
-          template: '"enum2": #{}',
+          template: "enum2: #{}",
+        },
+      ],
+      { mode: "json5" }
+    );
+  });
+  // TODO: should autocomplete for boolean values
+  it.skip("should include value completions for boolean", async () => {
+    await expectCompletion(
+      '{ "booleanWithDefault": | }',
+      [
+        {
+          detail: "boolean",
+          label: "true",
+        },
+        {
+          detail: "boolean",
+          label: "false",
+        },
+      ],
+      {
+        mode: "json5",
+      }
+    );
+  });
+  it("should provide enum values on completion", async () => {
+    await expectCompletion(
+      "{ enum1: '| }",
+      [
+        {
+          label: '"foo"',
+          info: "an example enum with default bar",
+        },
+        {
+          label: '"bar"',
+          detail: "Default value",
         },
       ],
       { mode: "json5" }

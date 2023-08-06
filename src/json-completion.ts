@@ -79,6 +79,7 @@ export class JSONCompletion {
       !(isPrimitiveValueNode(node) || isPropertyNameNode(node)) &&
       !ctx.explicit
     ) {
+      console.log(node.name);
       return result;
     }
 
@@ -172,6 +173,7 @@ export class JSONCompletion {
     result.options = Array.from(collector.completions.values()).filter((v) =>
       stripSurroundingQuotes(v.label).startsWith(prefix)
     );
+
     debug.log(
       "xxx",
       "result",
@@ -372,7 +374,9 @@ export class JSONCompletion {
               value = "#{null}";
               break;
             default:
-              return resultText;
+              // always advance the cursor after completing a property
+              value = "#{}";
+              break;
           }
         }
       }
@@ -678,25 +682,27 @@ export class JSONCompletion {
     schema: JSONSchema7,
     ctx: CompletionContext
   ): JSONSchema7Definition[] {
-    const originalPointer = jsonPointerForPosition(ctx.state, ctx.pos);
-    const pointer = originalPointer.replace(/\/[^/]*$/, "/");
+    const draft = new Draft07(this.schema);
+    let pointer = jsonPointerForPosition(ctx.state, ctx.pos);
+    let subSchema = getSchema(draft, pointer);
+    // if we don't have a schema for the current pointer, try the parent pointer
+    if (
+      !subSchema ||
+      subSchema.name === "UnknownPropertyError" ||
+      subSchema.enum ||
+      subSchema.type === "undefined"
+    ) {
+      pointer = pointer.replace(/\/[^/]*$/, "/");
+      subSchema = getSchema(draft, pointer);
+    }
 
-    debug.log(
-      "xxx",
-      "pointer..",
-      JSON.stringify(pointer),
-      "originalPointer",
-      JSON.stringify(originalPointer)
-    );
+    debug.log("xxx", "pointer..", JSON.stringify(pointer));
 
     // For some reason, it returns undefined schema for the root pointer
     if (!pointer || pointer === "/") {
       return [schema];
     }
-
-    const draft = new Draft07(this.schema);
     // const subSchema = new Draft07(this.schema).getSchema(pointer);
-    const subSchema = getSchema(draft, pointer);
     debug.log("xxx", "subSchema..", subSchema);
 
     if (this.isJsonError(subSchema)) {
