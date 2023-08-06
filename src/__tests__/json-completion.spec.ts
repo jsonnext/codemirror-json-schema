@@ -107,6 +107,18 @@ describe("jsonCompletion", () => {
       },
     ]);
   });
+  // TODO: accidentally steps up to the parent pointer
+  it.skip("should include insert text for nested object properties", async () => {
+    await expectCompletion(`{ "object": { '| } }`, [
+      {
+        detail: "string",
+        info: "an elegant string",
+        label: "foo",
+        template: '"foo": "#{}"',
+        type: "property",
+      },
+    ]);
+  });
   it("should include insert text for nested object properties with filter", async () => {
     await expectCompletion('{ "object": { "f|" } }', [
       {
@@ -160,6 +172,38 @@ describe("jsonCompletion", () => {
         type: "property",
       },
     ]);
+    it("should autocomplete for oneOf without quotes", async () => {
+      await expectCompletion('{ "oneOfObject": { | } }', [
+        {
+          detail: "string",
+          info: "",
+          label: "foo",
+          template: '"foo": "#{}"',
+          type: "property",
+        },
+        {
+          detail: "number",
+          info: "",
+          label: "bar",
+          template: '"bar": #{0}',
+          type: "property",
+        },
+        {
+          detail: "string",
+          info: "",
+          label: "apple",
+          template: '"apple": "#{}"',
+          type: "property",
+        },
+        {
+          detail: "number",
+          info: "",
+          label: "banana",
+          template: '"banana": #{0}',
+          type: "property",
+        },
+      ]);
+    });
   });
 });
 
@@ -255,6 +299,42 @@ describe("json5Completion", () => {
           info: "an elegant string",
           label: "foo",
           template: "foo: '#{}'",
+        },
+      ],
+      { mode: "json5" }
+    );
+  });
+  it("should include insert text for nested oneOf object properties with a single quote", async () => {
+    await expectCompletion(
+      "{ oneOfObject: { '|'  }",
+      [
+        {
+          type: "property",
+          detail: "string",
+          info: "",
+          label: "foo",
+          template: "'foo': '#{}'",
+        },
+        {
+          type: "property",
+          detail: "number",
+          info: "",
+          label: "bar",
+          template: "'bar': #{0}",
+        },
+        {
+          type: "property",
+          detail: "string",
+          info: "",
+          label: "apple",
+          template: "'apple': '#{}'",
+        },
+        {
+          type: "property",
+          detail: "number",
+          info: "",
+          label: "banana",
+          template: "'banana': #{0}",
         },
       ],
       { mode: "json5" }
