@@ -1,6 +1,8 @@
 import { describe, it, expect, vitest, Mock } from "vitest";
 
 import { json, jsonLanguage } from "@codemirror/lang-json";
+import { json5, json5Language } from "codemirror-json5";
+
 import { EditorState } from "@codemirror/state";
 import {
   Completion,
@@ -38,19 +40,26 @@ type MockedCompletionResult = CompletionResult["options"][0] & {
 export async function expectCompletion(
   doc: string,
   results: MockedCompletionResult[],
-  schema?: JSONSchema7,
-  conf: { explicit?: boolean } = {}
+
+  conf: {
+    explicit?: boolean;
+    schema?: JSONSchema7;
+    mode?: "json" | "json5";
+  } = {}
 ) {
   let cur = doc.indexOf("|"),
-    currentSchema = schema || testSchema2;
+    currentSchema = conf?.schema || testSchema2;
   doc = doc.slice(0, cur) + doc.slice(cur + 1);
+  const jsonMode = conf?.mode === "json5" ? json5 : json;
+  const jsonLang = conf?.mode === "json5" ? json5Language : jsonLanguage;
+
   let state = EditorState.create({
     doc,
     selection: { anchor: cur },
     extensions: [
-      json(),
-      jsonLanguage.data.of({
-        autocomplete: jsonCompletion(currentSchema),
+      jsonMode(),
+      jsonLang.data.of({
+        autocomplete: jsonCompletion(currentSchema, { mode: conf.mode }),
       }),
     ],
   });

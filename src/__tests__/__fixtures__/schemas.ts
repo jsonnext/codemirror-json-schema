@@ -41,6 +41,21 @@ export const testSchema2 = {
         { $ref: "#/definitions/fancyObject2" },
       ],
     },
+    arrayOfObjects: {
+      type: "array",
+      items: {
+        $ref: "#/definitions/fancyObject",
+      },
+    },
+    arrayOfOneOf: {
+      type: "array",
+      items: {
+        oneOf: [
+          { $ref: "#/definitions/fancyObject" },
+          { $ref: "#/definitions/fancyObject2" },
+        ],
+      },
+    },
     enum1: {
       description: "an example enum with default bar",
       enum: ["foo", "bar"],
