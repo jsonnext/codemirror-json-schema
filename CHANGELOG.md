@@ -1,5 +1,15 @@
 # codemirror-json-schema
 
+## 0.4.2
+
+### Patch Changes
+
+- [`14a26f8`](https://github.com/acao/codemirror-json-schema/commit/14a26f829f04972080eed822bd14e2e29d907be4) Thanks [@acao](https://github.com/acao)! - fix nested json4 completion bug (#55)
+
+  - fix #54, expand properties inside nested objects as expected in json4
+  - always advance cursor after property completions
+  - add more test coverage
+
 ## 0.4.1
 
 ### Patch Changes
