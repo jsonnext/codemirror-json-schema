@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.4.3
+
+### Patch Changes
+
+- [#58](https://github.com/acao/codemirror-json-schema/pull/58) [`eb3e09d`](https://github.com/acao/codemirror-json-schema/commit/eb3e09d1b2e1280ba295aac9fa8ba9493a0d385d) Thanks [@acao](https://github.com/acao)! - Add main/cjs exports for webpack
+
 ## 0.4.2
 
 ### Patch Changes
