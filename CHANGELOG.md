@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.4.4
+
+### Patch Changes
+
+- [#60](https://github.com/acao/codemirror-json-schema/pull/60) [`161a2df`](https://github.com/acao/codemirror-json-schema/commit/161a2dfa7e7e7f35253818c6f47395575b7b7baa) Thanks [@imolorhe](https://github.com/imolorhe)! - Added generated cjs directory to files list
+
 ## 0.4.3
 
 ### Patch Changes
