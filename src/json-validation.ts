@@ -1,12 +1,13 @@
 import type { EditorView, ViewUpdate } from "@codemirror/view";
-import { type Diagnostic, linter } from "@codemirror/lint";
-import type { JSONSchema7 } from "json-schema";
+import { type Diagnostic } from "@codemirror/lint";
 import { Draft04, type Draft, type JsonError } from "json-schema-library";
+
+import { getJSONSchema, schemaStateField } from "./state.js";
 import { joinWithOr } from "./utils/formatting.js";
 import { JSONPointerData } from "./types.js";
 import { parseJSONDocumentState } from "./utils/parseJSONDocument.js";
 import { RequiredPick } from "./types.js";
-import { getJSONSchema, schemaStateField } from "./state.js";
+import { el } from "./utils/dom.js";
 
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
@@ -63,7 +64,7 @@ export class JSONValidation {
     // ajv did not support draft 4, so I used json-schema-library
   }
   private get schemaTitle() {
-    return this.schema!.getSchema().title ?? "json-schema";
+    return this.schema?.getSchema()?.title ?? "json-schema";
   }
 
   // rewrite the error message to be more human readable
@@ -75,14 +76,19 @@ export class JSONValidation {
       )}`;
     }
     if (error.code === "type-error") {
-      return `Expected \`${
+      return `Expected <code>${
         error?.data?.expected && Array.isArray(error?.data?.expected)
           ? joinWithOr(error?.data?.expected)
           : error?.data?.expected
-      }\` but received \`${error?.data?.received}\``;
+      }</code> but received <code>${error?.data?.received}</code>`;
     }
-    const message = error.message.replaceAll("#/", "").replaceAll("/", ".");
-
+    const message = error.message
+      // don't mention root object
+      .replaceAll("in `#` ", "")
+      .replaceAll("/", ".")
+      .replaceAll("#.", "")
+      // replace backticks with <code> tags
+      .replaceAll(/`([^`]*)`/gm, "<code>$1</code>");
     return message;
   };
 
@@ -109,6 +115,7 @@ export class JSONValidation {
     if (!errors.length) return [];
     // reduce() because we want to filter out errors that don't have a pointer
     return errors.reduce((acc, error) => {
+      console.log(this.rewriteError(error));
       const errorPath = getErrorPath(error);
       const pointer = json.pointers.get(errorPath) as JSONPointerData;
       if (pointer) {
@@ -122,6 +129,11 @@ export class JSONValidation {
           // TODO: create a domnode and replace `` with <code></code>
           // renderMessage: () => error.message,
           message: this.rewriteError(error),
+          renderMessage: () => {
+            const dom = el("div", {});
+            dom.innerHTML = this.rewriteError(error);
+            return dom;
+          },
           severity: "error",
           source: this.schemaTitle,
         });

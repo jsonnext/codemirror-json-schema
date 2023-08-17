@@ -15,19 +15,23 @@ const getErrors = (jsonString: string, schema?: JSONSchema7) => {
   });
   return new JSONValidation().doValidation(view);
 };
+
+const common = {
+  severity: "error" as Diagnostic["severity"],
+  source: "json-schema",
+};
+
 const expectErrors = (
   jsonString: string,
   errors: [from: number | undefined, to: number | undefined, message: string][],
   schema?: JSONSchema7
 ) => {
-  expect(getErrors(jsonString, schema)).toEqual(
+  const filteredErrors = getErrors(jsonString, schema).map(
+    ({ renderMessage, ...error }) => error
+  );
+  expect(filteredErrors).toEqual(
     errors.map(([from, to, message]) => ({ ...common, from, to, message }))
   );
-};
-
-const common = {
-  severity: "error" as Diagnostic["severity"],
-  source: "json-schema",
 };
 
 describe("json-validation", () => {
@@ -38,7 +42,7 @@ describe("json-validation", () => {
   });
   it("should provide range for an unknown key error", () => {
     expectErrors('{"foo": "example", "bar": 123}', [
-      [19, 24, "Additional property `bar` in `#` is not allowed"],
+      [19, 24, "Additional property `bar` is not allowed"],
     ]);
   });
   it("should not handle invalid json", () => {
@@ -52,7 +56,7 @@ describe("json-validation", () => {
         "foo": "example",
     "bar": "something else"
   }`,
-      [[32, 37, "Additional property `bar` in `#` is not allowed"]]
+      [[32, 37, "Additional property `bar` is not allowed"]]
     );
   });
   it("should provide formatted error message when required fields are missing", () => {
@@ -83,7 +87,7 @@ describe("json-validation", () => {
         "object": { "foo": "true" },
     "oneOfEg2": 123
   }`,
-      [[81, 84, 'Expected one of `"string"` or `"array"`']],
+      [[81, 84, "Expected one of <code>string</code> or <code>array</code>"]],
       testSchema2
     );
   });

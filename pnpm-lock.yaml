@@ -21,8 +21,8 @@ dependencies:
     specifier: ^0.4.0
     version: 0.4.0
   json-schema-library:
-    specifier: ^8.0.0
-    version: 8.0.0
+    specifier: ^9.0.0
+    version: 9.0.0
 
 optionalDependencies:
   '@codemirror/lang-json':
@@ -2032,8 +2032,8 @@ packages:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
     dev: true
 
-  /json-schema-library@8.0.0:
-    resolution: {integrity: sha512-qqsEdyhuA68YHzuWNGrOk9ViknRKw1NfIbhT9wQ0z6l5cpfuYoqKRkbu8tgHAXjahmLEkpNdGwHq+gCgIrMYeA==}
+  /json-schema-library@9.0.0:
+    resolution: {integrity: sha512-X0eC3rcC1kAoR5YXG8h6X205PMjlBzmWZWpRCRI2taESZLYS2TglKiY8u/RuuMWWDaE1tgSkcpees5G2swOQug==}
     dependencies:
       '@sagold/json-pointer': 5.1.1
       '@sagold/json-query': 6.1.1
