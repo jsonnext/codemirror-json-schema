@@ -26,6 +26,7 @@
   "packageManager": "pnpm@8.6.6",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
+  "main": "cjs/index.js",
   "files": [
     "dist",
     "README.md",
@@ -35,11 +36,15 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "require": "./cjs/index.js",
+      "default": "./cjs/index.js"
     },
     "./json5": {
       "import": "./dist/json5.js",
-      "types": "./dist/json5.d.ts"
+      "types": "./dist/json5.d.ts",
+      "require": "./cjs/json5.js",
+      "default": "./cjs/json5.js"
     }
   },
   "repository": "github:acao/codemirror-json-schema",
@@ -84,7 +89,7 @@
   },
   "scripts": {
     "dev": "vite ./dev --port 3000",
-    "build": "pnpm tsc && vite build ./dev --outDir ../public --emptyOutDir",
+    "build": "pnpm tsc && tsc --module commonjs --target es2017 --outDir cjs && vite build ./dev --outDir ../public --emptyOutDir",
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage ",
     "tsc": "tsc && pnpm replace:env",
