@@ -29,6 +29,7 @@
   "main": "cjs/index.js",
   "files": [
     "dist",
+    "cjs",
     "README.md",
     "CHANGELOG.md",
     "docs"
