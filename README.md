@@ -75,8 +75,9 @@ This approach allows you to configure the json mode and parse linter, as well as
 ```ts
 import { EditorState } from "@codemirror/state";
 import { linter } from "@codemirror/lint";
-import { json, jsonParseLinter } from "@codemirror/lang-json";
-import { jsonSchemaLinter, jsonSchemaHover } from "codemirror-json-schema";
+import { hoverTooltip } from "@codemirror/view";
+import { json, jsonLanguage, jsonParseLinter } from "@codemirror/lang-json";
+import { jsonCompletion jsonSchemaLinter, jsonSchemaHover } from "codemirror-json-schema";
 
 const schema = {
   type: "object",
