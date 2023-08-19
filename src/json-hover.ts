@@ -2,12 +2,13 @@ import { type EditorView, Tooltip } from "@codemirror/view";
 import { type Draft, Draft04, JsonSchema } from "json-schema-library";
 import type { JSONSchema7 } from "json-schema";
 
-import { JSONMode, jsonPointerForPosition } from "./utils/jsonPointers";
-import { joinWithOr } from "./utils/formatting";
-import getSchema from "./utils/schema-lib/getSchema";
-import { debug } from "./utils/debug";
-import { Side } from "./types";
-import { el } from "./utils/dom";
+import { JSONMode, jsonPointerForPosition } from "./utils/jsonPointers.js";
+import { joinWithOr } from "./utils/formatting.js";
+import getSchema from "./utils/schema-lib/getSchema.js";
+import { debug } from "./utils/debug.js";
+import { Side } from "./types.js";
+import { el } from "./utils/dom.js";
+import { getJSONSchema } from "./state.js";
 
 export type CursorData = { schema?: JsonSchema; pointer: string };
 
@@ -35,8 +36,8 @@ export type HoverOptions = {
  * provides a JSON schema enabled tooltip extension for codemirror
  * @group Codemirror Extensions
  */
-export function jsonSchemaHover(schema: JSONSchema7, options?: HoverOptions) {
-  const hover = new JSONHover(schema, options);
+export function jsonSchemaHover(options?: HoverOptions) {
+  const hover = new JSONHover(options);
   return async function jsonDoHover(view: EditorView, pos: number, side: Side) {
     return hover.doHover(view, pos, side);
   };
@@ -55,9 +56,8 @@ function formatComplexType(
 }
 
 export class JSONHover {
-  private schema: Draft;
-  public constructor(schema: JSONSchema7, private opts?: HoverOptions) {
-    this.schema = new Draft04(schema);
+  private schema: Draft | null = null;
+  public constructor(private opts?: HoverOptions) {
     this.opts = {
       parser: JSON.parse,
       ...this.opts,
@@ -68,6 +68,14 @@ export class JSONHover {
     pos: number,
     side: Side
   ): CursorData | null {
+    const schema = getJSONSchema(view.state)!;
+    if (!schema) {
+      // todo: should we even do anything without schema
+      // without taking over the existing mode responsibilties?
+      return null;
+    }
+    this.schema = new Draft04(schema);
+
     const pointer = jsonPointerForPosition(view.state, pos, side);
 
     let data = undefined;
@@ -153,7 +161,7 @@ export class JSONHover {
       const getHoverTexts = this.opts?.getHoverTexts ?? this.getHoverTexts;
       const hoverTexts = getHoverTexts(
         cursorData as FoundCursorData,
-        this.schema
+        this.schema!
       );
       // allow users to override the hover
       const formatter = this.opts?.formatHover ?? this.formatMessage;

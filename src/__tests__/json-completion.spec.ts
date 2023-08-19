@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 
-import { expectCompletion } from "./__helpers__/completion";
+import { expectCompletion } from "./__helpers__/completion.js";
 
 describe("jsonCompletion", () => {
   it("should return completion data for simple types", async () => {

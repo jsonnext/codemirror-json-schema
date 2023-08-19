@@ -5,7 +5,7 @@
 import { json5 as json5mode } from "codemirror-json5";
 import json5 from "json5";
 import { EditorState } from "@codemirror/state";
-import { getJsonPointers } from "./jsonPointers";
+import { getJsonPointers } from "./jsonPointers.js";
 
 /**
  * Return parsed data and json5 pointers for a given codemirror EditorState

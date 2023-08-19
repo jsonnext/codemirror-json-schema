@@ -1,7 +1,7 @@
 import { it, describe, expect } from "vitest";
 
-import { parseJSONDocument } from "../parseJSONDocument";
-import { parseJSON5Document } from "../parseJSON5Document";
+import { parseJSONDocument } from "../parseJSONDocument.js";
+import { parseJSON5Document } from "../parseJSON5Document.js";
 
 describe("parseJSONDocument", () => {
   it("should return a map of all pointers for a json4 document", () => {

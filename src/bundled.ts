@@ -1,9 +1,10 @@
 import { JSONSchema7 } from "json-schema";
 import { json, jsonLanguage, jsonParseLinter } from "@codemirror/lang-json";
 import { hoverTooltip } from "@codemirror/view";
-import { jsonCompletion } from "./json-completion";
-import { jsonSchemaLinter } from "./json-validation";
-import { jsonSchemaHover } from "./json-hover";
+import { jsonCompletion } from "./json-completion.js";
+import { handleRefresh, jsonSchemaLinter } from "./json-validation.js";
+import { jsonSchemaHover } from "./json-hover.js";
+import { stateExtensions } from "./state.js";
 
 import { linter } from "@codemirror/lint";
 
@@ -15,10 +16,13 @@ export function jsonSchema(schema: JSONSchema7) {
   return [
     json(),
     linter(jsonParseLinter()),
-    linter(jsonSchemaLinter(schema)),
-    jsonLanguage.data.of({
-      autocomplete: jsonCompletion(schema),
+    linter(jsonSchemaLinter(), {
+      needsRefresh: handleRefresh,
     }),
-    hoverTooltip(jsonSchemaHover(schema)),
+    jsonLanguage.data.of({
+      autocomplete: jsonCompletion(),
+    }),
+    hoverTooltip(jsonSchemaHover()),
+    stateExtensions(),
   ];
 }

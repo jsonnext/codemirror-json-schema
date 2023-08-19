@@ -1,4 +1,4 @@
-import { describe, it, expect, vitest, Mock } from "vitest";
+import { expect, vitest } from "vitest";
 
 import { json, jsonLanguage } from "@codemirror/lang-json";
 import { json5, json5Language } from "codemirror-json5";
@@ -10,10 +10,11 @@ import {
   CompletionResult,
   CompletionSource,
 } from "@codemirror/autocomplete";
-import { jsonCompletion } from "../../json-completion";
+import { jsonCompletion } from "../../json-completion.js";
 import { JSONSchema7 } from "json-schema";
-import { testSchema2 } from "../__fixtures__/schemas";
+import { testSchema2 } from "../__fixtures__/schemas.js";
 import { EditorView } from "@codemirror/view";
+import { stateExtensions } from "../../state.js";
 
 vitest.mock("@codemirror/autocomplete", async () => {
   const mod = await vitest.importActual<
@@ -58,8 +59,9 @@ export async function expectCompletion(
     selection: { anchor: cur },
     extensions: [
       jsonMode(),
+      stateExtensions(currentSchema),
       jsonLang.data.of({
-        autocomplete: jsonCompletion(currentSchema, { mode: conf.mode }),
+        autocomplete: jsonCompletion({ mode: conf.mode }),
       }),
     ],
   });

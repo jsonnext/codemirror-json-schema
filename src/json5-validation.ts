@@ -1,21 +1,22 @@
 import { EditorView } from "@codemirror/view";
-import { JSONValidation, type JSONValidationOptions } from "./json-validation";
-import type { JSONSchema7 } from "json-schema";
-import { parseJSON5DocumentState } from "./utils/parseJSON5Document";
+import { linter } from "@codemirror/lint";
+import {
+  JSONValidation,
+  handleRefresh,
+  type JSONValidationOptions,
+} from "./json-validation.js";
+import { parseJSON5DocumentState } from "./utils/parseJSON5Document.js";
 
 /**
  * Instantiates a JSONValidation instance with the JSON5 mode
  * @group Codemirror Extensions
  */
-export function json5SchemaLinter(
-  schema: JSONSchema7,
-  options?: JSONValidationOptions
-) {
-  const validation = new JSONValidation(schema, {
+export function json5SchemaLinter(options?: JSONValidationOptions) {
+  const validation = new JSONValidation({
     jsonParser: parseJSON5DocumentState,
     ...options,
   });
-  return function json5DoLint(view: EditorView) {
+  return (view: EditorView) => {
     return validation.doValidation(view);
   };
 }

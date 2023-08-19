@@ -7,7 +7,7 @@ import {
 import { syntaxTree } from "@codemirror/language";
 import { SyntaxNode } from "@lezer/common";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { debug } from "./utils/debug";
+import { debug } from "./utils/debug.js";
 import {
   findNodeIndexInArrayNode,
   getChildValueNode,
@@ -16,11 +16,13 @@ import {
   isPrimitiveValueNode,
   stripSurroundingQuotes,
   getNodeAtPosition,
-} from "./utils/node";
+} from "./utils/node.js";
 import { Draft07, JsonError } from "json-schema-library";
-import { jsonPointerForPosition } from "./utils/jsonPointers";
-import { TOKENS } from "./constants";
-import getSchema from "./utils/schema-lib/getSchema";
+import { jsonPointerForPosition } from "./utils/jsonPointers.js";
+import { TOKENS } from "./constants.js";
+import { getJSONSchema } from "./state.js";
+import getSchema from "./utils/schema-lib/getSchema.js";
+import { EditorState } from "@codemirror/state";
 
 function json5PropertyInsertSnippet(rawWord: string, value: string) {
   if (rawWord.startsWith('"')) {
@@ -53,12 +55,16 @@ type JSONCompletionOptions = {
 };
 
 export class JSONCompletion {
-  public constructor(
-    private schema: JSONSchema7,
-    private opts: JSONCompletionOptions
-  ) {}
-
+  private schema: JSONSchema7 | null = null;
+  constructor(private opts: JSONCompletionOptions) {}
   public doComplete(ctx: CompletionContext) {
+    this.schema = getJSONSchema(ctx.state)!;
+    if (!this.schema) {
+      // todo: should we even do anything without schema
+      // without taking over the existing mode responsibilties?
+      return [];
+    }
+
     const result: CompletionResult = {
       from: ctx.pos,
       to: ctx.pos,
@@ -293,7 +299,7 @@ export class JSONCompletion {
   ) {
     // expand schema property if it is a reference
     propertySchema = propertySchema
-      ? this.expandSchemaProperty(propertySchema, this.schema)
+      ? this.expandSchemaProperty(propertySchema, this.schema!)
       : propertySchema;
 
     const isJSON5 = this.opts?.mode === "json5";
@@ -681,7 +687,7 @@ export class JSONCompletion {
     schema: JSONSchema7,
     ctx: CompletionContext
   ): JSONSchema7Definition[] {
-    const draft = new Draft07(this.schema);
+    const draft = new Draft07(this.schema!);
     let pointer = jsonPointerForPosition(ctx.state, ctx.pos);
     let subSchema = getSchema(draft, pointer);
     // if we don't have a schema for the current pointer, try the parent pointer
@@ -803,11 +809,8 @@ export class JSONCompletion {
  * provides a JSON schema enabled autocomplete extension for codemirror
  * @group Codemirror Extensions
  */
-export function jsonCompletion(
-  schema: JSONSchema7,
-  opts: JSONCompletionOptions = {}
-) {
-  const completion = new JSONCompletion(schema, opts);
+export function jsonCompletion(opts: JSONCompletionOptions = {}) {
+  const completion = new JSONCompletion(opts);
   return function jsonDoCompletion(ctx: CompletionContext) {
     return completion.doComplete(ctx);
   };
@@ -818,10 +821,9 @@ export function jsonCompletion(
  * @group Codemirror Extensions
  */
 export function json5Completion(
-  schema: JSONSchema7,
   opts: Omit<JSONCompletionOptions, "mode"> = {}
 ) {
-  const completion = new JSONCompletion(schema, { ...opts, mode: "json5" });
+  const completion = new JSONCompletion({ ...opts, mode: "json5" });
   return function jsonDoCompletion(ctx: CompletionContext) {
     return completion.doComplete(ctx);
   };

@@ -5,11 +5,15 @@ import { describe, it, expect } from "vitest";
 import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
 
-import { testSchema, testSchema2 } from "./__fixtures__/schemas";
+import { testSchema, testSchema2 } from "./__fixtures__/schemas.js";
+import { stateExtensions } from "../state";
 
 const getErrors = (jsonString: string, schema?: JSONSchema7) => {
-  const view = new EditorView({ doc: jsonString, extensions: [json()] });
-  return new JSONValidation(schema || testSchema).doValidation(view);
+  const view = new EditorView({
+    doc: jsonString,
+    extensions: [json(), stateExtensions(schema ?? testSchema)],
+  });
+  return new JSONValidation().doValidation(view);
 };
 const expectErrors = (
   jsonString: string,

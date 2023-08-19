@@ -1,9 +1,9 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import { JSONPointersMap, Side } from "../types";
-import { TOKENS } from "../constants";
-import { findNodeIndexInArrayNode, getWord, isValueNode } from "./node";
+import { JSONPointersMap, Side } from "../types.js";
+import { TOKENS } from "../constants.js";
+import { findNodeIndexInArrayNode, getWord, isValueNode } from "./node.js";
 
 export type JSONMode = "json4" | "json5";
 

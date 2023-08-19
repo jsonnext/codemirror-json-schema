@@ -1,11 +1,12 @@
-import type { EditorView } from "@codemirror/view";
-import type { Diagnostic } from "@codemirror/lint";
+import type { EditorView, ViewUpdate } from "@codemirror/view";
+import { type Diagnostic, linter } from "@codemirror/lint";
 import type { JSONSchema7 } from "json-schema";
 import { Draft04, type Draft, type JsonError } from "json-schema-library";
-import { joinWithOr } from "./utils/formatting";
-import { JSONPointerData } from "./types";
-import { parseJSONDocumentState } from "./utils/parseJSONDocument";
-import { RequiredPick } from "./types";
+import { joinWithOr } from "./utils/formatting.js";
+import { JSONPointerData } from "./types.js";
+import { parseJSONDocumentState } from "./utils/parseJSONDocument.js";
+import { RequiredPick } from "./types.js";
+import { getJSONSchema, schemaStateField } from "./state.js";
 
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
@@ -28,24 +29,29 @@ export type JSONValidationOptions = {
 
 type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
 
+export const handleRefresh = (vu: ViewUpdate) => {
+  console.log("handleRefresh");
+  return (
+    vu.startState.field(schemaStateField) !== vu.state.field(schemaStateField)
+  );
+};
+
 /**
  * Helper for simpler class instantiaton
  * @group Codemirror Extensions
  */
-export function jsonSchemaLinter(
-  schema: JSONSchema7,
-  options?: JSONValidationOptions
-) {
-  const validation = new JSONValidation(schema, options);
-  return function jsonDoValidation(view: EditorView) {
+export function jsonSchemaLinter(options?: JSONValidationOptions) {
+  const validation = new JSONValidation(options);
+  return (view: EditorView) => {
     return validation.doValidation(view);
   };
 }
 
 export class JSONValidation {
-  private schema: Draft;
+  private schema: Draft | null = null;
+
   private options: JSONValidationSettings;
-  public constructor(schema: JSONSchema7, options?: JSONValidationOptions) {
+  public constructor(options?: JSONValidationOptions) {
     this.options = {
       jsonParser: parseJSONDocumentState,
       ...options,
@@ -56,10 +62,9 @@ export class JSONValidation {
     // backwards compatibility
     //
     // ajv did not support draft 4, so I used json-schema-library
-    this.schema = new Draft04(schema);
   }
   private get schemaTitle() {
-    return this.schema.getSchema().title ?? "json-schema";
+    return this.schema!.getSchema().title ?? "json-schema";
   }
 
   // rewrite the error message to be more human readable
@@ -84,6 +89,12 @@ export class JSONValidation {
 
   // validate using view as the linter extension signature requires
   public doValidation(view: EditorView) {
+    const schema = getJSONSchema(view.state);
+    if (!schema) {
+      return [];
+    }
+    this.schema = new Draft04(schema);
+
     if (!this.schema) return [];
     const text = view.state.doc.toString();
 
