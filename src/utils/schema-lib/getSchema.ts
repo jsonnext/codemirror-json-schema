@@ -7,7 +7,7 @@ import {
   type JsonPointer,
 } from "json-schema-library";
 
-import step from "./step";
+import step from "./step.js";
 
 const emptyObject = {};
 

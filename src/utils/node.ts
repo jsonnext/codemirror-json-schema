@@ -1,8 +1,8 @@
 import { SyntaxNode } from "@lezer/common";
-import { COMPLEX_TYPES, TOKENS, PRIMITIVE_TYPES } from "../constants";
+import { COMPLEX_TYPES, TOKENS, PRIMITIVE_TYPES } from "../constants.js";
 import { EditorState, Text } from "@codemirror/state";
 import { syntaxTree } from "@codemirror/language";
-import { Side } from "../types";
+import { Side } from "../types.js";
 
 export const getNodeAtPosition = (
   state: EditorState,

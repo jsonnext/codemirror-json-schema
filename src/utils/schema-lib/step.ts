@@ -9,15 +9,10 @@ import {
 } from "json-schema-library";
 
 // @ts-expect-error
-import errors from "json-schema-library/dist/module/lib/validation/errors";
+import errors from "json-schema-library/dist/module/lib/validation/errors.js";
 
 // @ts-expect-error
-import createSchemaOf from "json-schema-library/dist/module/lib/createSchemaOf";
-
-// import getTypeOf from "./getTypeOf";
-// import errors from "./validation/errors";
-// import { JsonSchema, JsonPointer, JsonError, isJsonError } from "./types";
-// import { Draft } from "./draft";
+import createSchemaOf from "json-schema-library/dist/module/lib/createSchemaOf.js";
 
 type StepFunction = (
   draft: Draft,

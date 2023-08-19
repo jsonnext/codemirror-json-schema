@@ -4,20 +4,24 @@ expect.extend(matchers);
 import "vitest-dom/extend-expect";
 
 import { JSONSchema7 } from "json-schema";
-import { FoundCursorData, JSONHover } from "../json-hover";
+import { FoundCursorData, JSONHover } from "../json-hover.js";
 
 import { json } from "@codemirror/lang-json";
 import { EditorView } from "@codemirror/view";
-import { testSchema, testSchema2 } from "./__fixtures__/schemas";
+import { testSchema, testSchema2 } from "./__fixtures__/schemas.js";
 import { Draft } from "json-schema-library";
+import { stateExtensions } from "../state.js";
 
 const getHoverData = (
   jsonString: string,
   pos: number,
   schema?: JSONSchema7
 ) => {
-  const view = new EditorView({ doc: jsonString, extensions: [json()] });
-  return new JSONHover(schema || testSchema).getDataForCursor(view, pos, 1);
+  const view = new EditorView({
+    doc: jsonString,
+    extensions: [json(), stateExtensions(schema || testSchema)],
+  });
+  return new JSONHover().getDataForCursor(view, pos, 1);
 };
 
 const getHoverResult = async (
@@ -25,12 +29,11 @@ const getHoverResult = async (
   pos: number,
   schema?: JSONSchema7
 ) => {
-  const view = new EditorView({ doc: jsonString, extensions: [json()] });
-  const hoverResult = await new JSONHover(schema || testSchema).doHover(
-    view,
-    pos,
-    1
-  );
+  const view = new EditorView({
+    doc: jsonString,
+    extensions: [json(), stateExtensions(schema || testSchema)],
+  });
+  const hoverResult = await new JSONHover().doHover(view, pos, 1);
   return hoverResult;
 };
 
@@ -39,10 +42,13 @@ const getHoverTexts = async (
   pos: number,
   schema?: JSONSchema7
 ) => {
-  const view = new EditorView({ doc: jsonString, extensions: [json()] });
-  const hover = new JSONHover(schema || testSchema);
+  const view = new EditorView({
+    doc: jsonString,
+    extensions: [json(), stateExtensions(schema || testSchema)],
+  });
+  const hover = new JSONHover();
   const data = hover.getDataForCursor(view, pos, 1) as FoundCursorData;
-  const hoverResult = hover.getHoverTexts(data, hover.schema as Draft);
+  const hoverResult = hover.getHoverTexts(data, schema as Draft);
   return hoverResult;
 };
 

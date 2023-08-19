@@ -2,11 +2,14 @@ import { describe, it, expect } from "vitest";
 import { json } from "@codemirror/lang-json";
 import { json5 } from "codemirror-json5";
 
-import { getJsonPointers, jsonPointerForPosition } from "../jsonPointers";
+import { getJsonPointers, jsonPointerForPosition } from "../jsonPointers.js";
 import { EditorState } from "@codemirror/state";
 
 const getPointer = (jsonString: string, pos: number) => {
-  const state = EditorState.create({ doc: jsonString, extensions: [json()] });
+  const state = EditorState.create({
+    doc: jsonString,
+    extensions: [json()],
+  });
   return jsonPointerForPosition(state, pos, 1);
 };
 
