@@ -55,7 +55,6 @@
     "@sagold/json-pointer": "^5.1.1",
     "@types/json-schema": "^7.0.12",
     "@types/node": "^20.4.2",
-    "json-schema": "^0.2.3",
     "json-schema-library": "^8.0.0"
   },
   "optionalDependencies": {
