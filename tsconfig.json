@@ -8,7 +8,6 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "lib": ["ESNext", "DOM"],
-    "isolatedModules": true,
     "declaration": true,
     "resolveJsonModule": true,
     "removeComments": false

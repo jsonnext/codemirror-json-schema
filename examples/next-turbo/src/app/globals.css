@@ -1,0 +1,57 @@
+:root {
+  --bg-color: #282c34;
+}
+h1,
+h2,
+h3 {
+  font-weight: 200;
+}
+body {
+  background-color: var(--fbc-light-gray);
+  color: var(--fbc-primary-text);
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+code {
+  background-color: #1f2329;
+  color: var(--fbc-light-gray);
+  padding: 0.2rem;
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--bg-color);
+    color: var(--fbc-light-gray);
+  }
+  code {
+    background-color: var(--fbc-primary-text);
+    color: var(--fbc-light-gray);
+  }
+}
+
+/* cm6 styles */
+.cm-lintRange-error {
+  text-decoration: underline wavy red;
+}
+.cm6-json-schema-hover,
+.cm-editor .cm-diagnostic-error {
+  padding: 0.5rem;
+}
+.cm6-json-schema-hover--description {
+  margin-bottom: 0.5rem;
+}
+.grid-row {
+  display: grid;
+  grid-auto-columns: 50%;
+  grid-template-areas: "a a";
+  gap: 1rem;
+}
+@media screen and (max-width: 768px) {
+  .grid-row {
+    grid-auto-columns: 100%;
+    grid-template-areas: "a" "b";
+    gap: 0;
+  }
+}
