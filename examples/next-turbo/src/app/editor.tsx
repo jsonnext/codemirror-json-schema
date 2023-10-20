@@ -12,7 +12,7 @@ import { oneDarkHighlightStyle, oneDark } from "@codemirror/theme-one-dark";
 import { JSONSchema7 } from "json-schema";
 
 // sample data
-import { jsonText, json5Text } from "../../../../dev/sample-text";
+import { jsonText } from "../../../../dev/sample-text";
 import packageJsonSchema from "../../../../dev/package.schema.json";
 
 // json4
@@ -41,6 +41,9 @@ const commonExtensions = [
   syntaxHighlighting(oneDarkHighlightStyle),
 ];
 
+// because of react strict mode
+let isRendered = false;
+
 export const Editor = () => {
   const editorRef = useRef<HTMLDivElement>(null);
   const state = EditorState.create({
@@ -49,11 +52,12 @@ export const Editor = () => {
   });
 
   useEffect(() => {
-    if (editorRef.current) {
+    if (editorRef.current && !isRendered) {
       new EditorView({
         state,
         parent: editorRef.current!,
       });
+      isRendered = true;
     }
 
     return () => {
