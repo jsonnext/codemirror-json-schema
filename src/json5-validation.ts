@@ -1,8 +1,6 @@
 import { EditorView } from "@codemirror/view";
-import { linter } from "@codemirror/lint";
 import {
   JSONValidation,
-  handleRefresh,
   type JSONValidationOptions,
 } from "./json-validation.js";
 import { parseJSON5DocumentState } from "./utils/parseJSON5Document.js";

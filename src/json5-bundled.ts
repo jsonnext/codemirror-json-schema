@@ -13,7 +13,7 @@ import { handleRefresh } from "./json-validation.js";
  * Full featured cm6 extension for json5, including `codemirror-json5`
  * @group Bundled Codemirror Extensions
  */
-export function json5Schema(schema: JSONSchema7) {
+export function json5Schema(schema?: JSONSchema7) {
   return [
     json5(),
     linter(json5ParseLinter()),
@@ -21,9 +21,9 @@ export function json5Schema(schema: JSONSchema7) {
       needsRefresh: handleRefresh,
     }),
     json5Language.data.of({
-      autocomplete: json5Completion(schema),
+      autocomplete: json5Completion(),
     }),
-    hoverTooltip(json5SchemaHover(schema)),
+    hoverTooltip(json5SchemaHover()),
     stateExtensions(schema),
   ];
 }

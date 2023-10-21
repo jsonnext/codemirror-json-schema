@@ -12,7 +12,7 @@ import { linter } from "@codemirror/lint";
  * Full featured cm6 extension for json, including `@codemirror/lang-json`
  * @group Bundled Codemirror Extensions
  */
-export function jsonSchema(schema: JSONSchema7) {
+export function jsonSchema(schema?: JSONSchema7) {
   return [
     json(),
     linter(jsonParseLinter()),
@@ -23,6 +23,6 @@ export function jsonSchema(schema: JSONSchema7) {
       autocomplete: jsonCompletion(),
     }),
     hoverTooltip(jsonSchemaHover()),
-    stateExtensions(),
+    stateExtensions(schema),
   ];
 }

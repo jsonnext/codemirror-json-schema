@@ -10,10 +10,7 @@ export type JSON5HoverOptions = Exclude<HoverOptions, "mode">;
  * Instantiates a JSONHover instance with the JSON5 mode
  * @group Codemirror Extensions
  */
-export function json5SchemaHover(
-  schema: JSONSchema7,
-  options?: JSON5HoverOptions
-) {
+export function json5SchemaHover(options?: JSON5HoverOptions) {
   const hover = new JSONHover({
     ...options,
     parser: json5.parse,

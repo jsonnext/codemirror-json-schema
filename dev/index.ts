@@ -98,12 +98,12 @@ const editor2 = new EditorView({
   state: json5State,
   parent: document.querySelector("#editor-json5")!,
 });
-const handleSchema = (newSchema: JSONSchema7) => {
+
+const handleSchemaChange = (newSchema: JSONSchema7) => {
   updateSchema(editor1, newSchema);
   updateSchema(editor2, newSchema);
 };
 
-handleSchema(schema);
 // new EditorState.fi(editor1, editor2);
 // Hot Module Replacement
 // if (module.hot) {
@@ -120,5 +120,5 @@ schemaSelect!.onchange = async (e) => {
   const data = await (
     await fetch(`https://json.schemastore.org/${val}`)
   ).json();
-  handleSchema(data);
+  handleSchemaChange(data);
 };
