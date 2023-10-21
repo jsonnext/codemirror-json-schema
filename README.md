@@ -8,27 +8,28 @@ Codemirror 6 extensions that provide full [JSON Schema](https://json-schema.org/
 
 ## Features
 
-This is now a full-featured library for both json4 (aka json) and json5, but the APIs may still have breakages.
+This is now a full-featured library for both json4 (aka json) and json5 using extensions, so they should compatible with any frontend framework and/or integration library
 
-So far mostly tested with standard json4 schema specs. See
-
-### json4
-
-- ✅ validates json
-- ✅ autocompletion
-- ✅ hover tooltips from schema
-
-### json5
-
-- ✅ validates json5
-- ✅ autocompletion
+- ✅ validation messages
+- ✅ autocompletion with insert text
 - ✅ hover tooltips
+- ✅ dynamic, per-editor-instance schemas using codemirror `StateField` and linting refresh
+
+## Resources
+
+- [Changelog](./CHANGELOG.md)
+- [Comprehensive example](https://github.com/acao/cm6-json-schema/blob/main/dev/index.ts)
+- [API Docs](./docs/)
 
 ## Usage
 
 To give you as much flexibility as possible, everything codemirror related is a peer or optional dependency
 
 Based on whether you want to support json4, json5 or both, you will need to install the relevant language mode for our library to use.
+
+### Breaking Changes:
+
+- 0.5.0 - this breaking change _does not_ effect users using `jsonSchema()` or `json5Schema()` modes, but those using the "custom path".
 
 ### json4
 
@@ -76,8 +77,15 @@ This approach allows you to configure the json mode and parse linter, as well as
 import { EditorState } from "@codemirror/state";
 import { linter } from "@codemirror/lint";
 import { hoverTooltip } from "@codemirror/view";
-import { json, jsonLanguage, jsonParseLinter } from "@codemirror/lang-json";
-import { jsonCompletion jsonSchemaLinter, jsonSchemaHover } from "codemirror-json-schema";
+import { json, jsonParseLinter, jsonLanguage } from "@codemirror/lang-json";
+
+import {
+  jsonSchemaLinter,
+  jsonSchemaHover,
+  jsonCompletion,
+  stateExtensions,
+  handleRefresh
+} from "codemirror-json-schema";
 
 const schema = {
   type: "object",
@@ -96,11 +104,14 @@ const state = EditorState.create({
       // default is 750ms
       delay: 300
     }),
-    linter(jsonSchemaLinter(schema)),
-    jsonLanguage.data.of({
-      autocomplete: jsonCompletion(schema),
+    linter(jsonSchemaLinter(), {
+      needsRefresh: handleRefresh,
     }),
-    hoverTooltip(jsonSchemaHover(schema)),
+    jsonLanguage.data.of({
+      autocomplete: jsonCompletion(),
+    }),
+    hoverTooltip(jsonSchemaHover()),
+    stateExtensions(schema)
   ];
 })
 ```
@@ -159,6 +170,7 @@ import {
   json5SchemaHover,
   json5Completion,
 } from "codemirror-json-schema/json5";
+import { stateExtensions, handleRefresh } from "codemirror-json-schema";
 
 const schema = {
   type: "object",
@@ -180,30 +192,89 @@ const json5State = EditorState.create({
       // the default linting delay is 750ms
       delay: 300,
     }),
-    linter(json5SchemaLinter(schema)),
-    hoverTooltip(json5SchemaHover(schema)),
+    linter(
+      json5SchemaLinter({
+        needsRefresh: handleRefresh,
+      })
+    ),
+    hoverTooltip(json5SchemaHover()),
     json5Language.data.of({
-      autocomplete: json5Completion(schema),
+      autocomplete: json5Completion(),
     }),
+    stateExtensions(schema),
   ],
 });
 ```
 
-### Complete demo
+### Dynamic Schema
 
-You can start with the [deployed example](https://github.com/acao/cm6-json-schema/blob/main/dev/index.ts) to see a more comprehensive setup.
+If you want to, you can provide schema dynamically, in several ways.
+This works the same for either json or json5, using the underlying codemirror 6 StateFields, via the `updateSchema` method export.
 
-### API Docs
+In this example
 
-For more information, see the [API Docs](./docs/)
+- the initial schema state is empty
+- schema is loaded dynamically based on user input
+- the linting refresh will be handled automatically, because it's built into our bundled `jsonSchema()` and `json5Schema()` modes
+
+```ts
+import { EditorState } from "@codemirror/state";
+import { EditorView } from "@codemirror/view";
+
+import { json5Schema } from "codemirror-json-schema/json5";
+
+import { updateSchema } from "codemirror-json-schema";
+
+const json5State = EditorState.create({
+  doc: `{
+    example: true,
+    // json5 is awesome!
+  }`,
+  // note: you can still provide initial
+  // schema when creating state
+  extensions: [json5Schema()],
+});
+
+const editor = new EditorView({ state: json5State });
+
+const schemaSelect = document.getElementById("schema-selection");
+
+schemaSelect!.onchange = async (e) => {
+  const val = e.target!.value!;
+  if (!val) {
+    return;
+  }
+  // parse the remote schema spec to json
+  const data = await (
+    await fetch(`https://json.schemastore.org/${val}`)
+  ).json();
+  // this will update the schema state field, in an editor specific way
+  updateSchema(editor, data);
+};
+```
+
+if you are using the "custom path" with this approach, you will need to configure linting refresh as well:
+
+```ts
+import { linter } from "@codemirror/lint";
+import { json5SchemaLinter } from "codemirror-json-schema/json5";
+import { handleRefresh } from "codemirror-json-schema";
+
+const state = EditorState.create({
+  // ...
+  extensions: [
+    linter(json5SchemaLinter(), {
+      needsRefresh: handleRefresh,
+    })
+  ];
+}
+```
 
 ## Current Constraints:
 
-- it only works with one json schema instance at a time, and doesn't yet fetch remote schemas. schema service coming soon!
 - currently only tested with standard schemas using json4 spec. results may vary
 - doesn't place cursor inside known insert text yet
 - currently you can only override the texts and rendering of a hover. we plan to add the same for validation errors and autocomplete
-- json5 properties on autocompletion selection will insert surrounding double quotes, but we plan to make it insert without delimiters
 
 ## Inspiration
 

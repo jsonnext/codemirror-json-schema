@@ -30,7 +30,6 @@ export type JSONValidationOptions = {
 type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
 
 export const handleRefresh = (vu: ViewUpdate) => {
-  console.log("handleRefresh");
   return (
     vu.startState.field(schemaStateField) !== vu.state.field(schemaStateField)
   );

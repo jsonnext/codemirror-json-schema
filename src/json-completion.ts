@@ -22,7 +22,6 @@ import { jsonPointerForPosition } from "./utils/jsonPointers.js";
 import { TOKENS } from "./constants.js";
 import { getJSONSchema } from "./state.js";
 import getSchema from "./utils/schema-lib/getSchema.js";
-import { EditorState } from "@codemirror/state";
 
 function json5PropertyInsertSnippet(rawWord: string, value: string) {
   if (rawWord.startsWith('"')) {
