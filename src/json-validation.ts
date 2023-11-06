@@ -69,9 +69,11 @@ export class JSONValidation {
 
   // rewrite the error message to be more human readable
   private rewriteError = (error: JsonError): string => {
-    if (error.code === "one-of-error") {
+    const errorData = error?.data;
+    const errors = errorData?.errors as string[];
+    if (error.code === "one-of-error" && errors?.length) {
       return `Expected one of ${joinWithOr(
-        error?.data?.errors,
+        errors as string[],
         (data) => data.data.expected
       )}`;
     }
@@ -115,23 +117,24 @@ export class JSONValidation {
     if (!errors.length) return [];
     // reduce() because we want to filter out errors that don't have a pointer
     return errors.reduce((acc, error) => {
-      console.log(this.rewriteError(error));
       const errorPath = getErrorPath(error);
       const pointer = json.pointers.get(errorPath) as JSONPointerData;
+
       if (pointer) {
         // if the error is a property error, use the key position
         const isKeyError =
           error.name === "NoAdditionalPropertiesError" ||
           error.name === "RequiredPropertyError";
+        const errorString = this.rewriteError(error);
         acc.push({
           from: isKeyError ? pointer.keyFrom : pointer.valueFrom,
           to: isKeyError ? pointer.keyTo : pointer.valueTo,
           // TODO: create a domnode and replace `` with <code></code>
           // renderMessage: () => error.message,
-          message: this.rewriteError(error),
+          message: errorString,
           renderMessage: () => {
             const dom = el("div", {});
-            dom.innerHTML = this.rewriteError(error);
+            dom.innerHTML = errorString;
             return dom;
           },
           severity: "error",

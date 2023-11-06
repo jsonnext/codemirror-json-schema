@@ -97,8 +97,6 @@ export class JSONHover {
       withSchemaWarning: true,
     });
     if (isJsonError(subSchema)) {
-      console.log("subschema", subSchema.data);
-
       if (subSchema?.data.schema["$ref"]) {
         subSchema = this.schema.resolveRef(subSchema);
       } else {
@@ -142,7 +140,6 @@ export class JSONHover {
     let message = null;
 
     const { schema } = data;
-    console.log(schema, data);
     if (schema.oneOf) {
       typeInfo = formatComplexType(schema, "oneOf", draft);
     }
