@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.4.5
+
+### Patch Changes
+
+- [#70](https://github.com/acao/codemirror-json-schema/pull/70) [`4c9ca0a`](https://github.com/acao/codemirror-json-schema/commit/4c9ca0a2cab4806d1107a64e96a60c3c6c46edfa) Thanks [@acao](https://github.com/acao)! - Fix vulnerability message for json-schema type dependency
+
 ## 0.4.4
 
 ### Patch Changes
