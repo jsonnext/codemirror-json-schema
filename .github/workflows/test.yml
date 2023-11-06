@@ -37,3 +37,6 @@ jobs:
 
       - name: Test
         run: pnpm test:coverage
+
+      - name: Vulnerability Audit
+        run: pnpm audit --prod
