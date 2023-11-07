@@ -6,11 +6,12 @@ import {
   isJsonError,
 } from "json-schema-library";
 
-import { JSONMode, jsonPointerForPosition } from "./utils/jsonPointers.js";
+import { jsonPointerForPosition } from "./utils/jsonPointers.js";
 import { joinWithOr } from "./utils/formatting.js";
 import { debug } from "./utils/debug.js";
 import { Side } from "./types.js";
 import { el } from "./utils/dom.js";
+import { getJSONSchema } from "./state.js";
 
 export type CursorData = { schema?: JsonSchema; pointer: string };
 
@@ -93,7 +94,6 @@ export class JSONHover {
     let subSchema = this.schema.getSchema({
       pointer,
       data,
-      schema: this._schema,
       withSchemaWarning: true,
     });
     if (isJsonError(subSchema)) {
