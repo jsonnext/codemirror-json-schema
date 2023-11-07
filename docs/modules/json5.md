@@ -23,15 +23,15 @@
 
 ### json5Schema
 
-▸ **json5Schema**(`schema`): `Extension`[]
+▸ **json5Schema**(`schema?`): `Extension`[]
 
 Full featured cm6 extension for json5, including `codemirror-json5`
 
 #### Parameters
 
-| Name     | Type          |
-| :------- | :------------ |
-| `schema` | `JSONSchema7` |
+| Name      | Type          |
+| :-------- | :------------ |
+| `schema?` | `JSONSchema7` |
 
 #### Returns
 
@@ -39,28 +39,27 @@ Full featured cm6 extension for json5, including `codemirror-json5`
 
 #### Defined in
 
-[json5-bundled.ts:14](https://github.com/acao/codemirror-json-schema/blob/4c9ca0a/src/json5-bundled.ts#L14)
+[json5-bundled.ts:16](https://github.com/acao/codemirror-json-schema/blob/a73c517/src/json5-bundled.ts#L16)
 
 ## Codemirror Extensions
 
 ### json5Completion
 
-▸ **json5Completion**(`schema`, `opts?`): (`ctx`: `CompletionContext`) => `CompletionResult`
+▸ **json5Completion**(`opts?`): (`ctx`: `CompletionContext`) => `CompletionResult` \| `never`[]
 
 provides a JSON schema enabled autocomplete extension for codemirror and json5
 
 #### Parameters
 
-| Name     | Type                                       |
-| :------- | :----------------------------------------- |
-| `schema` | `JSONSchema7`                              |
-| `opts`   | `Omit`<`JSONCompletionOptions`, `"mode"`\> |
+| Name   | Type                                       |
+| :----- | :----------------------------------------- |
+| `opts` | `Omit`<`JSONCompletionOptions`, `"mode"`\> |
 
 #### Returns
 
 `fn`
 
-▸ (`ctx`): `CompletionResult`
+▸ (`ctx`): `CompletionResult` \| `never`[]
 
 ##### Parameters
 
@@ -70,17 +69,17 @@ provides a JSON schema enabled autocomplete extension for codemirror and json5
 
 ##### Returns
 
-`CompletionResult`
+`CompletionResult` \| `never`[]
 
 #### Defined in
 
-[json-completion.ts:820](https://github.com/acao/codemirror-json-schema/blob/4c9ca0a/src/json-completion.ts#L820)
+[json-completion.ts:822](https://github.com/acao/codemirror-json-schema/blob/a73c517/src/json-completion.ts#L822)
 
 ---
 
 ### json5SchemaHover
 
-▸ **json5SchemaHover**(`schema`, `options?`): (`view`: `EditorView`, `pos`: `number`, `side`: `Side`) => `Promise`<`null` \| `Tooltip`\>
+▸ **json5SchemaHover**(`options?`): (`view`: `EditorView`, `pos`: `number`, `side`: `Side`) => `Promise`<`null` \| `Tooltip`\>
 
 Instantiates a JSONHover instance with the JSON5 mode
 
@@ -88,7 +87,6 @@ Instantiates a JSONHover instance with the JSON5 mode
 
 | Name       | Type                                    |
 | :--------- | :-------------------------------------- |
-| `schema`   | `JSONSchema7`                           |
 | `options?` | [`HoverOptions`](index.md#hoveroptions) |
 
 #### Returns
@@ -111,13 +109,13 @@ Instantiates a JSONHover instance with the JSON5 mode
 
 #### Defined in
 
-[json5-hover.ts:13](https://github.com/acao/codemirror-json-schema/blob/4c9ca0a/src/json5-hover.ts#L13)
+[json5-hover.ts:13](https://github.com/acao/codemirror-json-schema/blob/a73c517/src/json5-hover.ts#L13)
 
 ---
 
 ### json5SchemaLinter
 
-▸ **json5SchemaLinter**(`schema`, `options?`): (`view`: `EditorView`) => `Diagnostic`[]
+▸ **json5SchemaLinter**(`options?`): (`view`: `EditorView`) => `Diagnostic`[]
 
 Instantiates a JSONValidation instance with the JSON5 mode
 
@@ -125,7 +123,6 @@ Instantiates a JSONValidation instance with the JSON5 mode
 
 | Name       | Type                                                      |
 | :--------- | :-------------------------------------------------------- |
-| `schema`   | `JSONSchema7`                                             |
 | `options?` | [`JSONValidationOptions`](index.md#jsonvalidationoptions) |
 
 #### Returns
@@ -146,7 +143,7 @@ Instantiates a JSONValidation instance with the JSON5 mode
 
 #### Defined in
 
-[json5-validation.ts:10](https://github.com/acao/codemirror-json-schema/blob/4c9ca0a/src/json5-validation.ts#L10)
+[json5-validation.ts:12](https://github.com/acao/codemirror-json-schema/blob/a73c517/src/json5-validation.ts#L12)
 
 ## Utilities
 
@@ -173,7 +170,7 @@ Mimics the behavior of `json-source-map`'s `parseJSONDocument` function, for jso
 
 #### Defined in
 
-[utils/parseJSON5Document.ts:28](https://github.com/acao/codemirror-json-schema/blob/4c9ca0a/src/utils/parseJSON5Document.ts#L28)
+[utils/parseJSON5Document.ts:28](https://github.com/acao/codemirror-json-schema/blob/a73c517/src/utils/parseJSON5Document.ts#L28)
 
 ---
 
@@ -200,4 +197,4 @@ Return parsed data and json5 pointers for a given codemirror EditorState
 
 #### Defined in
 
-[utils/parseJSON5Document.ts:14](https://github.com/acao/codemirror-json-schema/blob/4c9ca0a/src/utils/parseJSON5Document.ts#L14)
+[utils/parseJSON5Document.ts:14](https://github.com/acao/codemirror-json-schema/blob/a73c517/src/utils/parseJSON5Document.ts#L14)
