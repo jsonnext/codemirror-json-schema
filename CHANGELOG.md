@@ -10,7 +10,9 @@
 
 ### Minor Changes
 
-- [#63](https://github.com/acao/codemirror-json-schema/pull/63) [`a73c517`](https://github.com/acao/codemirror-json-schema/commit/a73c517722bbe9d37124993117c091e259eb6998) Thanks [@acao](https://github.com/acao)! - **breaking change**: only impacts those following the "custom usage" approach, it _does not_ effect users using the high level, "bundled" `jsonSchema()` or `json5Schema()` modes.
+- [#63](https://github.com/acao/codemirror-json-schema/pull/63) [`a73c517`](https://github.com/acao/codemirror-json-schema/commit/a73c517722bbe9d37124993117c091e259eb6998) Thanks [@acao](https://github.com/acao)!
+
+- **breaking change**: only impacts those following the "custom usage" approach, it _does not_ effect users using the high level, "bundled" `jsonSchema()` or `json5Schema()` modes.
 
   Previously, we ask you to pass schema to each of the linter, completion and hover extensions.
 
@@ -48,6 +50,8 @@
     stateExtensions(schema),
   ];
   ```
+
+- upgrade to use full `.js` import paths for `NodeNext` compatibility, however not all of our dependencies are compatible with this mode, thus we continue using the legacy `nodeResolution` strategy.
 
 ## 0.4.5
 
