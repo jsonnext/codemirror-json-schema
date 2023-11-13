@@ -90,3 +90,33 @@ export const testSchema2 = {
     },
   },
 } as JSONSchema7;
+
+export const testSchema3 = {
+  $ref: "#/definitions/fancyObject",
+  definitions: {
+    fancyObject: {
+      type: "object",
+      properties: {
+        foo: { type: "string" },
+        bar: { type: "number" },
+      },
+    },
+  },
+} as JSONSchema7;
+
+export const testSchema4 = {
+  allOf: [
+    {
+      $ref: "#/definitions/fancyObject",
+    },
+  ],
+  definitions: {
+    fancyObject: {
+      type: "object",
+      properties: {
+        foo: { type: "string" },
+        bar: { type: "number" },
+      },
+    },
+  },
+} as JSONSchema7;
