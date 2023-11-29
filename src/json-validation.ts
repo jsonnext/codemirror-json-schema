@@ -106,7 +106,7 @@ export class JSONValidation {
     try {
       errors = this.schema.validate(json.data);
     } catch {}
-
+    console.log(Array.from(json.pointers.keys()));
     if (!errors.length) return [];
     // reduce() because we want to filter out errors that don't have a pointer
     return errors.reduce((acc, error) => {
@@ -114,12 +114,22 @@ export class JSONValidation {
       const pointer = json.pointers.get(errorPath) as JSONPointerData;
       if (pointer) {
         // if the error is a property error, use the key position
-        const isPropertyError = error.name === "NoAdditionalPropertiesError";
+        const isKeyError =
+          error.name === "NoAdditionalPropertiesError" ||
+          error.name === "RequiredPropertyError";
         acc.push({
-          from: isPropertyError ? pointer.keyFrom : pointer.valueFrom,
-          to: isPropertyError ? pointer.keyTo : pointer.valueTo,
+          from: isKeyError ? pointer.keyFrom : pointer.valueFrom,
+          to: isKeyError ? pointer.keyTo : pointer.valueTo,
           // TODO: create a domnode and replace `` with <code></code>
           // renderMessage: () => error.message,
+          message: this.rewriteError(error),
+          severity: "error",
+          source: this.schemaTitle,
+        });
+      } else {
+        acc.push({
+          from: 0,
+          to: 0,
           message: this.rewriteError(error),
           severity: "error",
           source: this.schemaTitle,

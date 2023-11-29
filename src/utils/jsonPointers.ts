@@ -61,7 +61,15 @@ export const getJsonPointers = (
   const pointers: JSONPointersMap = new Map();
   json.iterate({
     enter: (type: SyntaxNodeRef) => {
-      if (type.name === "PropertyName") {
+      if (
+        type.name === "PropertyName" ||
+        type.name === "Object"
+        // type.name === "Number" ||
+        // type.name === "String" ||
+        // type.name === "Boolean" ||
+        // type.name === "Null" ||
+        // type.name === "Array"
+      ) {
         const pointer = getJsonPointerAt(state.doc, type.node);
 
         const { from: keyFrom, to: keyTo } = type.node;

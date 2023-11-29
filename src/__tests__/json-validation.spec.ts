@@ -53,10 +53,21 @@ describe("json-validation", () => {
       [[32, 37, "Additional property `bar` in `#` is not allowed"]]
     );
   });
+  it("should provide formatted error message when required fields are missing", () => {
+    expectErrors(
+      `{
+        "foo": "example",
+        "object": { "foo": "true" }
+  }`,
+      [[43, 46, "Expected property `foo` in `#/object`"]],
+      testSchema2
+    );
+  });
   it("should provide formatted error message for oneOf fields with more than 2 items", () => {
     expectErrors(
       `{
         "foo": "example",
+        "object": { "foo": "true" },
     "oneOfEg": 123
   }`,
       [[43, 46, 'Expected one of `"string"`, `"array"`, or `"boolean"`']],
@@ -67,6 +78,7 @@ describe("json-validation", () => {
     expectErrors(
       `{
         "foo": "example",
+        "object": { "foo": "true" },
     "oneOfEg2": 123
   }`,
       [[44, 47, 'Expected one of `"string"` or `"array"`']],
