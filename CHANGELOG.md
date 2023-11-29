@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.5.1
+
+### Patch Changes
+
+- [`7ed9e3e`](https://github.com/acao/codemirror-json-schema/commit/7ed9e3e206ec7a47f8f7dde7d2a50a75228ae0be) Thanks [@acao](https://github.com/acao)! - fix required fields validation
+
 ## 0.5.0
 
 ### Minor Changes
