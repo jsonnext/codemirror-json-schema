@@ -8,6 +8,7 @@ describe("parseJSONDocument", () => {
     const doc = parseJSONDocument(`{"object": { "foo": true }, "bar": 123}`);
     expect(doc.data).toEqual({ object: { foo: true }, bar: 123 });
     expect(Array.from(doc.pointers.keys())).toEqual([
+      "",
       "/object",
       "/object/foo",
       "/bar",
@@ -20,6 +21,7 @@ describe("parseJSON5Document", () => {
     const doc = parseJSON5Document(`{'obj"ect': { foo: true }, "bar": 123}`);
     expect(doc.data).toEqual({ ['obj"ect']: { foo: true }, bar: 123 });
     expect(Array.from(doc.pointers.keys())).toEqual([
+      "",
       '/obj"ect',
       '/obj"ect/foo',
       "/bar",

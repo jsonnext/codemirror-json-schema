@@ -106,7 +106,6 @@ export class JSONValidation {
     try {
       errors = this.schema.validate(json.data);
     } catch {}
-    console.log(Array.from(json.pointers.keys()));
     if (!errors.length) return [];
     // reduce() because we want to filter out errors that don't have a pointer
     return errors.reduce((acc, error) => {

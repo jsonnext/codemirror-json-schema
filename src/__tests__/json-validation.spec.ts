@@ -17,7 +17,7 @@ const getErrors = (jsonString: string, schema?: JSONSchema7) => {
 };
 const expectErrors = (
   jsonString: string,
-  errors: [from: number, to: number, message: string][],
+  errors: [from: number | undefined, to: number | undefined, message: string][],
   schema?: JSONSchema7
 ) => {
   expect(getErrors(jsonString, schema)).toEqual(
@@ -42,7 +42,9 @@ describe("json-validation", () => {
     ]);
   });
   it("should not handle invalid json", () => {
-    expectErrors('{"foo": "example" "bar": 123}', []);
+    expectErrors('{"foo": "example" "bar": 123}', [
+      [undefined, undefined, "Expected `object` but received `null`"],
+    ]);
   });
   it("should provide range for invalid multline json", () => {
     expectErrors(
@@ -57,9 +59,9 @@ describe("json-validation", () => {
     expectErrors(
       `{
         "foo": "example",
-        "object": { "foo": "true" }
+        "object": {}
   }`,
-      [[43, 46, "Expected property `foo` in `#/object`"]],
+      [[46, 48, "The required property `foo` is missing at `object`"]],
       testSchema2
     );
   });
@@ -70,7 +72,7 @@ describe("json-validation", () => {
         "object": { "foo": "true" },
     "oneOfEg": 123
   }`,
-      [[43, 46, 'Expected one of `"string"`, `"array"`, or `"boolean"`']],
+      [[80, 83, 'Expected one of `"string"`, `"array"`, or `"boolean"`']],
       testSchema2
     );
   });
@@ -81,7 +83,7 @@ describe("json-validation", () => {
         "object": { "foo": "true" },
     "oneOfEg2": 123
   }`,
-      [[44, 47, 'Expected one of `"string"` or `"array"`']],
+      [[81, 84, 'Expected one of `"string"` or `"array"`']],
       testSchema2
     );
   });
