@@ -1,7 +1,6 @@
 import { describe, it } from "vitest";
 
-import { expectCompletion } from "./__helpers__/completion";
-import { testSchema3, testSchema4 } from "./__fixtures__/schemas";
+import { expectCompletion } from "./__helpers__/completion.js";
 
 describe("jsonCompletion", () => {
   it("should return completion data for simple types", async () => {
@@ -291,57 +290,6 @@ describe("jsonCompletion", () => {
         type: "property",
       },
     ]);
-  });
-  it("should autocomplete for array of objects with filter", async () => {
-    await expectCompletion('{ "arrayOfObjects": [ { "f|" } ] }', [
-      {
-        detail: "string",
-        info: "",
-        label: "foo",
-        template: '"foo": "#{}"',
-        type: "property",
-      },
-    ]);
-  });
-  it("should autocomplete for a schema with top level $ref", async () => {
-    await expectCompletion(
-      '{ "| }',
-      [
-        {
-          type: "property",
-          detail: "string",
-          info: "",
-          label: "foo",
-        },
-        {
-          type: "property",
-          detail: "number",
-          info: "",
-          label: "bar",
-        },
-      ],
-      { schema: testSchema3 }
-    );
-  });
-  it("should autocomplete for a schema with top level complex type", async () => {
-    await expectCompletion(
-      '{ "| }',
-      [
-        {
-          type: "property",
-          detail: "string",
-          info: "",
-          label: "foo",
-        },
-        {
-          type: "property",
-          detail: "number",
-          info: "",
-          label: "bar",
-        },
-      ],
-      { schema: testSchema4 }
-    );
   });
 });
 

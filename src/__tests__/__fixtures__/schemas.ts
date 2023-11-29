@@ -25,6 +25,7 @@ export const testSchema2 = {
           description: "an elegant string",
         },
       },
+      required: ["foo"],
       additionalProperties: false,
     },
     oneOfEg: {
@@ -71,7 +72,7 @@ export const testSchema2 = {
       type: "boolean",
     },
   },
-  required: ["foo", "object.foo"],
+  required: ["foo", "object"],
   additionalProperties: false,
   definitions: {
     fancyObject: {

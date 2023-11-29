@@ -63,7 +63,7 @@ describe("jsonPointerForPosition for json5", () => {
 describe("getJsonPointers", () => {
   it("should return a map of all pointers for a document", () => {
     const state = EditorState.create({
-      doc: '{"object": { "foo": true }, "bar": 123}',
+      doc: '{"object": { "foo": true }, "bar": 123, "baz": [1,2,3], "boop": [{"foo": true}]}',
       extensions: [json()],
     });
     const pointers = getJsonPointers(state);
@@ -79,6 +79,25 @@ describe("getJsonPointers", () => {
       valueFrom: 35,
       valueTo: 38,
     });
+    expect(pointers.get("/baz")).toEqual({
+      keyFrom: 40,
+      keyTo: 45,
+      valueFrom: 47,
+      valueTo: 54,
+    });
+    expect(pointers.get("/boop/0")).toEqual({
+      keyFrom: 65,
+      keyTo: 78,
+      valueFrom: 78,
+      valueTo: 79,
+    });
+    // TODO: return pointers for all array indexes, not just objects
+    // expect(pointers.get("/baz/0")).toEqual({
+    //   keyFrom: 40,
+    //   keyTo: 45,
+    //   valueFrom: 47,
+    //   valueTo: 55,
+    // });
   });
 });
 

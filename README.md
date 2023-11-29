@@ -29,7 +29,7 @@ Based on whether you want to support json4, json5 or both, you will need to inst
 
 ### Breaking Changes:
 
-- 0.5.0 - this breaking change _does not_ effect users using `jsonSchema()` or `json5Schema()` modes, but those using the "custom path".
+- 0.5.0 - this breaking change only impacts those following the "custom usage" approach, it _does not_ effect users using the high level, "bundled" `jsonSchema()` or `json5Schema()` modes. See the custom usages below to learn how to use the new `stateExtensions` and `handleRefresh` exports.
 
 ### json4
 
