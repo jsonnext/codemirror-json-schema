@@ -1,5 +1,15 @@
 # codemirror-json-schema
 
+## 0.6.0
+
+### Minor Changes
+
+- [#64](https://github.com/acao/codemirror-json-schema/pull/64) [`0aaf308`](https://github.com/acao/codemirror-json-schema/commit/0aaf3080f9451bdbdc45f5a812ce50c25f354c57) Thanks [@acao](https://github.com/acao)! - **Breaking Change**: replaces backticks with `<code>` blocks in hover and completion! This just seemed to make more sense.
+
+  - upgrade `json-schema-library` to the latest 8.x with patch fixes, remove "forked" pointer step logic
+  - after autocompleting a property, when there is empty value, provide full autocomplete options
+  - as noted in the breaking change notice, all psuedo-markdown backtick \`\`delimiters are replaced with`<code>`
+
 ## 0.5.1
 
 ### Patch Changes
