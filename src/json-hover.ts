@@ -1,10 +1,13 @@
 import { type EditorView, Tooltip } from "@codemirror/view";
-import { type Draft, Draft04, JsonSchema } from "json-schema-library";
-import type { JSONSchema7 } from "json-schema";
+import {
+  type Draft,
+  Draft04,
+  JsonSchema,
+  isJsonError,
+} from "json-schema-library";
 
-import { JSONMode, jsonPointerForPosition } from "./utils/jsonPointers.js";
+import { jsonPointerForPosition } from "./utils/jsonPointers.js";
 import { joinWithOr } from "./utils/formatting.js";
-import getSchema from "./utils/schema-lib/getSchema.js";
 import { debug } from "./utils/debug.js";
 import { Side } from "./types.js";
 import { el } from "./utils/dom.js";
@@ -88,12 +91,16 @@ export class JSONHover {
       return null;
     }
     // if the data is valid, we can infer a type for complex types
-    let subSchema = getSchema(this.schema, pointer, data);
-    if (subSchema.type === "error" && data !== undefined) {
-      // if the data is invalid, we won't get the type - try again without the data
-      subSchema = getSchema(this.schema, pointer, undefined);
-      if (subSchema.type === "error") {
-        return { pointer };
+    let subSchema = this.schema.getSchema({
+      pointer,
+      data,
+      withSchemaWarning: true,
+    });
+    if (isJsonError(subSchema)) {
+      if (subSchema?.data.schema["$ref"]) {
+        subSchema = this.schema.resolveRef(subSchema);
+      } else {
+        subSchema = subSchema?.data.schema;
       }
     }
 
@@ -109,7 +116,15 @@ export class JSONHover {
           text: message,
         }),
         el("div", { class: "cm6-json-schema-hover--code-wrapper" }, [
-          el("code", { class: "cm6-json-schema-hover--code", text: typeInfo }),
+          typeInfo.includes("<code>")
+            ? el("div", {
+                class: "cm6-json-schema-hover--code",
+                inner: typeInfo,
+              })
+            : el("code", {
+                class: "cm6-json-schema-hover--code",
+                text: typeInfo,
+              }),
         ]),
       ]);
     }
@@ -138,6 +153,15 @@ export class JSONHover {
       typeInfo = Array.isArray(schema.type)
         ? joinWithOr(schema.type)
         : schema.type;
+    }
+    if (schema.enum) {
+      typeInfo = `<code>enum</code>: ${joinWithOr(schema.enum)}`;
+    }
+    if (schema.format) {
+      typeInfo += ` <code>format</code>: ${schema.format}`;
+    }
+    if (schema.pattern) {
+      typeInfo += ` <code>pattern</code>: ${schema.pattern}`;
     }
     if (schema.description) {
       message = schema.description;

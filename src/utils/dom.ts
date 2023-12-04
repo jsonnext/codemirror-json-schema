@@ -6,7 +6,7 @@
 //   return e;
 // }
 
-type Attributes = "class" | "text" | "id" | "role" | "aria-label";
+type Attributes = "class" | "text" | "id" | "role" | "aria-label" | "inner";
 
 export function el(
   tagName: string,
@@ -17,6 +17,10 @@ export function el(
   Object.entries(attributes).forEach(([k, v]) => {
     if (k === "text") {
       e.innerText = v;
+      return;
+    }
+    if (k === "inner") {
+      e.innerHTML = v;
       return;
     }
     e.setAttribute(k, v);

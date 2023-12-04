@@ -75,7 +75,8 @@ describe("JSONHover#getHoverTexts", () => {
     );
     expect(hoverTexts).toEqual({
       message: "an example oneOf",
-      typeInfo: "oneOf: `string`, `array`, or `boolean`",
+      typeInfo:
+        "oneOf: <code>string</code>, <code>array</code>, or <code>boolean</code>",
     });
   });
   it("should provide oneOf texts with valid values", async () => {
@@ -86,7 +87,8 @@ describe("JSONHover#getHoverTexts", () => {
     );
     expect(hoverTexts).toEqual({
       message: "an example oneOf",
-      typeInfo: "oneOf: `string`, `array`, or `boolean`",
+      typeInfo:
+        "oneOf: <code>string</code>, <code>array</code>, or <code>boolean</code>",
     });
   });
 });
