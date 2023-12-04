@@ -47,7 +47,11 @@ describe("json-validation", () => {
   });
   it("should not handle invalid json", () => {
     expectErrors('{"foo": "example" "bar": 123}', [
-      [undefined, undefined, "Expected `object` but received `null`"],
+      [
+        undefined,
+        undefined,
+        "Expected <code>object</code> but received <code>null</code>",
+      ],
     ]);
   });
   it("should provide range for invalid multiline json", () => {
@@ -65,7 +69,13 @@ describe("json-validation", () => {
         "foo": "example",
         "object": {}
   }`,
-      [[46, 48, "The required property `foo` is missing at `object`"]],
+      [
+        [
+          46,
+          48,
+          "The required property <code>foo</code> is missing at <code>object</code>",
+        ],
+      ],
       testSchema2
     );
   });
