@@ -47,11 +47,7 @@ describe("json-validation", () => {
   });
   it("should not handle invalid json", () => {
     expectErrors('{"foo": "example" "bar": 123}', [
-      [
-        undefined,
-        undefined,
-        "Expected <code>object</code> but received <code>null</code>",
-      ],
+      [0, 0, "Expected <code>object</code> but received <code>null</code>"],
     ]);
   });
   it("should provide range for invalid multiline json", () => {

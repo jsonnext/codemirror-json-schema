@@ -117,37 +117,63 @@ export class JSONValidation {
     if (!errors.length) return [];
     // reduce() because we want to filter out errors that don't have a pointer
     return errors.reduce((acc, error) => {
-      const errorPath = getErrorPath(error);
-      const pointer = json.pointers.get(errorPath) as JSONPointerData;
-
-      if (pointer) {
-        // if the error is a property error, use the key position
-        const isKeyError =
-          error.name === "NoAdditionalPropertiesError" ||
-          error.name === "RequiredPropertyError";
+      const pushRoot = () => {
         const errorString = this.rewriteError(error);
         acc.push({
-          from: isKeyError ? pointer.keyFrom : pointer.valueFrom,
-          to: isKeyError ? pointer.keyTo : pointer.valueTo,
-          // TODO: create a domnode and replace `` with <code></code>
-          // renderMessage: () => error.message,
+          from: 0,
+          to: 0,
           message: errorString,
+          severity: "error",
+          source: this.schemaTitle,
           renderMessage: () => {
             const dom = el("div", {});
             dom.innerHTML = errorString;
             return dom;
           },
-          severity: "error",
-          source: this.schemaTitle,
         });
+      };
+      const errorPath = getErrorPath(error);
+      const pointer = json.pointers.get(errorPath) as JSONPointerData;
+      if (
+        error.name === "InvalidPropertyError" ??
+        error.name === "MaxPropertiesError" ??
+        error.name === "MinPropertiesError"
+      ) {
+        pushRoot();
+      }
+      if (pointer) {
+        // if the error is a property error, use the key position
+        const isKeyError = [
+          "NoAdditionalPropertiesError",
+          "RequiredPropertyError",
+          "InvalidPropertyNameError",
+          "ForbiddenPropertyError",
+          "UndefinedValueError",
+        ].includes(error.name);
+        const errorString = this.rewriteError(error);
+        const from = isKeyError ? pointer.keyFrom : pointer.valueFrom;
+        const to = isKeyError ? pointer.keyTo : pointer.valueTo;
+        // if no from/to value is returned
+        if (to && from) {
+          acc.push({
+            from,
+            to,
+            // TODO: create a domnode and replace `` with <code></code>
+            // renderMessage: () => error.message,
+            message: errorString,
+            renderMessage: () => {
+              const dom = el("div", {});
+              dom.innerHTML = errorString;
+              return dom;
+            },
+            severity: "error",
+            source: this.schemaTitle,
+          });
+        } else {
+          pushRoot();
+        }
       } else {
-        acc.push({
-          from: 0,
-          to: 0,
-          message: this.rewriteError(error),
-          severity: "error",
-          source: this.schemaTitle,
-        });
+        pushRoot();
       }
       return acc;
     }, [] as Diagnostic[]);
