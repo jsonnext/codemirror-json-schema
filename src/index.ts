@@ -3,6 +3,7 @@ export { jsonCompletion } from "./json-completion.js";
 export {
   jsonSchemaLinter,
   type JSONValidationOptions,
+  handleRefresh,
 } from "./json-validation.js";
 
 export {
