@@ -47,6 +47,15 @@ export function jsonSchemaLinter(options?: JSONValidationOptions) {
   };
 }
 
+// all the error types that apply to a specific key or value
+const positionalErrors = [
+  "NoAdditionalPropertiesError",
+  "RequiredPropertyError",
+  "InvalidPropertyNameError",
+  "ForbiddenPropertyError",
+  "UndefinedValueError",
+];
+
 export class JSONValidation {
   private schema: Draft | null = null;
 
@@ -135,7 +144,6 @@ export class JSONValidation {
       const errorPath = getErrorPath(error);
       const pointer = json.pointers.get(errorPath) as JSONPointerData;
       if (
-        error.name === "InvalidPropertyError" ??
         error.name === "MaxPropertiesError" ??
         error.name === "MinPropertiesError"
       ) {
@@ -143,18 +151,12 @@ export class JSONValidation {
       }
       if (pointer) {
         // if the error is a property error, use the key position
-        const isKeyError = [
-          "NoAdditionalPropertiesError",
-          "RequiredPropertyError",
-          "InvalidPropertyNameError",
-          "ForbiddenPropertyError",
-          "UndefinedValueError",
-        ].includes(error.name);
+        const isKeyError = positionalErrors.includes(error.name);
         const errorString = this.rewriteError(error);
         const from = isKeyError ? pointer.keyFrom : pointer.valueFrom;
         const to = isKeyError ? pointer.keyTo : pointer.valueTo;
-        // if no from/to value is returned
-        if (to && from) {
+        // skip error if no from/to value is found
+        if (to !== undefined && from !== undefined) {
           acc.push({
             from,
             to,
@@ -169,11 +171,7 @@ export class JSONValidation {
             severity: "error",
             source: this.schemaTitle,
           });
-        } else {
-          pushRoot();
         }
-      } else {
-        pushRoot();
       }
       return acc;
     }, [] as Diagnostic[]);
