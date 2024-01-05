@@ -47,6 +47,15 @@ export function jsonSchemaLinter(options?: JSONValidationOptions) {
   };
 }
 
+// all the error types that apply to a specific key or value
+const positionalErrors = [
+  "NoAdditionalPropertiesError",
+  "RequiredPropertyError",
+  "InvalidPropertyNameError",
+  "ForbiddenPropertyError",
+  "UndefinedValueError",
+];
+
 export class JSONValidation {
   private schema: Draft | null = null;
 
@@ -117,37 +126,52 @@ export class JSONValidation {
     if (!errors.length) return [];
     // reduce() because we want to filter out errors that don't have a pointer
     return errors.reduce((acc, error) => {
-      const errorPath = getErrorPath(error);
-      const pointer = json.pointers.get(errorPath) as JSONPointerData;
-
-      if (pointer) {
-        // if the error is a property error, use the key position
-        const isKeyError =
-          error.name === "NoAdditionalPropertiesError" ||
-          error.name === "RequiredPropertyError";
+      const pushRoot = () => {
         const errorString = this.rewriteError(error);
         acc.push({
-          from: isKeyError ? pointer.keyFrom : pointer.valueFrom,
-          to: isKeyError ? pointer.keyTo : pointer.valueTo,
-          // TODO: create a domnode and replace `` with <code></code>
-          // renderMessage: () => error.message,
+          from: 0,
+          to: 0,
           message: errorString,
+          severity: "error",
+          source: this.schemaTitle,
           renderMessage: () => {
             const dom = el("div", {});
             dom.innerHTML = errorString;
             return dom;
           },
-          severity: "error",
-          source: this.schemaTitle,
         });
-      } else {
-        acc.push({
-          from: 0,
-          to: 0,
-          message: this.rewriteError(error),
-          severity: "error",
-          source: this.schemaTitle,
-        });
+      };
+      const errorPath = getErrorPath(error);
+      const pointer = json.pointers.get(errorPath) as JSONPointerData;
+      if (
+        error.name === "MaxPropertiesError" ??
+        error.name === "MinPropertiesError"
+      ) {
+        pushRoot();
+      }
+      if (pointer) {
+        // if the error is a property error, use the key position
+        const isKeyError = positionalErrors.includes(error.name);
+        const errorString = this.rewriteError(error);
+        const from = isKeyError ? pointer.keyFrom : pointer.valueFrom;
+        const to = isKeyError ? pointer.keyTo : pointer.valueTo;
+        // skip error if no from/to value is found
+        if (to !== undefined && from !== undefined) {
+          acc.push({
+            from,
+            to,
+            // TODO: create a domnode and replace `` with <code></code>
+            // renderMessage: () => error.message,
+            message: errorString,
+            renderMessage: () => {
+              const dom = el("div", {});
+              dom.innerHTML = errorString;
+              return dom;
+            },
+            severity: "error",
+            source: this.schemaTitle,
+          });
+        }
       }
       return acc;
     }, [] as Diagnostic[]);
