@@ -1,5 +1,13 @@
 # codemirror-json-schema
 
+## 0.6.1
+
+### Patch Changes
+
+- [#81](https://github.com/acao/codemirror-json-schema/pull/81) [`ed534d7`](https://github.com/acao/codemirror-json-schema/commit/ed534d703801d174779e099891a2905e6b60a6af) Thanks [@acao](https://github.com/acao)! - export `handleRefresh`
+
+- [#83](https://github.com/acao/codemirror-json-schema/pull/83) [`efd54f0`](https://github.com/acao/codemirror-json-schema/commit/efd54f022cad7ba924b444356ffa6f0f6c704916) Thanks [@acao](https://github.com/acao)! - fix undefined position bug with json-schema-library upgrade
+
 ## 0.6.0
 
 ### Minor Changes
