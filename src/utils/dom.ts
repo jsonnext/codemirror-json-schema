@@ -1,11 +1,3 @@
-// export function el(tagName: string, className?: string) {
-//   const e = document.createElement(tagName);
-//   if (className) {
-//     e.classList.add(className);
-//   }
-//   return e;
-// }
-
 type Attributes = "class" | "text" | "id" | "role" | "aria-label" | "inner";
 
 export function el(
@@ -27,13 +19,4 @@ export function el(
   });
   children.forEach((c) => e.appendChild(c));
   return e;
-}
-
-export function escapeHtml(unsafe: string) {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }

@@ -47,7 +47,7 @@ class CompletionCollector {
   }
 }
 
-interface JSONCompletionOptions {
+export interface JSONCompletionOptions {
   mode?: JSONMode;
 }
 
@@ -350,7 +350,6 @@ export class JSONCompletion {
       ? this.expandSchemaProperty(propertySchema, this.schema!)
       : propertySchema;
 
-    const isJSON5 = this.mode === MODES.JSON5;
     let resultText = this.getInsertTextForPropertyName(key, rawWord);
 
     if (!addValue) {
@@ -936,19 +935,6 @@ export class JSONCompletion {
  */
 export function jsonCompletion(opts: JSONCompletionOptions = {}) {
   const completion = new JSONCompletion(opts);
-  return function jsonDoCompletion(ctx: CompletionContext) {
-    return completion.doComplete(ctx);
-  };
-}
-
-/**
- * provides a JSON schema enabled autocomplete extension for codemirror and json5
- * @group Codemirror Extensions
- */
-export function json5Completion(
-  opts: Omit<JSONCompletionOptions, "mode"> = {}
-) {
-  const completion = new JSONCompletion({ ...opts, mode: "json5" });
   return function jsonDoCompletion(ctx: CompletionContext) {
     return completion.doComplete(ctx);
   };

@@ -11,7 +11,7 @@ import { el } from "./utils/dom.js";
 import { renderMarkdown } from "./utils/markdown.js";
 import { MODES } from "./constants.js";
 import { parseYAMLDocumentState } from "./utils/parse-yaml-document.js";
-import { parseJSON5DocumentState } from "./json5.js";
+import { parseJSON5DocumentState } from "./utils/parseJSON5Document.js";
 
 const getDefaultParser = (mode: JSONMode): typeof parseJSONDocumentState => {
   switch (mode) {

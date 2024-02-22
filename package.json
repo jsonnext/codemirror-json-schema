@@ -42,16 +42,16 @@
       "default": "./cjs/index.js"
     },
     "./json5": {
-      "import": "./dist/json5.js",
-      "types": "./dist/json5.d.ts",
-      "require": "./cjs/json5.js",
-      "default": "./cjs/json5.js"
+      "import": "./dist/json5/index.js",
+      "types": "./dist/json5/index.d.ts",
+      "require": "./cjs/json5/index.js",
+      "default": "./cjs/json5/index.js"
     },
     "./yaml": {
-      "import": "./dist/yaml.js",
-      "types": "./dist/yaml.d.ts",
-      "require": "./cjs/yaml.js",
-      "default": "./cjs/yaml.js"
+      "import": "./dist/yaml/index.js",
+      "types": "./dist/yaml/index.d.ts",
+      "require": "./cjs/yaml/index.js",
+      "default": "./cjs/yaml/index.js"
     }
   },
   "repository": "github:acao/codemirror-json-schema",
