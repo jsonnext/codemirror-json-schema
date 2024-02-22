@@ -5,4 +5,10 @@ export const debug = {
     }
     console.log(...args);
   },
+  warn: (...args: any[]) => {
+    if (process.env.NODE_ENV !== "development") {
+      return;
+    }
+    console.warn(...args);
+  },
 };

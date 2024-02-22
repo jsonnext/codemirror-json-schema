@@ -1,10 +1,14 @@
 import { describe, it } from "vitest";
 
 import { expectCompletion } from "./__helpers__/completion.js";
+import { MODES } from "../constants.js";
 
-describe("jsonCompletion", () => {
-  it("should return completion data for simple types", async () => {
-    await expectCompletion('{ "f| }', [
+describe.each([
+  {
+    name: "return completion data for simple types",
+    mode: MODES.JSON,
+    docs: ['{ "f| }', "{ f| }"],
+    expectedResults: [
       {
         label: "foo",
         type: "property",
@@ -12,10 +16,13 @@ describe("jsonCompletion", () => {
         info: "",
         template: '"foo": "#{}"',
       },
-    ]);
-  });
-  it("should return completion data for simple types", async () => {
-    await expectCompletion('{ "one| }', [
+    ],
+  },
+  {
+    name: "return completion data for simple types (multiple)",
+    mode: MODES.JSON,
+    docs: ['{ "one| }'],
+    expectedResults: [
       {
         label: "oneOfEg",
         type: "property",
@@ -37,10 +44,13 @@ describe("jsonCompletion", () => {
         template: '"oneOfObject": #{}',
         type: "property",
       },
-    ]);
-  });
-  it("should include defaults for enum when available", async () => {
-    await expectCompletion('{ "en| }', [
+    ],
+  },
+  {
+    name: "include defaults for enum when available",
+    mode: MODES.JSON,
+    docs: ['{ "en| }'],
+    expectedResults: [
       {
         label: "enum1",
         type: "property",
@@ -55,30 +65,42 @@ describe("jsonCompletion", () => {
         info: "an example enum without default",
         template: '"enum2": #{}',
       },
-    ]);
-  });
-  it("should include value completions for enum", async () => {
-    await expectCompletion('{ "enum1": "|" }', [
+    ],
+  },
+  {
+    name: "include value completions for enum",
+    mode: MODES.JSON,
+    docs: ['{ "enum1": "|" }'],
+    expectedResults: [
       {
-        label: '"foo"',
+        label: "foo",
+        apply: '"foo"',
         info: "an example enum with default bar",
       },
       {
-        label: '"bar"',
+        label: "bar",
+        apply: '"bar"',
         detail: "Default value",
       },
-    ]);
-  });
-  it("should include value completions for enum with filter", async () => {
-    await expectCompletion('{ "enum1": "f|" }', [
+    ],
+  },
+  {
+    name: "include value completions for enum with filter",
+    mode: MODES.JSON,
+    docs: ['{ "enum1": "f|" }'],
+    expectedResults: [
       {
-        label: '"foo"',
+        label: "foo",
+        apply: '"foo"',
         info: "an example enum with default bar",
       },
-    ]);
-  });
-  it("should include defaults for boolean when available", async () => {
-    await expectCompletion('{ "booleanW| }', [
+    ],
+  },
+  {
+    name: "include defaults for boolean when available",
+    mode: MODES.JSON,
+    docs: ['{ "booleanW| }'],
+    expectedResults: [
       {
         type: "property",
         detail: "boolean",
@@ -86,23 +108,31 @@ describe("jsonCompletion", () => {
         label: "booleanWithDefault",
         template: '"booleanWithDefault": ${true}',
       },
-    ]);
-  });
+    ],
+  },
   // TODO: should provide true/false completions
-  it.skip("should include value completions for boolean", async () => {
-    await expectCompletion('{ "booleanWithDefault": | }', [
-      {
-        detail: "boolean",
-        label: "true",
-      },
-      {
-        detail: "boolean",
-        label: "false",
-      },
-    ]);
-  });
-  it("should include insert text for objects", async () => {
-    await expectCompletion('{ "ob| }', [
+  // {
+  //   name: "include value completions for boolean",
+  // mode: MODES.JSON,
+  // docs: ['{ "booleanWithDefault": | }',
+  //  },
+  //   ],
+  //   expectedResults: [
+  //     {
+  //       detail: "boolean",
+  //       label: "true",
+  //     },
+  //     {
+  //       detail: "boolean",
+  //       label: "false",
+  //     },
+  //   ],
+  // },
+  {
+    name: "include insert text for objects",
+    mode: MODES.JSON,
+    docs: ['{ "ob| }'],
+    expectedResults: [
       {
         type: "property",
         detail: "object",
@@ -110,11 +140,14 @@ describe("jsonCompletion", () => {
         label: "object",
         template: '"object": {#{}}',
       },
-    ]);
-  });
+    ],
+  },
   // this has regressed for json4 only for some reason
-  it("should include insert text for nested object properties", async () => {
-    await expectCompletion('{ "object": { "|" } }', [
+  {
+    name: "include insert text for nested object properties",
+    mode: MODES.JSON,
+    docs: ['{ "object": { "|" } }', '{ "object": { "| } }'],
+    expectedResults: [
       {
         detail: "string",
         info: "an elegant string",
@@ -122,11 +155,13 @@ describe("jsonCompletion", () => {
         template: '"foo": "#{}"',
         type: "property",
       },
-    ]);
-  });
-  // TODO: accidentally steps up to the parent pointer
-  it("should include insert text for nested object properties", async () => {
-    await expectCompletion(`{ "object": { '| } }`, [
+    ],
+  },
+  {
+    name: "include insert text for nested object properties with filter",
+    mode: MODES.JSON,
+    docs: ['{ "object": { "f|" } }'],
+    expectedResults: [
       {
         detail: "string",
         info: "an elegant string",
@@ -134,21 +169,13 @@ describe("jsonCompletion", () => {
         template: '"foo": "#{}"',
         type: "property",
       },
-    ]);
-  });
-  it("should include insert text for nested object properties with filter", async () => {
-    await expectCompletion('{ "object": { "f|" } }', [
-      {
-        detail: "string",
-        info: "an elegant string",
-        label: "foo",
-        template: '"foo": "#{}"',
-        type: "property",
-      },
-    ]);
-  });
-  it("should autocomplete for oneOf with nested definitions and filter", async () => {
-    await expectCompletion('{ "oneOfObject": { "f|" } }', [
+    ],
+  },
+  {
+    name: "autocomplete for oneOf with nested definitions and filter",
+    mode: MODES.JSON,
+    docs: ['{ "oneOfObject": { "f|" } }'],
+    expectedResults: [
       {
         detail: "string",
         info: "",
@@ -156,10 +183,13 @@ describe("jsonCompletion", () => {
         template: '"foo": "#{}"',
         type: "property",
       },
-    ]);
-  });
-  it("should autocomplete for oneOf with nested definitions", async () => {
-    await expectCompletion('{ "oneOfObject": { "|" } }', [
+    ],
+  },
+  {
+    name: "autocomplete for oneOf with nested definitions",
+    mode: MODES.JSON,
+    docs: ['{ "oneOfObject": { "|" } }'],
+    expectedResults: [
       {
         detail: "string",
         info: "",
@@ -188,43 +218,14 @@ describe("jsonCompletion", () => {
         template: '"banana": #{0}',
         type: "property",
       },
-    ]);
-    it("should autocomplete for oneOf without quotes", async () => {
-      await expectCompletion('{ "oneOfObject": { | } }', [
-        {
-          detail: "string",
-          info: "",
-          label: "foo",
-          template: '"foo": "#{}"',
-          type: "property",
-        },
-        {
-          detail: "number",
-          info: "",
-          label: "bar",
-          template: '"bar": #{0}',
-          type: "property",
-        },
-        {
-          detail: "string",
-          info: "",
-          label: "apple",
-          template: '"apple": "#{}"',
-          type: "property",
-        },
-        {
-          detail: "number",
-          info: "",
-          label: "banana",
-          template: '"banana": #{0}',
-          type: "property",
-        },
-      ]);
-    });
-  });
+    ],
+  },
   // TODO: completion for array of objects should enhance the template
-  it('should autocomplete for array of objects with "items"', async () => {
-    await expectCompletion('{ "array| }', [
+  {
+    name: "autocomplete for array of objects with items",
+    mode: MODES.JSON,
+    docs: ['{ "array| }'],
+    expectedResults: [
       {
         type: "property",
         detail: "array",
@@ -239,10 +240,13 @@ describe("jsonCompletion", () => {
         label: "arrayOfOneOf",
         template: '"arrayOfOneOf": [#{}]',
       },
-    ]);
-  });
-  it('should autocomplete for array of objects with "items"', async () => {
-    await expectCompletion('{ "arrayOfObjects": [ { "|" } ] }', [
+    ],
+  },
+  {
+    name: "autocomplete for array of objects with items (array of objects)",
+    mode: MODES.JSON,
+    docs: ['{ "arrayOfObjects": [ { "|" } ] }'],
+    expectedResults: [
       {
         detail: "string",
         info: "",
@@ -257,10 +261,13 @@ describe("jsonCompletion", () => {
         template: '"bar": #{0}',
         type: "property",
       },
-    ]);
-  });
-  it('should autocomplete for array of objects with "items"', async () => {
-    await expectCompletion('{ "arrayOfOneOf": [ { "|" } ] }', [
+    ],
+  },
+  {
+    name: "autocomplete for array of objects with items (array of oneOf)",
+    mode: MODES.JSON,
+    docs: ['{ "arrayOfOneOf": [ { "|" } ] }'],
+    expectedResults: [
       {
         detail: "string",
         info: "",
@@ -289,176 +296,365 @@ describe("jsonCompletion", () => {
         template: '"banana": #{0}',
         type: "property",
       },
-    ]);
-  });
-});
-
-describe("json5Completion", () => {
-  it("should return bare property key when no quotes are used", async () => {
-    await expectCompletion(
-      "{ f| }",
-      [
-        {
-          label: "foo",
-          type: "property",
-          detail: "string",
-          info: "",
-          template: "foo: '#{}'",
-        },
-      ],
-      { mode: "json5" }
-    );
-  });
-  it("should return template for '", async () => {
-    await expectCompletion(
-      "{ 'one|' }",
-      [
-        {
-          label: "oneOfEg",
-          type: "property",
-          detail: "",
-          info: "an example oneOf",
-          template: "'oneOfEg': #{}",
-        },
-        {
-          label: "oneOfEg2",
-          type: "property",
-          detail: "",
-          info: "",
-          template: "'oneOfEg2': #{}",
-        },
-        {
-          detail: "",
-          info: "",
-          label: "oneOfObject",
-          template: "'oneOfObject': #{}",
-          type: "property",
-        },
-      ],
-      { mode: "json5" }
-    );
-  });
-  it("should include defaults for enum when available", async () => {
-    await expectCompletion(
-      "{ en| }",
-      [
-        {
-          label: "enum1",
-          type: "property",
-          detail: "",
-          info: "an example enum with default bar",
-          template: 'enum1: "${bar}"',
-        },
-        {
-          label: "enum2",
-          type: "property",
-          detail: "",
-          info: "an example enum without default",
-          template: "enum2: #{}",
-        },
-      ],
-      { mode: "json5" }
-    );
-  });
-  // TODO: should autocomplete for boolean values
-  it.skip("should include value completions for boolean", async () => {
-    await expectCompletion(
-      '{ "booleanWithDefault": | }',
-      [
-        {
-          detail: "boolean",
-          label: "true",
-        },
-        {
-          detail: "boolean",
-          label: "false",
-        },
-      ],
+    ],
+  },
+  // JSON5
+  {
+    name: "return bare property key when no quotes are used",
+    mode: MODES.JSON5,
+    docs: ["{ f| }", "{ f| }"],
+    expectedResults: [
       {
-        mode: "json5",
-      }
-    );
-  });
-  it("should provide enum values on completion", async () => {
-    await expectCompletion(
-      "{ enum1: '| }",
-      [
-        {
-          label: '"foo"',
-          info: "an example enum with default bar",
-        },
-        {
-          label: '"bar"',
-          detail: "Default value",
-        },
-      ],
-      { mode: "json5" }
-    );
-  });
-  it("should include defaults for boolean when available", async () => {
-    await expectCompletion(
-      "{ booleanW| }",
-      [
-        {
-          type: "property",
-          detail: "boolean",
-          info: "an example boolean with default",
-          label: "booleanWithDefault",
-          template: "booleanWithDefault: ${true}",
-        },
-      ],
-      { mode: "json5" }
-    );
-  });
-  it("should include insert text for nested object properties", async () => {
-    await expectCompletion(
-      "{ object: { f|  }",
-      [
-        {
-          type: "property",
-          detail: "string",
-          info: "an elegant string",
-          label: "foo",
-          template: "foo: '#{}'",
-        },
-      ],
-      { mode: "json5" }
-    );
-  });
-  it("should include insert text for nested oneOf object properties with a single quote", async () => {
-    await expectCompletion(
-      "{ oneOfObject: { '|'  }",
-      [
-        {
-          type: "property",
-          detail: "string",
-          info: "",
-          label: "foo",
-          template: "'foo': '#{}'",
-        },
-        {
-          type: "property",
-          detail: "number",
-          info: "",
-          label: "bar",
-          template: "'bar': #{0}",
-        },
-        {
-          type: "property",
-          detail: "string",
-          info: "",
-          label: "apple",
-          template: "'apple': '#{}'",
-        },
-        {
-          type: "property",
-          detail: "number",
-          info: "",
-          label: "banana",
-          template: "'banana': #{0}",
-        },
-      ],
-      { mode: "json5" }
-    );
+        label: "foo",
+        type: "property",
+        detail: "string",
+        info: "",
+        template: "foo: '#{}'",
+      },
+    ],
+  },
+  {
+    name: "return template for '",
+    mode: MODES.JSON5,
+    docs: ["{ 'one|' }"],
+    expectedResults: [
+      {
+        label: "oneOfEg",
+        type: "property",
+        detail: "",
+        info: "an example oneOf",
+        template: "'oneOfEg': #{}",
+      },
+      {
+        label: "oneOfEg2",
+        type: "property",
+        detail: "",
+        info: "",
+        template: "'oneOfEg2': #{}",
+      },
+      {
+        detail: "",
+        info: "",
+        label: "oneOfObject",
+        template: "'oneOfObject': #{}",
+        type: "property",
+      },
+    ],
+  },
+  {
+    name: "include defaults for enum when available",
+    mode: MODES.JSON5,
+    docs: ["{ en| }"],
+    expectedResults: [
+      {
+        label: "enum1",
+        type: "property",
+        detail: "",
+        info: "an example enum with default bar",
+        template: "enum1: '${bar}'",
+      },
+      {
+        label: "enum2",
+        type: "property",
+        detail: "",
+        info: "an example enum without default",
+        template: "enum2: #{}",
+      },
+    ],
+  },
+  // TODO: should autocomplete for boolean values
+  // {
+  //   name: "include value completions for boolean",
+  //   mode: MODES.JSON5,
+  //   docs: ['{ "booleanWithDefault": | }'],
+  //   expectedResults: [
+  //     {
+  //       detail: "boolean",
+  //       label: "true",
+  //     },
+  //     {
+  //       detail: "boolean",
+  //       label: "false",
+  //     },
+  //   ],
+  // },
+  {
+    name: "provide enum values on completion",
+    mode: MODES.JSON5,
+    docs: ["{ enum1: '| }"],
+    expectedResults: [
+      {
+        label: "foo",
+        apply: "'foo'",
+        info: "an example enum with default bar",
+      },
+      {
+        label: "bar",
+        apply: "'bar'",
+        detail: "Default value",
+      },
+    ],
+  },
+  {
+    name: "include defaults for boolean when available",
+    mode: MODES.JSON5,
+    docs: ["{ booleanW| }"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "boolean",
+        info: "an example boolean with default",
+        label: "booleanWithDefault",
+        template: "booleanWithDefault: ${true}",
+      },
+    ],
+  },
+  {
+    name: "include insert text for nested object properties",
+    mode: MODES.JSON5,
+    docs: ["{ object: { f|  }"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "an elegant string",
+        label: "foo",
+        template: "foo: '#{}'",
+      },
+    ],
+  },
+  {
+    name: "include insert text for nested oneOf object properties with a single quote",
+    mode: MODES.JSON5,
+    docs: ["{ oneOfObject: { '|  }"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "foo",
+        template: "'foo': '#{}'",
+      },
+      {
+        type: "property",
+        detail: "number",
+        info: "",
+        label: "bar",
+        template: "'bar': #{0}",
+      },
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "apple",
+        template: "'apple': '#{}'",
+      },
+      {
+        type: "property",
+        detail: "number",
+        info: "",
+        label: "banana",
+        template: "'banana': #{0}",
+      },
+    ],
+  },
+  // YAML
+  {
+    name: "return completion data for simple types",
+    mode: MODES.YAML,
+    docs: ["f|"],
+    expectedResults: [
+      {
+        label: "foo",
+        type: "property",
+        detail: "string",
+        info: "",
+        template: "foo: #{}",
+      },
+    ],
+  },
+  {
+    name: "return completion data for simple types (multiple)",
+    mode: MODES.YAML,
+    docs: ["one|"],
+    expectedResults: [
+      {
+        label: "oneOfEg",
+        type: "property",
+        detail: "",
+        info: "an example oneOf",
+        template: "oneOfEg: #{}",
+      },
+      {
+        label: "oneOfEg2",
+        type: "property",
+        detail: "",
+        info: "",
+        template: "oneOfEg2: #{}",
+      },
+      {
+        detail: "",
+        info: "",
+        label: "oneOfObject",
+        template: "oneOfObject: #{}",
+        type: "property",
+      },
+    ],
+  },
+  {
+    name: "include defaults for enum when available",
+    mode: MODES.YAML,
+    docs: ["en|"],
+    expectedResults: [
+      {
+        label: "enum1",
+        type: "property",
+        detail: "",
+        info: "an example enum with default bar",
+        template: "enum1: ${bar}",
+      },
+      {
+        label: "enum2",
+        type: "property",
+        detail: "",
+        info: "an example enum without default",
+        template: "enum2: #{}",
+      },
+    ],
+  },
+  {
+    name: "include value completions for enum",
+    mode: MODES.YAML,
+    docs: ["enum1: f|"],
+    expectedResults: [
+      {
+        label: "foo",
+        apply: "foo",
+        info: "an example enum with default bar",
+      },
+    ],
+  },
+  {
+    name: "include defaults for boolean when available",
+    mode: MODES.YAML,
+    docs: ["booleanW|"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "boolean",
+        info: "an example boolean with default",
+        label: "booleanWithDefault",
+        template: "booleanWithDefault: ${true}",
+      },
+    ],
+  },
+  {
+    name: "include insert text for objects",
+    mode: MODES.YAML,
+    docs: ["ob|"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "object",
+        info: "",
+        label: "object",
+        template: "object: #{}",
+      },
+    ],
+  },
+  {
+    name: "include insert text for nested object properties",
+    mode: MODES.YAML,
+    docs: ["object: { f|  }"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "an elegant string",
+        label: "foo",
+        template: "foo: #{}",
+      },
+    ],
+  },
+  {
+    name: "include insert text for nested oneOf object properties",
+    mode: MODES.YAML,
+    docs: ["oneOfObject: { b|  }"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "number",
+        info: "",
+        label: "bar",
+        template: "bar: #{0}",
+      },
+      {
+        type: "property",
+        detail: "number",
+        info: "",
+        label: "banana",
+        template: "banana: #{0}",
+      },
+    ],
+  },
+  {
+    name: "autocomplete for array of objects with items",
+    mode: MODES.YAML,
+    docs: ["array|"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "array",
+        info: "",
+        label: "arrayOfObjects",
+        template: "arrayOfObjects: [#{}]",
+      },
+      {
+        type: "property",
+        detail: "array",
+        info: "",
+        label: "arrayOfOneOf",
+        template: "arrayOfOneOf: [#{}]",
+      },
+    ],
+  },
+  {
+    name: "autocomplete for array of objects with items (array of objects)",
+    mode: MODES.YAML,
+    docs: ["arrayOfObjects: [ { f| } ]"],
+    expectedResults: [
+      {
+        detail: "string",
+        info: "",
+        label: "foo",
+        template: "foo: #{}",
+        type: "property",
+      },
+    ],
+  },
+  {
+    name: "autocomplete for array of objects with items (array of oneOf)",
+    mode: MODES.YAML,
+    docs: ["arrayOfOneOf: [ { b| } ]"],
+    expectedResults: [
+      {
+        detail: "number",
+        info: "",
+        label: "bar",
+        template: "bar: #{0}",
+        type: "property",
+      },
+      {
+        detail: "number",
+        info: "",
+        label: "banana",
+        template: "banana: #{0}",
+        type: "property",
+      },
+    ],
+  },
+])("jsonCompletion", ({ name, docs, mode, expectedResults }) => {
+  it.each(docs)(`${name} (mode: ${mode})`, async (doc) => {
+    await expectCompletion(doc, expectedResults, { mode });
   });
 });

@@ -1,20 +1,52 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import { JSONPointersMap, Side } from "../types.js";
-import { TOKENS } from "../constants.js";
+import { JSONMode, JSONPointersMap, Side } from "../types.js";
+import {
+  JSON5_TOKENS_MAPPING,
+  MODES,
+  TOKENS,
+  YAML_TOKENS_MAPPING,
+} from "../constants.js";
 import { findNodeIndexInArrayNode, getWord, isValueNode } from "./node.js";
 
-export type JSONMode = "json4" | "json5";
+export const resolveTokenName = (nodeName: string, mode: JSONMode) => {
+  switch (mode) {
+    case MODES.YAML:
+      return YAML_TOKENS_MAPPING[nodeName] ?? nodeName;
+    case MODES.JSON5:
+      return JSON5_TOKENS_MAPPING[nodeName] ?? nodeName;
+    default:
+      return nodeName;
+  }
+};
+const toOriginalNodeName = (nodeName: string, mode: JSONMode) => {
+  switch (mode) {
+    case MODES.YAML:
+      return (
+        Object.keys(YAML_TOKENS_MAPPING).find(
+          (key) => YAML_TOKENS_MAPPING[key] === nodeName
+        ) ?? nodeName
+      );
+    default:
+      return nodeName;
+  }
+};
 
 // adapted from https://discuss.codemirror.net/t/json-pointer-at-cursor-seeking-implementation-critique/4793/3
 // this could be useful for other things later!
-export function getJsonPointerAt(docText: Text, node: SyntaxNode): string {
+export function getJsonPointerAt(
+  docText: Text,
+  node: SyntaxNode,
+  mode: JSONMode
+): string {
   const path: string[] = [];
   for (let n: SyntaxNode | null = node; n?.parent; n = n.parent) {
-    switch (n.parent.name) {
+    switch (resolveTokenName(n.parent.name, mode)) {
       case TOKENS.PROPERTY: {
-        const name = n.parent.getChild(TOKENS.PROPERTY_NAME);
+        const name = n.parent.getChild(
+          toOriginalNodeName(TOKENS.PROPERTY_NAME, mode)
+        );
         if (name) {
           path.unshift(
             getWord(docText, name).replace(/[/~]/g, (v: string) =>
@@ -25,8 +57,8 @@ export function getJsonPointerAt(docText: Text, node: SyntaxNode): string {
         break;
       }
       case TOKENS.ARRAY: {
-        if (isValueNode(n)) {
-          const index = findNodeIndexInArrayNode(n.parent, n);
+        if (isValueNode(n, mode)) {
+          const index = findNodeIndexInArrayNode(n.parent, n, mode);
           path.unshift(`${index}`);
         }
         break;
@@ -45,9 +77,14 @@ export function getJsonPointerAt(docText: Text, node: SyntaxNode): string {
 export const jsonPointerForPosition = (
   state: EditorState,
   pos: number,
-  side: Side = -1
+  side: Side = -1,
+  mode: JSONMode
 ) => {
-  return getJsonPointerAt(state.doc, syntaxTree(state).resolve(pos, side));
+  return getJsonPointerAt(
+    state.doc,
+    syntaxTree(state).resolve(pos, side),
+    mode
+  );
 };
 
 /**
@@ -56,14 +93,18 @@ export const jsonPointerForPosition = (
  */
 export const getJsonPointers = (
   state: EditorState,
-  mode: JSONMode = "json4"
+  mode: JSONMode
 ): JSONPointersMap => {
-  const json = syntaxTree(state);
+  const tree = syntaxTree(state);
   const pointers: JSONPointersMap = new Map();
-  json.iterate({
+  tree.iterate({
     enter: (type: SyntaxNodeRef) => {
-      if (type.name === "PropertyName" || type.name === "Object") {
-        const pointer = getJsonPointerAt(state.doc, type.node);
+      if (
+        [TOKENS.PROPERTY_NAME, TOKENS.OBJECT].includes(
+          resolveTokenName(type.name, mode) as any
+        )
+      ) {
+        const pointer = getJsonPointerAt(state.doc, type.node, mode);
 
         const { from: keyFrom, to: keyTo } = type.node;
         // if there's no value, we can't get the valueFrom/to
@@ -71,8 +112,9 @@ export const getJsonPointers = (
           pointers.set(pointer, { keyFrom, keyTo });
           return true;
         }
+        // TODO: Make this generic enough to avoid mode-specific checks
         const nextNode =
-          mode === "json4"
+          mode === MODES.JSON
             ? type.node?.nextSibling?.node
             : type.node?.nextSibling?.node?.nextSibling?.node;
         if (!nextNode) {

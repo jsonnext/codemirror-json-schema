@@ -1,3 +1,5 @@
+import { MODES } from "./constants";
+
 export type RequiredPick<T, F extends keyof T> = Omit<T, F> &
   Required<Pick<T, F>>;
 
@@ -19,3 +21,4 @@ export type JSONPointersMap = Map<
   string,
   JSONPointerData | JSONPartialPointerData
 >;
+export type JSONMode = (typeof MODES)[keyof typeof MODES];

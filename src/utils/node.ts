@@ -1,8 +1,9 @@
 import { SyntaxNode } from "@lezer/common";
-import { COMPLEX_TYPES, TOKENS, PRIMITIVE_TYPES } from "../constants.js";
+import { COMPLEX_TYPES, TOKENS, PRIMITIVE_TYPES, MODES } from "../constants.js";
 import { EditorState, Text } from "@codemirror/state";
 import { syntaxTree } from "@codemirror/language";
-import { Side } from "../types.js";
+import { JSONMode, Side } from "../types.js";
+import { resolveTokenName } from "./jsonPointers.js";
 
 export const getNodeAtPosition = (
   state: EditorState,
@@ -15,6 +16,9 @@ export const getNodeAtPosition = (
 export const stripSurroundingQuotes = (str: string) => {
   return str.replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
 };
+export const surroundingDoubleQuotesToSingle = (str: string) => {
+  return str.replace(/^"(.*)"$/, "'$1'");
+};
 
 export const getWord = (
   doc: Text,
@@ -25,35 +29,45 @@ export const getWord = (
   return stripQuotes ? stripSurroundingQuotes(word) : word;
 };
 
-export const isInvalidValueNode = (node: SyntaxNode) => {
+export const isInvalidValueNode = (node: SyntaxNode, mode: JSONMode) => {
   return (
-    node.name === TOKENS.INVALID &&
-    (node.prevSibling?.name === TOKENS.PROPERTY_NAME ||
-      node.prevSibling?.name === TOKENS.PROPERTY_COLON)
+    resolveTokenName(node.name, mode) === TOKENS.INVALID &&
+    (resolveTokenName(node.prevSibling?.name ?? "", mode) ===
+      TOKENS.PROPERTY_NAME ||
+      resolveTokenName(node.prevSibling?.name ?? "", mode) ===
+        TOKENS.PROPERTY_COLON)
   );
 };
 
-export const isPrimitiveValueNode = (node: SyntaxNode) => {
-  return PRIMITIVE_TYPES.includes(node.name) || isInvalidValueNode(node);
-};
-
-export const isValueNode = (node: SyntaxNode) => {
+export const isPrimitiveValueNode = (node: SyntaxNode, mode: JSONMode) => {
   return (
-    [...PRIMITIVE_TYPES, ...COMPLEX_TYPES].includes(node.name) ||
-    isInvalidValueNode(node)
+    PRIMITIVE_TYPES.includes(resolveTokenName(node.name, mode) as any) ||
+    isInvalidValueNode(node, mode)
   );
 };
 
-export const isPropertyNameNode = (node: SyntaxNode) => {
+export const isValueNode = (node: SyntaxNode, mode: JSONMode) => {
   return (
-    node.name === TOKENS.PROPERTY_NAME ||
-    (node.name === TOKENS.INVALID &&
-      (node.prevSibling?.name === TOKENS.PROPERTY ||
-        node.prevSibling?.name === "{"))
+    [...PRIMITIVE_TYPES, ...COMPLEX_TYPES].includes(
+      resolveTokenName(node.name, mode) as any
+    ) || isInvalidValueNode(node, mode)
   );
 };
 
-const getChildrenNodes = (node: SyntaxNode) => {
+export const isPropertyNameNode = (node: SyntaxNode, mode: JSONMode) => {
+  return (
+    resolveTokenName(node.name, mode) === TOKENS.PROPERTY_NAME ||
+    (resolveTokenName(node.name, mode) === TOKENS.INVALID &&
+      (resolveTokenName(node.prevSibling?.name ?? "", mode) ===
+        TOKENS.PROPERTY ||
+        resolveTokenName(node.prevSibling?.name ?? "", mode) === "{")) ||
+    // TODO: Can we make this work without checking for the mode?
+    (mode === MODES.YAML &&
+      resolveTokenName(node.parent?.name ?? "", mode) === TOKENS.OBJECT)
+  );
+};
+
+export const getChildrenNodes = (node: SyntaxNode) => {
   const children = [];
   let child = node.firstChild;
   while (child) {
@@ -66,20 +80,62 @@ const getChildrenNodes = (node: SyntaxNode) => {
   return children;
 };
 
-export const getChildValueNode = (node: SyntaxNode) => {
-  return getChildrenNodes(node).find((n) => isPrimitiveValueNode(n));
+export const getMatchingChildrenNodes = (
+  node: SyntaxNode,
+  nodeName: string,
+  mode: JSONMode
+) => {
+  return getChildrenNodes(node).filter(
+    (n) => resolveTokenName(n.name, mode) === nodeName
+  );
 };
 
-const getArrayNodeChildren = (node: SyntaxNode) => {
+export const getMatchingChildNode = (
+  node: SyntaxNode,
+  nodeName: string,
+  mode: JSONMode
+) => {
+  return (
+    getChildrenNodes(node).find(
+      (n) => resolveTokenName(n.name, mode) === nodeName
+    ) ?? null
+  );
+};
+
+export const getChildValueNode = (node: SyntaxNode, mode: JSONMode) => {
+  return getChildrenNodes(node).find((n) => isPrimitiveValueNode(n, mode));
+};
+
+const getArrayNodeChildren = (node: SyntaxNode, mode: JSONMode) => {
   return getChildrenNodes(node).filter(
-    (n) => PRIMITIVE_TYPES.includes(n.name) || COMPLEX_TYPES.includes(n.name)
+    (n) =>
+      PRIMITIVE_TYPES.includes(resolveTokenName(n.name, mode) as any) ||
+      COMPLEX_TYPES.includes(resolveTokenName(n.name, mode) as any)
   );
 };
 export const findNodeIndexInArrayNode = (
   arrayNode: SyntaxNode,
-  valueNode: SyntaxNode
+  valueNode: SyntaxNode,
+  mode: JSONMode
 ) => {
-  return getArrayNodeChildren(arrayNode).findIndex(
+  return getArrayNodeChildren(arrayNode, mode).findIndex(
     (nd) => nd.from === valueNode.from && nd.to === valueNode.to
   );
+};
+
+export const getClosestNode = (
+  node: SyntaxNode,
+  nodeName: string,
+  mode: JSONMode,
+  depth = Infinity
+) => {
+  let n: SyntaxNode | null = node;
+  while (n && depth > 0) {
+    if (resolveTokenName(n.name, mode) === nodeName) {
+      return n;
+    }
+    n = n.parent;
+    depth--;
+  }
+  return null;
 };

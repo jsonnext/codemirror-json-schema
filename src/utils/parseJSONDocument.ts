@@ -1,6 +1,7 @@
 import { json } from "@codemirror/lang-json";
 import { EditorState } from "@codemirror/state";
 import { getJsonPointers } from "./jsonPointers.js";
+import { MODES } from "../constants.js";
 
 /**
  * Return parsed data and json pointers for a given codemirror EditorState
@@ -12,7 +13,7 @@ export function parseJSONDocumentState(state: EditorState) {
     data = JSON.parse(state.doc.toString());
     // return pointers regardless of whether JSON.parse succeeds
   } catch {}
-  const pointers = getJsonPointers(state, "json4");
+  const pointers = getJsonPointers(state, MODES.JSON);
   return { data, pointers };
 }
 

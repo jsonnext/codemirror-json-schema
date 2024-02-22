@@ -9,9 +9,11 @@ import {
 import { jsonPointerForPosition } from "./utils/jsonPointers.js";
 import { joinWithOr } from "./utils/formatting.js";
 import { debug } from "./utils/debug.js";
-import { Side } from "./types.js";
+import { JSONMode, Side } from "./types.js";
 import { el } from "./utils/dom.js";
 import { getJSONSchema } from "./state.js";
+import { MODES } from "./constants.js";
+import { renderMarkdown } from "./utils/markdown.js";
 
 export type CursorData = { schema?: JsonSchema; pointer: string };
 
@@ -20,6 +22,7 @@ export type FoundCursorData = Required<CursorData>;
 export type HoverTexts = { message: string; typeInfo: string };
 
 export type HoverOptions = {
+  mode?: JSONMode;
   /**
    * Generate the text to display in the hover tooltip
    */
@@ -60,11 +63,13 @@ function formatComplexType(
 
 export class JSONHover {
   private schema: Draft | null = null;
+  private mode: JSONMode = MODES.JSON;
   public constructor(private opts?: HoverOptions) {
     this.opts = {
       parser: JSON.parse,
       ...this.opts,
     };
+    this.mode = this.opts?.mode ?? MODES.JSON;
   }
   public getDataForCursor(
     view: EditorView,
@@ -79,7 +84,7 @@ export class JSONHover {
     }
     this.schema = new Draft04(schema);
 
-    const pointer = jsonPointerForPosition(view.state, pos, side);
+    const pointer = jsonPointerForPosition(view.state, pos, side, this.mode);
 
     let data = undefined;
     // TODO: use the AST tree to return the right hand, data so that we don't have to parse the doc
@@ -116,27 +121,34 @@ export class JSONHover {
           text: message,
         }),
         el("div", { class: "cm6-json-schema-hover--code-wrapper" }, [
-          typeInfo.includes("<code>")
-            ? el("div", {
-                class: "cm6-json-schema-hover--code",
-                inner: typeInfo,
-              })
-            : el("code", {
-                class: "cm6-json-schema-hover--code",
-                text: typeInfo,
-              }),
+          el("div", {
+            class: "cm6-json-schema-hover--code",
+            inner: renderMarkdown(typeInfo),
+          }),
+          // typeInfo.includes("<code>")
+          //   ? el("div", {
+          //       class: "cm6-json-schema-hover--code",
+          //       inner: typeInfo,
+          //     })
+          //   : el("code", {
+          //       class: "cm6-json-schema-hover--code",
+          //       text: typeInfo,
+          //     }),
         ]),
       ]);
     }
     return el("div", { class: "cm6-json-schema-hover" }, [
       el("div", { class: "cm6-json-schema-hover--code-wrapper" }, [
-        el("code", { class: "cm6-json-schema-hover--code", text: typeInfo }),
+        el("code", {
+          class: "cm6-json-schema-hover--code",
+          inner: renderMarkdown(typeInfo),
+        }),
       ]),
     ]);
   }
 
   public getHoverTexts(data: FoundCursorData, draft: Draft): HoverTexts {
-    let typeInfo = null;
+    let typeInfo = "";
     let message = null;
 
     const { schema } = data;
@@ -155,13 +167,13 @@ export class JSONHover {
         : schema.type;
     }
     if (schema.enum) {
-      typeInfo = `<code>enum</code>: ${joinWithOr(schema.enum)}`;
+      typeInfo = `\`enum\`: ${joinWithOr(schema.enum)}`;
     }
     if (schema.format) {
-      typeInfo += ` <code>format</code>: ${schema.format}`;
+      typeInfo += `\`format\`: ${schema.format}`;
     }
     if (schema.pattern) {
-      typeInfo += ` <code>pattern</code>: ${schema.pattern}`;
+      typeInfo += `\`pattern\`: ${schema.pattern}`;
     }
     if (schema.description) {
       message = schema.description;
@@ -179,6 +191,7 @@ export class JSONHover {
       end = pos;
     try {
       const cursorData = this.getDataForCursor(view, pos, side);
+      debug.log("cursorData", cursorData);
       // if we don't have a (sub)schema, we can't show anything
       if (!cursorData?.schema) return null;
 

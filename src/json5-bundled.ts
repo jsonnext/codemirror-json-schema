@@ -8,6 +8,7 @@ import { json5SchemaHover } from "./json5-hover.js";
 import { linter } from "@codemirror/lint";
 import { stateExtensions } from "./state.js";
 import { handleRefresh } from "./json-validation.js";
+import { MODES } from "./constants.js";
 
 /**
  * Full featured cm6 extension for json5, including `codemirror-json5`
@@ -17,13 +18,24 @@ export function json5Schema(schema?: JSONSchema7) {
   return [
     json5(),
     linter(json5ParseLinter()),
-    linter(json5SchemaLinter(), {
-      needsRefresh: handleRefresh,
-    }),
+    linter(
+      json5SchemaLinter({
+        mode: MODES.JSON5,
+      }),
+      {
+        needsRefresh: handleRefresh,
+      }
+    ),
     json5Language.data.of({
-      autocomplete: json5Completion(),
+      autocomplete: json5Completion({
+        mode: MODES.JSON5,
+      }),
     }),
-    hoverTooltip(json5SchemaHover()),
+    hoverTooltip(
+      json5SchemaHover({
+        mode: MODES.JSON5,
+      })
+    ),
     stateExtensions(schema),
   ];
 }

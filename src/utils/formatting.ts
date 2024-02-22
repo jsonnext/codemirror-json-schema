@@ -3,7 +3,7 @@
 export const joinWithOr = (arr: string[], getPath?: (err: any) => any) => {
   const needsComma = arr.length > 2;
   let data = arr.map((err: any, i: number) => {
-    const result = `<code>` + (getPath ? getPath(err) : err) + `</code>`;
+    const result = `\`` + (getPath ? getPath(err) : err) + `\``;
     if (i === arr.length - 1) return "or " + result;
     return result;
   });

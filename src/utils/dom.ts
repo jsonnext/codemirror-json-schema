@@ -28,3 +28,12 @@ export function el(
   children.forEach((c) => e.appendChild(c));
   return e;
 }
+
+export function escapeHtml(unsafe: string) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}

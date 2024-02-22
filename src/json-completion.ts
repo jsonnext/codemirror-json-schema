@@ -16,21 +16,20 @@ import {
   isPrimitiveValueNode,
   stripSurroundingQuotes,
   getNodeAtPosition,
+  getClosestNode,
+  getMatchingChildrenNodes,
+  getMatchingChildNode,
+  getChildrenNodes,
+  surroundingDoubleQuotesToSingle,
 } from "./utils/node.js";
 import { getJSONSchema } from "./state.js";
 import { Draft07, isJsonError } from "json-schema-library";
-import { jsonPointerForPosition } from "./utils/jsonPointers.js";
-import { TOKENS } from "./constants.js";
-
-function json5PropertyInsertSnippet(rawWord: string, value: string) {
-  if (rawWord.startsWith('"')) {
-    return `"${value}"`;
-  }
-  if (rawWord.startsWith("'")) {
-    return `'${value}'`;
-  }
-  return value;
-}
+import {
+  jsonPointerForPosition,
+  resolveTokenName,
+} from "./utils/jsonPointers.js";
+import { MODES, TOKENS } from "./constants.js";
+import { JSONMode } from "./types.js";
 
 class CompletionCollector {
   completions = new Map<string, Completion>();
@@ -48,13 +47,16 @@ class CompletionCollector {
   }
 }
 
-type JSONCompletionOptions = {
-  mode?: "json" | "json5";
-};
+interface JSONCompletionOptions {
+  mode?: JSONMode;
+}
 
 export class JSONCompletion {
   private schema: JSONSchema7 | null = null;
-  constructor(private opts: JSONCompletionOptions) {}
+  private mode: JSONMode = MODES.JSON;
+  constructor(private opts: JSONCompletionOptions) {
+    this.mode = opts.mode ?? MODES.JSON;
+  }
   public doComplete(ctx: CompletionContext) {
     this.schema = getJSONSchema(ctx.state)!;
     if (!this.schema) {
@@ -80,16 +82,24 @@ export class JSONCompletion {
 
     // Only show completions if we are filling out a word or right after the starting quote, or if explicitly requested
     if (
-      !(isPrimitiveValueNode(node) || isPropertyNameNode(node)) &&
+      !(
+        isPrimitiveValueNode(node, this.mode) ||
+        isPropertyNameNode(node, this.mode)
+      ) &&
       !ctx.explicit
     ) {
+      debug.log("xxx", "no completions for non-word/primitive", node);
       return result;
     }
 
     const currentWord = getWord(ctx.state.doc, node);
     const rawWord = getWord(ctx.state.doc, node, false);
     // Calculate overwrite range
-    if (node && (isPrimitiveValueNode(node) || isPropertyNameNode(node))) {
+    if (
+      node &&
+      (isPrimitiveValueNode(node, this.mode) ||
+        isPropertyNameNode(node, this.mode))
+    ) {
       result.from = node.from;
       result.to = node.to;
     } else {
@@ -121,37 +131,70 @@ export class JSONCompletion {
 
     let addValue = true;
 
-    if (isPropertyNameNode(node)) {
+    const closestPropertyNameNode = getClosestNode(
+      node,
+      TOKENS.PROPERTY_NAME,
+      this.mode
+    );
+    // if we are inside a property name node, we need to get the parent property name node
+    // The only reason we would be inside a property name node is if the current node is invalid or a literal/primitive node
+    if (closestPropertyNameNode) {
+      debug.log(
+        "xxx",
+        "closestPropertyNameNode",
+        closestPropertyNameNode,
+        "node",
+        node
+      );
+      node = closestPropertyNameNode;
+    }
+    if (isPropertyNameNode(node, this.mode)) {
+      debug.log("xxx", "isPropertyNameNode", node);
       const parent = node.parent;
       if (parent) {
         // get value node from parent
-        const valueNode = getChildValueNode(parent);
+        const valueNode = getChildValueNode(parent, this.mode);
         addValue =
           !valueNode ||
           (valueNode.name === TOKENS.INVALID &&
-            valueNode.from - valueNode.to === 0);
-        debug.log("xxx", "addValue", addValue, getChildValueNode(parent), node);
+            valueNode.from - valueNode.to === 0) ||
+          // TODO: Verify this doesn't break anything else
+          (valueNode.parent
+            ? getChildrenNodes(valueNode.parent).length <= 1
+            : false);
+        debug.log(
+          "xxx",
+          "addValue",
+          addValue,
+          getChildValueNode(parent, this.mode),
+          node
+        );
         // find object node
-        node =
-          [parent, parent.parent].find((p) => {
-            if (p?.name === TOKENS.OBJECT) {
-              return true;
-            }
-            return false;
-          }) ?? null;
+        node = getClosestNode(parent, TOKENS.OBJECT, this.mode) ?? null;
       }
     }
 
-    debug.log("xxx", node, currentWord, ctx);
+    debug.log(
+      "xxx",
+      node,
+      currentWord,
+      ctx,
+      "node at pos",
+      getNodeAtPosition(ctx.state, ctx.pos)
+    );
 
     // proposals for properties
     if (
       node &&
-      (node.name === TOKENS.OBJECT || node.name === TOKENS.JSON_TEXT) &&
-      isPropertyNameNode(getNodeAtPosition(ctx.state, ctx.pos))
+      [TOKENS.OBJECT, TOKENS.JSON_TEXT].includes(
+        resolveTokenName(node.name, this.mode) as any
+      ) &&
+      (isPropertyNameNode(getNodeAtPosition(ctx.state, ctx.pos), this.mode) ||
+        closestPropertyNameNode)
     ) {
       // don't suggest keys when the cursor is just before the opening curly brace
       if (node.from === ctx.pos) {
+        debug.log("xxx", "no completions for just before opening brace");
         return result;
       }
 
@@ -208,10 +251,17 @@ export class JSONCompletion {
     rawWord: string
   ) {
     // don't suggest properties that are already present
-    const properties = node.getChildren(TOKENS.PROPERTY);
+    const properties = getMatchingChildrenNodes(
+      node,
+      TOKENS.PROPERTY,
+      this.mode
+    );
     debug.log("xxx", "getPropertyCompletions", node, ctx, properties);
     properties.forEach((p) => {
-      const key = getWord(ctx.state.doc, p.getChild(TOKENS.PROPERTY_NAME));
+      const key = getWord(
+        ctx.state.doc,
+        getMatchingChildNode(p, TOKENS.PROPERTY_NAME, this.mode)
+      );
       collector.reserve(stripSurroundingQuotes(key));
     });
 
@@ -300,10 +350,9 @@ export class JSONCompletion {
       ? this.expandSchemaProperty(propertySchema, this.schema!)
       : propertySchema;
 
-    const isJSON5 = this.opts?.mode === "json5";
-    let resultText = isJSON5
-      ? json5PropertyInsertSnippet(rawWord, key)
-      : `"${key}"`;
+    const isJSON5 = this.mode === MODES.JSON5;
+    let resultText = this.getInsertTextForPropertyName(key, rawWord);
+
     if (!addValue) {
       return resultText;
     }
@@ -361,10 +410,20 @@ export class JSONCompletion {
               value = "#{}";
               break;
             case "string":
-              value = isJSON5 ? "'#{}'" : '"#{}"';
+              value = this.getInsertTextForString("");
               break;
             case "object":
-              value = "{#{}}";
+              switch (this.mode) {
+                case MODES.JSON5:
+                  value = "{#{}}";
+                  break;
+                case MODES.YAML:
+                  value = "#{}";
+                  break;
+                default:
+                  value = "{#{}}";
+                  break;
+              }
               break;
             case "array":
               value = "[#{}]";
@@ -398,7 +457,45 @@ export class JSONCompletion {
 
     return resultText + value;
   }
+  private getInsertTextForPropertyName(key: string, rawWord: string) {
+    switch (this.mode) {
+      case MODES.JSON5: {
+        if (rawWord.startsWith('"')) {
+          return `"${key}"`;
+        }
+        if (rawWord.startsWith("'")) {
+          return `'${key}'`;
+        }
+        return key;
+      }
+      case MODES.YAML: {
+        if (rawWord.startsWith('"')) {
+          return `"${key}"`;
+        }
+        if (rawWord.startsWith("'")) {
+          return `'${key}'`;
+        }
+        return key;
+      }
+      default:
+        return `"${key}"`;
+    }
+  }
+  private getInsertTextForString(value: string, prf = "#") {
+    switch (this.mode) {
+      case MODES.JSON5:
+        return `'${prf}{${value}}'`;
+        break;
+      case MODES.YAML:
+        return `${prf}{${value}}`;
+        break;
+      default:
+        return `"${prf}{${value}}"`;
+        break;
+    }
+  }
 
+  // TODO: Is this actually working?
   private getInsertTextForGuessedValue(
     value: any,
     separatorAfter = ""
@@ -413,7 +510,7 @@ export class JSONCompletion {
         let snippetValue = JSON.stringify(value);
         snippetValue = snippetValue.substr(1, snippetValue.length - 2); // remove quotes
         snippetValue = this.getInsertTextForPlainText(snippetValue); // escape \ and }
-        return '"${' + snippetValue + '}"' + separatorAfter;
+        return this.getInsertTextForString(snippetValue, "$") + separatorAfter;
       }
       case "number":
       case "boolean":
@@ -450,7 +547,7 @@ export class JSONCompletion {
 
     debug.log("xxx", "getValueCompletions", node, ctx);
 
-    if (node && isPrimitiveValueNode(node)) {
+    if (node && isPrimitiveValueNode(node, this.mode)) {
       valueNode = node;
       node = node.parent;
     }
@@ -460,8 +557,12 @@ export class JSONCompletion {
       return;
     }
 
-    if (node.name === TOKENS.PROPERTY) {
-      const keyNode = node.getChild(TOKENS.PROPERTY_NAME);
+    if (resolveTokenName(node.name, this.mode) === TOKENS.PROPERTY) {
+      const keyNode = getMatchingChildNode(
+        node,
+        TOKENS.PROPERTY_NAME,
+        this.mode
+      );
       if (keyNode) {
         parentKey = getWord(ctx.state.doc, keyNode);
         node = node.parent;
@@ -469,7 +570,11 @@ export class JSONCompletion {
     }
 
     debug.log("xxx", "node", node, "parentKey", parentKey);
-    if (node && (parentKey !== undefined || node.name === TOKENS.ARRAY)) {
+    if (
+      node &&
+      (parentKey !== undefined ||
+        resolveTokenName(node.name, this.mode) === TOKENS.ARRAY)
+    ) {
       // Get matching schemas
       const schemas = this.getSchemas(schema, ctx);
       for (const s of schemas) {
@@ -477,7 +582,10 @@ export class JSONCompletion {
           return;
         }
 
-        if (node.name === TOKENS.ARRAY && s.items) {
+        if (
+          resolveTokenName(node.name, this.mode) === TOKENS.ARRAY &&
+          s.items
+        ) {
           let c = collector;
           if (s.uniqueItems) {
             c = {
@@ -496,7 +604,11 @@ export class JSONCompletion {
             let arrayIndex = 0;
             if (valueNode) {
               // get index of next node in array
-              const foundIdx = findNodeIndexInArrayNode(node, valueNode);
+              const foundIdx = findNodeIndexInArrayNode(
+                node,
+                valueNode,
+                this.mode
+              );
 
               if (foundIdx >= 0) {
                 arrayIndex = foundIdx;
@@ -593,7 +705,7 @@ export class JSONCompletion {
       }
       const completionItem: Completion = {
         type: type?.toString(),
-        label: this.getLabelForValue(value),
+        ...this.getAppliedValue(value),
         detail: "Default value",
       };
       collector.add(completionItem);
@@ -609,7 +721,7 @@ export class JSONCompletion {
         }
         collector.add({
           type: type?.toString(),
-          label: this.getLabelForValue(value),
+          ...this.getAppliedValue(value),
         });
         hasProposals = true;
       });
@@ -631,7 +743,7 @@ export class JSONCompletion {
     if (typeof schema.const !== "undefined") {
       collector.add({
         type: schema.type?.toString(),
-        label: this.getLabelForValue(schema.const),
+        ...this.getAppliedValue(schema.const),
 
         info: schema.description,
       });
@@ -642,7 +754,7 @@ export class JSONCompletion {
         const enm = schema.enum[i];
         collector.add({
           type: schema.type?.toString(),
-          label: this.getLabelForValue(enm),
+          ...this.getAppliedValue(enm),
           info: schema.description,
         });
       }
@@ -686,7 +798,7 @@ export class JSONCompletion {
     ctx: CompletionContext
   ): JSONSchema7Definition[] {
     const draft = new Draft07(this.schema!);
-    let pointer = jsonPointerForPosition(ctx.state, ctx.pos);
+    let pointer = jsonPointerForPosition(ctx.state, ctx.pos, -1, this.mode);
     let subSchema = draft.getSchema({ pointer });
     if (isJsonError(subSchema)) {
       subSchema = subSchema.data?.schema;
@@ -774,8 +886,25 @@ export class JSONCompletion {
     return curReference;
   }
 
-  private getLabelForValue(value: any): string {
-    return JSON.stringify(value);
+  private getAppliedValue(value: any): { label: string; apply: string } {
+    const stripped = stripSurroundingQuotes(JSON.stringify(value));
+    switch (this.mode) {
+      case MODES.JSON5:
+        return {
+          label: stripped,
+          apply: surroundingDoubleQuotesToSingle(JSON.stringify(value)),
+        };
+      case MODES.YAML:
+        return {
+          label: stripped,
+          apply: stripped,
+        };
+      default:
+        return {
+          label: stripped,
+          apply: JSON.stringify(value),
+        };
+    }
   }
 
   private getValueFromLabel(value: any): string {
