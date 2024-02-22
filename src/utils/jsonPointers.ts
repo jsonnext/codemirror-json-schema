@@ -8,7 +8,12 @@ import {
   TOKENS,
   YAML_TOKENS_MAPPING,
 } from "../constants.js";
-import { findNodeIndexInArrayNode, getWord, isValueNode } from "./node.js";
+import {
+  findNodeIndexInArrayNode,
+  getMatchingChildNode,
+  getWord,
+  isValueNode,
+} from "./node.js";
 
 export const resolveTokenName = (nodeName: string, mode: JSONMode) => {
   switch (mode) {
@@ -16,18 +21,6 @@ export const resolveTokenName = (nodeName: string, mode: JSONMode) => {
       return YAML_TOKENS_MAPPING[nodeName] ?? nodeName;
     case MODES.JSON5:
       return JSON5_TOKENS_MAPPING[nodeName] ?? nodeName;
-    default:
-      return nodeName;
-  }
-};
-const toOriginalNodeName = (nodeName: string, mode: JSONMode) => {
-  switch (mode) {
-    case MODES.YAML:
-      return (
-        Object.keys(YAML_TOKENS_MAPPING).find(
-          (key) => YAML_TOKENS_MAPPING[key] === nodeName
-        ) ?? nodeName
-      );
     default:
       return nodeName;
   }
@@ -44,9 +37,7 @@ export function getJsonPointerAt(
   for (let n: SyntaxNode | null = node; n?.parent; n = n.parent) {
     switch (resolveTokenName(n.parent.name, mode)) {
       case TOKENS.PROPERTY: {
-        const name = n.parent.getChild(
-          toOriginalNodeName(TOKENS.PROPERTY_NAME, mode)
-        );
+        const name = getMatchingChildNode(n.parent, TOKENS.PROPERTY_NAME, mode);
         if (name) {
           path.unshift(
             getWord(docText, name).replace(/[/~]/g, (v: string) =>

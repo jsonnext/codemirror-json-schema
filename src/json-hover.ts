@@ -125,15 +125,6 @@ export class JSONHover {
             class: "cm6-json-schema-hover--code",
             inner: renderMarkdown(typeInfo),
           }),
-          // typeInfo.includes("<code>")
-          //   ? el("div", {
-          //       class: "cm6-json-schema-hover--code",
-          //       inner: typeInfo,
-          //     })
-          //   : el("code", {
-          //       class: "cm6-json-schema-hover--code",
-          //       text: typeInfo,
-          //     }),
         ]),
       ]);
     }
