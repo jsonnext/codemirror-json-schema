@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.0
+
+### Minor Changes
+
+- [#85](https://github.com/acao/codemirror-json-schema/pull/85) [`c694451`](https://github.com/acao/codemirror-json-schema/commit/c6944518e72aef0a2b81952dff6bc0114b8c6be0) Thanks [@imolorhe](https://github.com/imolorhe)! - Added YAML support, switched back to markdown for messages, provide markdown rendering, and fix some autocompletion issues
+
 ## 0.6.1
 
 ### Patch Changes
