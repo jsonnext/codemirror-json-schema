@@ -117,6 +117,7 @@ const editor3 = new EditorView({
 const handleSchemaChange = (newSchema: JSONSchema7) => {
   updateSchema(editor1, newSchema);
   updateSchema(editor2, newSchema);
+  updateSchema(editor3, newSchema);
 };
 
 // new EditorState.fi(editor1, editor2);
