@@ -4,11 +4,25 @@ import { Draft04, type Draft, type JsonError } from "json-schema-library";
 
 import { getJSONSchema, schemaStateField } from "./state.js";
 import { joinWithOr } from "./utils/formatting.js";
-import { JSONPointerData } from "./types.js";
+import { JSONMode, JSONPointerData } from "./types.js";
 import { parseJSONDocumentState } from "./utils/parseJSONDocument.js";
 import { RequiredPick } from "./types.js";
 import { el } from "./utils/dom.js";
+import { renderMarkdown } from "./utils/markdown.js";
+import { MODES } from "./constants.js";
+import { parseYAMLDocumentState } from "./utils/parse-yaml-document.js";
+import { parseJSON5DocumentState } from "./utils/parseJSON5Document.js";
 
+const getDefaultParser = (mode: JSONMode): typeof parseJSONDocumentState => {
+  switch (mode) {
+    case MODES.JSON:
+      return parseJSONDocumentState;
+    case MODES.JSON5:
+      return parseJSON5DocumentState;
+    case MODES.YAML:
+      return parseYAMLDocumentState;
+  }
+};
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
   // if a pointer is present, return without #
@@ -23,10 +37,11 @@ const getErrorPath = (error: JsonError): string => {
   return "";
 };
 
-export type JSONValidationOptions = {
+export interface JSONValidationOptions {
+  mode?: JSONMode;
   formatError?: (error: JsonError) => string;
   jsonParser?: typeof parseJSONDocumentState;
-};
+}
 
 type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
 
@@ -59,12 +74,11 @@ const positionalErrors = [
 export class JSONValidation {
   private schema: Draft | null = null;
 
-  private options: JSONValidationSettings;
-  public constructor(options?: JSONValidationOptions) {
-    this.options = {
-      jsonParser: parseJSONDocumentState,
-      ...options,
-    };
+  private mode: JSONMode = MODES.JSON;
+  private parser: typeof parseJSONDocumentState = parseJSONDocumentState;
+  public constructor(private options?: JSONValidationOptions) {
+    this.mode = this.options?.mode ?? MODES.JSON;
+    this.parser = this.options?.jsonParser ?? getDefaultParser(this.mode);
 
     // TODO: support other versions of json schema.
     // most standard schemas are draft 4 for some reason, probably
@@ -87,19 +101,17 @@ export class JSONValidation {
       )}`;
     }
     if (error.code === "type-error") {
-      return `Expected <code>${
+      return `Expected \`${
         error?.data?.expected && Array.isArray(error?.data?.expected)
           ? joinWithOr(error?.data?.expected)
           : error?.data?.expected
-      }</code> but received <code>${error?.data?.received}</code>`;
+      }\` but received \`${error?.data?.received}\``;
     }
     const message = error.message
       // don't mention root object
       .replaceAll("in `#` ", "")
       .replaceAll("/", ".")
-      .replaceAll("#.", "")
-      // replace backticks with <code> tags
-      .replaceAll(/`([^`]*)`/gm, "<code>$1</code>");
+      .replaceAll("#.", "");
     return message;
   };
 
@@ -117,7 +129,7 @@ export class JSONValidation {
     // ignore blank json strings
     if (!text || text.trim().length < 3) return [];
 
-    const json = this.options.jsonParser(view.state);
+    const json = this.parser(view.state);
 
     let errors: JsonError[] = [];
     try {
@@ -160,12 +172,10 @@ export class JSONValidation {
           acc.push({
             from,
             to,
-            // TODO: create a domnode and replace `` with <code></code>
-            // renderMessage: () => error.message,
             message: errorString,
             renderMessage: () => {
               const dom = el("div", {});
-              dom.innerHTML = errorString;
+              dom.innerHTML = renderMarkdown(errorString);
               return dom;
             },
             severity: "error",

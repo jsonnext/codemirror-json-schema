@@ -29,7 +29,7 @@ import {
 import { JSONSchema7 } from "json-schema";
 
 // sample data
-import { jsonText, json5Text } from "./sample-text";
+import { jsonText, json5Text, yamlText } from "./sample-text";
 import packageJsonSchema from "./package.schema.json";
 
 // json4
@@ -37,6 +37,8 @@ import { jsonSchema, updateSchema } from "../src/index";
 
 // json5
 import { json5Schema } from "../src/json5";
+
+import { yamlSchema } from "../src/yaml";
 
 const schema = packageJsonSchema as JSONSchema7;
 
@@ -99,9 +101,23 @@ const editor2 = new EditorView({
   parent: document.querySelector("#editor-json5")!,
 });
 
+/**
+ * yaml!
+ */
+const yamlState = EditorState.create({
+  doc: yamlText,
+  extensions: [commonExtensions, yamlSchema(schema)],
+});
+
+const editor3 = new EditorView({
+  state: yamlState,
+  parent: document.querySelector("#editor-yaml")!,
+});
+
 const handleSchemaChange = (newSchema: JSONSchema7) => {
   updateSchema(editor1, newSchema);
   updateSchema(editor2, newSchema);
+  updateSchema(editor3, newSchema);
 };
 
 // new EditorState.fi(editor1, editor2);

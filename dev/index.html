@@ -29,6 +29,7 @@
     <style>
       :root {
         --bg-color: #282c34;
+        --fbc-light-gray: #f0f0f4;
       }
       h1,
       h2,
@@ -66,10 +67,15 @@
       }
       .cm6-json-schema-hover,
       .cm-editor .cm-diagnostic-error {
+        font-size: 12px;
         padding: 0.5rem;
       }
       .cm6-json-schema-hover--description {
         margin-bottom: 0.5rem;
+        max-width: 600px;
+      }
+      .cm6-json-schema-hover--code-wrapper {
+        border-top: 1px solid #888;
       }
       .grid-row {
         display: grid;
@@ -109,6 +115,10 @@
       <div>
         <h2><code>package.json5</code> demo</h2>
         <div id="editor-json5"></div>
+      </div>
+      <div>
+        <h2><code>package.yaml</code> demo</h2>
+        <div id="editor-yaml"></div>
       </div>
     </div>
     <script type="module" src="./index.ts"></script>
