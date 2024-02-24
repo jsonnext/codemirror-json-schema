@@ -7,7 +7,7 @@ import {
 import { syntaxTree } from "@codemirror/language";
 import { SyntaxNode } from "@lezer/common";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { debug } from "./utils/debug.js";
+import { debug } from "../utils/debug";
 import {
   findNodeIndexInArrayNode,
   getChildValueNode,
@@ -21,15 +21,16 @@ import {
   getMatchingChildNode,
   getChildrenNodes,
   surroundingDoubleQuotesToSingle,
-} from "./utils/node.js";
-import { getJSONSchema } from "./state.js";
+} from "../utils/node";
+import { getJSONSchema } from "./state";
 import { Draft07, isJsonError } from "json-schema-library";
 import {
   jsonPointerForPosition,
   resolveTokenName,
-} from "./utils/jsonPointers.js";
-import { MODES, TOKENS } from "./constants.js";
-import { JSONMode } from "./types.js";
+} from "../utils/json-pointers";
+import { MODES, TOKENS } from "../constants";
+import { JSONMode } from "../types";
+import { renderMarkdown } from "../utils/markdown";
 
 class CompletionCollector {
   completions = new Map<string, Completion>();
@@ -302,7 +303,7 @@ export class JSONCompletion {
               ),
               type: "property",
               detail: typeStr,
-              info: description,
+              info: renderMarkdown(description),
             };
             collector.add(this.applySnippetCompletion(completion));
           }

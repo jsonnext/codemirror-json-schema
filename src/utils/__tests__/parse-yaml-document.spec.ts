@@ -1,7 +1,7 @@
 import { it, describe, expect } from "vitest";
 
 import { yaml } from "@codemirror/lang-yaml";
-import { parseYAMLDocumentState } from "../parse-yaml-document.js";
+import { parseYAMLDocumentState } from "../parse-yaml-document";
 import { EditorState } from "@codemirror/state";
 
 const testDoc = `---

@@ -8,11 +8,11 @@ import {
   CompletionSource,
 } from "@codemirror/autocomplete";
 import { JSONSchema7 } from "json-schema";
-import { testSchema2 } from "../__fixtures__/schemas.js";
+import { testSchema2 } from "../__fixtures__/schemas";
 import { EditorView } from "@codemirror/view";
-import { JSONMode } from "../../types.js";
-import { MODES } from "../../constants.js";
-import { getExtensions } from "./index.js";
+import { JSONMode } from "../../../types";
+import { MODES } from "../../../constants";
+import { getExtensions } from "./index";
 
 vitest.mock("@codemirror/autocomplete", async () => {
   const mod = await vitest.importActual<

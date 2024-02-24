@@ -4,14 +4,14 @@ expect.extend(matchers);
 import "vitest-dom/extend-expect";
 
 import { JSONSchema7 } from "json-schema";
-import { FoundCursorData, JSONHover } from "../json-hover.js";
+import { FoundCursorData, JSONHover } from "../hover";
 
 import { EditorView } from "@codemirror/view";
-import { testSchema, testSchema2 } from "./__fixtures__/schemas.js";
-import { Draft } from "json-schema-library";
-import { MODES } from "../constants.js";
-import { JSONMode } from "../types.js";
-import { getExtensions } from "./__helpers__/index.js";
+import { testSchema, testSchema2 } from "./__fixtures__/schemas";
+import { Draft, Draft07 } from "json-schema-library";
+import { MODES } from "../../constants";
+import { JSONMode } from "../../types";
+import { getExtensions } from "./__helpers__/index";
 
 const getHoverData = (
   jsonString: string,
@@ -52,7 +52,10 @@ const getHoverTexts = async (
   });
   const hover = new JSONHover({ mode });
   const data = hover.getDataForCursor(view, pos, 1) as FoundCursorData;
-  const hoverResult = hover.getHoverTexts(data, schema as Draft);
+  const hoverResult = hover.getHoverTexts(
+    data,
+    new Draft07({ schema: schema ?? testSchema })
+  );
   return hoverResult;
 };
 
@@ -133,6 +136,29 @@ describe("JSONHover#getHoverTexts", () => {
         typeInfo: "oneOf: `string`, `array`, or `boolean`",
       },
     },
+    {
+      name: "oneOf with refs",
+      mode: MODES.JSON,
+      doc: '{ "oneOfObject":  }',
+      pos: 5,
+      schema: testSchema2,
+      expected: {
+        message: null,
+        typeInfo:
+          "oneOf: `#/definitions/fancyObject` or `#/definitions/fancyObject2`",
+      },
+    },
+    {
+      name: "single object with ref",
+      mode: MODES.JSON,
+      doc: '{ "objectWithRef":  }',
+      pos: 5,
+      schema: testSchema2,
+      expected: {
+        message: null,
+        typeInfo: "object",
+      },
+    },
   ])(
     "should return hover texts as expected ($name, mode: $mode)",
     async ({ mode, doc, pos, schema, expected }) => {
@@ -157,10 +183,11 @@ describe("JSONHover#doHover", () => {
         create: expect.any(Function),
       },
       expectedHTMLContents: [
-        [
-          `<div class="cm6-json-schema-hover"><div class="cm6-json-schema-hover--description">an elegant string</div>`,
-          `<div class="cm6-json-schema-hover--code-wrapper"><div class="cm6-json-schema-hover--code">string</div></div></div>`,
-        ].join(""),
+        `cm6-json-schema-hover--description`,
+        `<p>an elegant string</p>`,
+        `cm6-json-schema-hover--code-wrapper`,
+        `cm6-json-schema-hover--code`,
+        `<p>string</p></div>`,
       ],
     },
     {
@@ -179,7 +206,7 @@ describe("JSONHover#doHover", () => {
       expectedHTMLContents: [
         "cm6-json-schema-hover--code-wrapper",
         "cm6-json-schema-hover--code",
-        "string</code>",
+        "string</p>",
       ],
     },
   ])(

@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 
-import { getJsonPointers, jsonPointerForPosition } from "../jsonPointers.js";
+import { getJsonPointers, jsonPointerForPosition } from "../json-pointers";
 import { EditorState } from "@codemirror/state";
-import { MODES } from "../../constants.js";
-import { getExtensions } from "../../__tests__/__helpers__/index.js";
+import { MODES } from "../../constants";
+import { getExtensions } from "../../features/__tests__/__helpers__/index";
 
 describe("jsonPointerForPosition", () => {
   it.each([

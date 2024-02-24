@@ -150,7 +150,7 @@ export class JSONValidation {
           source: this.schemaTitle,
           renderMessage: () => {
             const dom = el("div", {});
-            dom.innerHTML = errorString;
+            dom.innerHTML = renderMarkdown(errorString);
             return dom;
           },
         });

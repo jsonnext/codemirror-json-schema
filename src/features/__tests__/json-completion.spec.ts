@@ -1,7 +1,7 @@
 import { describe, it } from "vitest";
 
 import { expectCompletion } from "./__helpers__/completion.js";
-import { MODES } from "../constants.js";
+import { MODES } from "../../constants.js";
 import { testSchema3, testSchema4 } from "./__fixtures__/schemas.js";
 
 describe.each([
@@ -167,6 +167,13 @@ describe.each([
         info: "",
         label: "object",
         template: '"object": {#{}}',
+      },
+      {
+        template: '"objectWithRef": {#{}}',
+        label: "objectWithRef",
+        detail: "",
+        info: "",
+        type: "property",
       },
     ],
   },
@@ -645,6 +652,13 @@ describe.each([
         info: "",
         label: "object",
         template: "object: #{}",
+      },
+      {
+        template: "objectWithRef: #{}",
+        label: "objectWithRef",
+        detail: "",
+        info: "",
+        type: "property",
       },
     ],
   },

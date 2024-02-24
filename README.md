@@ -8,12 +8,13 @@ Codemirror 6 extensions that provide full [JSON Schema](https://json-schema.org/
 
 ## Features
 
-This is now a full-featured library for both json4 (aka json) and json5 using extensions, so they should compatible with any frontend framework and/or integration library
+This is now a full-featured library for json schema for `json`, `json5` and `yaml` as cm6 extensions!
 
-- ✅ validation messages
-- ✅ autocompletion with insert text
+- ✅ lint validation messages from json schema
+- ✅ autocompletion with insert text from json schema
 - ✅ hover tooltips
 - ✅ dynamic, per-editor-instance schemas using codemirror `StateField` and linting refresh
+- ✅ markdown rendering for `schema.description` and custom `formatHover` and `formatError` configuration
 
 ## Resources
 
@@ -29,6 +30,7 @@ Based on whether you want to support json4, json5 or both, you will need to inst
 
 ### Breaking Changes:
 
+- 0.7.0 - this version introduces markdown rendering in place of returning html strings, so any usage of `formatHover` and/or `formatError` configuration will be passed to `markdown-it` which doesn't handle html by default.
 - 0.5.0 - this breaking change only impacts those following the "custom usage" approach, it _does not_ effect users using the high level, "bundled" `jsonSchema()` or `json5Schema()` modes. See the custom usages below to learn how to use the new `stateExtensions` and `handleRefresh` exports.
 
 ### json4
@@ -281,11 +283,3 @@ const state = EditorState.create({
 `monaco-json` and `monaco-yaml` both provide json schema features for json, cson and yaml, and we want the nascent codemirror 6 to have them as well!
 
 Also, json5 is slowly growing in usage, and it needs full language support for the browser!
-
-## Our Goals
-
-- working GeoJSON spec linter & completion
-- working variables json mode for `cm6-graphql`, ala `monaco-graphql`
-- json5 support for `graphiql` as a plugin!
-- perhaps use @lezer to make a json5 language service for monaco-editor + json5?
-- json5 + json4 json schema features for all!

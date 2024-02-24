@@ -1,19 +1,24 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "module": "ESNext",
+    "module": "ES2022",
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "lib": ["ESNext", "DOM"],
     "declaration": true,
     "resolveJsonModule": true,
     "removeComments": false,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "paths": {
+      "@*": ["./src/*"]
+    },
+    "baseUrl": "./"
   },
   "compileOnSave": true,
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/__tests__/**"]
+  "exclude": ["**/__tests__/**"]
 }

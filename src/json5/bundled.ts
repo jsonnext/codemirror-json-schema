@@ -1,13 +1,13 @@
 import { JSONSchema7 } from "json-schema";
 import { json5, json5Language, json5ParseLinter } from "codemirror-json5";
 import { hoverTooltip } from "@codemirror/view";
-import { json5Completion } from "./completion.js";
-import { json5SchemaLinter } from "./validation.js";
-import { json5SchemaHover } from "./hover.js";
+import { json5Completion } from "./completion";
+import { json5SchemaLinter } from "./validation";
+import { json5SchemaHover } from "./hover";
 
 import { linter } from "@codemirror/lint";
-import { handleRefresh } from "../json-validation.js";
-import { stateExtensions } from "../state.js";
+import { handleRefresh } from "../features/validation";
+import { stateExtensions } from "../features/state";
 
 /**
  * Full featured cm6 extension for json5, including `codemirror-json5`

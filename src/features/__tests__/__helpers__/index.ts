@@ -1,9 +1,9 @@
-import { JSONMode } from "../../types";
-import { MODES } from "../../constants";
+import { JSONMode } from "../../../types";
+import { MODES } from "../../../constants";
 import { JSONSchema7 } from "json-schema";
-import { jsonSchema } from "../../bundled";
-import { json5Schema } from "../../json5/bundled";
-import { yamlSchema } from "../../yaml/bundled";
+import { jsonSchema } from "../../../json/bundled";
+import { json5Schema } from "../../../json5/bundled";
+import { yamlSchema } from "../../../yaml/bundled";
 
 export const getExtensions = (mode: JSONMode, schema?: JSONSchema7) => {
   switch (mode) {

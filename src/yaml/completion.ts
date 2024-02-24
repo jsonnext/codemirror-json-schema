@@ -1,6 +1,6 @@
 import { CompletionContext } from "@codemirror/autocomplete";
 import { MODES } from "../constants";
-import { JSONCompletion, JSONCompletionOptions } from "../json-completion";
+import { JSONCompletion, JSONCompletionOptions } from "../features/completion";
 
 /**
  * provides a JSON schema enabled autocomplete extension for codemirror and yaml

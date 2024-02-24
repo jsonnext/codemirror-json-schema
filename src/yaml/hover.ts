@@ -1,8 +1,8 @@
 import { type EditorView } from "@codemirror/view";
-import { type HoverOptions, JSONHover } from "../json-hover.js";
+import { type HoverOptions, JSONHover } from "../features/hover";
 import YAML from "yaml";
-import { Side } from "../types.js";
-import { MODES } from "../constants.js";
+import { Side } from "../types";
+import { MODES } from "../constants";
 
 export type YAMLHoverOptions = Exclude<HoverOptions, "mode">;
 

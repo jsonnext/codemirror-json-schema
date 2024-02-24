@@ -1,13 +1,13 @@
 import { JSONSchema7 } from "json-schema";
 import { yaml, yamlLanguage } from "@codemirror/lang-yaml";
 import { hoverTooltip } from "@codemirror/view";
-import { handleRefresh } from "../json-validation.js";
-import { stateExtensions } from "../state.js";
+import { handleRefresh } from "../features/validation";
+import { stateExtensions } from "../features/state";
 
 import { linter } from "@codemirror/lint";
-import { yamlSchemaLinter } from "./validation.js";
-import { yamlCompletion } from "./completion.js";
-import { yamlSchemaHover } from "./hover.js";
+import { yamlSchemaLinter } from "./validation";
+import { yamlCompletion } from "./completion";
+import { yamlSchemaHover } from "./hover";
 
 /**
  * Full featured cm6 extension for json, including `@codemirror/lang-json`
