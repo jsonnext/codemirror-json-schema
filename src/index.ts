@@ -1,5 +1,4 @@
 export { jsonCompletion } from "./json-completion.js";
-
 export {
   jsonSchemaLinter,
   type JSONValidationOptions,
@@ -14,6 +13,12 @@ export {
 } from "./json-hover.js";
 
 export { jsonSchema } from "./bundled.js";
+export {
+  yamlSchema,
+  yamlCompletion,
+  yamlSchemaLinter,
+  yamlSchemaHover,
+} from "./yaml";
 
 export type {
   JSONPointersMap,
