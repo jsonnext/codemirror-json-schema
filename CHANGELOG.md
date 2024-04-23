@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.1
+
+### Patch Changes
+
+- [`8b311fe`](https://github.com/acao/codemirror-json-schema/commit/8b311fe1fe48ba5cf209ae5d9524f0df6d0fba55) Thanks [@acao](https://github.com/acao)! - Add MIT license via @imolorhe
+
 ## 0.7.0
 
 ### Minor Changes
