@@ -286,8 +286,8 @@ object: {}
   `,
       errors: [
         {
-          from: 13,
-          to: 19,
+          from: 21,
+          to: 23,
           message: "The required property `foo` is missing at `object`",
         },
       ],
