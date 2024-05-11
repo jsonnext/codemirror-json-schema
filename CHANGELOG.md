@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.2
+
+### Patch Changes
+
+- [#94](https://github.com/acao/codemirror-json-schema/pull/94) [`0dc3749`](https://github.com/acao/codemirror-json-schema/commit/0dc37498d7276becceb48d92dc367648f4676415) Thanks [@xdavidwu](https://github.com/xdavidwu)! - Add support for YAML flow sequences and flow mappings
+
 ## 0.7.1
 
 ### Patch Changes
