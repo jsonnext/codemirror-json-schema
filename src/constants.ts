@@ -25,6 +25,8 @@ export const YAML_TOKENS_MAPPING: Record<
   Key: TOKENS.PROPERTY_NAME,
   BlockSequence: TOKENS.ARRAY,
   BlockMapping: TOKENS.OBJECT,
+  FlowSequence: TOKENS.ARRAY,
+  FlowMapping: TOKENS.OBJECT,
   QuotedLiteral: TOKENS.STRING,
   Literal: TOKENS.STRING, // best guess
   Stream: TOKENS.JSON_TEXT,

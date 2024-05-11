@@ -41,7 +41,7 @@ const expectErrors = (
 };
 
 describe("json-validation", () => {
-  it.each([
+  const jsonSuite = [
     {
       name: "provide range for a value error",
       mode: MODES.JSON,
@@ -137,6 +137,9 @@ describe("json-validation", () => {
       ],
       schema: testSchema2,
     },
+  ];
+  it.each([
+    ...jsonSuite,
     // JSON5
     {
       name: "provide range for a value error",
@@ -234,6 +237,7 @@ describe("json-validation", () => {
       schema: testSchema2,
     },
     // YAML
+    ...jsonSuite.map((t) => ({ ...t, mode: MODES.YAML })),
     {
       name: "provide range for a value error",
       mode: MODES.YAML,
@@ -286,8 +290,8 @@ object: {}
   `,
       errors: [
         {
-          from: 13,
-          to: 19,
+          from: 21,
+          to: 23,
           message: "The required property `foo` is missing at `object`",
         },
       ],
