@@ -4,14 +4,14 @@ import { Draft04, type Draft, type JsonError } from "json-schema-library";
 
 import { getJSONSchema, schemaStateField } from "./state.js";
 import { joinWithOr } from "./utils/formatting.js";
-import { JSONMode, JSONPointerData } from "./types.js";
+import { JSONMode, JSONPointerData, RequiredPick } from "./types.js";
 import { parseJSONDocumentState } from "./utils/parseJSONDocument.js";
-import { RequiredPick } from "./types.js";
 import { el } from "./utils/dom.js";
 import { renderMarkdown } from "./utils/markdown.js";
 import { MODES } from "./constants.js";
 import { parseYAMLDocumentState } from "./utils/parse-yaml-document.js";
 import { parseJSON5DocumentState } from "./utils/parseJSON5Document.js";
+import { debug } from "./utils/debug.js";
 
 const getDefaultParser = (mode: JSONMode): typeof parseJSONDocumentState => {
   switch (mode) {
@@ -96,7 +96,7 @@ export class JSONValidation {
     const errors = errorData?.errors as string[];
     if (error.code === "one-of-error" && errors?.length) {
       return `Expected one of ${joinWithOr(
-        errors as string[],
+        errors,
         (data) => data.data.expected
       )}`;
     }
@@ -133,11 +133,12 @@ export class JSONValidation {
 
     let errors: JsonError[] = [];
     try {
-      errors = this.schema.validate(json.data);
+      errors = this.schema.validate(json.data, schema);
     } catch {}
+    debug.log("xxx", "validation errors", errors, json.data);
     if (!errors.length) return [];
     // reduce() because we want to filter out errors that don't have a pointer
-    return errors.reduce((acc, error) => {
+    return errors.reduce<Diagnostic[]>((acc, error) => {
       const pushRoot = () => {
         const errorString = this.rewriteError(error);
         acc.push({
@@ -156,12 +157,11 @@ export class JSONValidation {
       const errorPath = getErrorPath(error);
       const pointer = json.pointers.get(errorPath) as JSONPointerData;
       if (
-        error.name === "MaxPropertiesError" ??
+        error.name === "MaxPropertiesError" ||
         error.name === "MinPropertiesError"
       ) {
         pushRoot();
-      }
-      if (pointer) {
+      } else if (pointer) {
         // if the error is a property error, use the key position
         const isKeyError = positionalErrors.includes(error.name);
         const errorString = this.rewriteError(error);
@@ -182,8 +182,10 @@ export class JSONValidation {
             source: this.schemaTitle,
           });
         }
+      } else {
+        pushRoot();
       }
       return acc;
-    }, [] as Diagnostic[]);
+    }, []);
   }
 }
