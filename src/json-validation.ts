@@ -133,7 +133,7 @@ export class JSONValidation {
 
     let errors: JsonError[] = [];
     try {
-      errors = this.schema.validate(json.data, schema);
+      errors = this.schema.validate(json.data);
     } catch {}
     debug.log("xxx", "validation errors", errors, json.data);
     if (!errors.length) return [];
