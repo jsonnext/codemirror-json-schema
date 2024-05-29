@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 
 import { expectCompletion } from "./__helpers__/completion.js";
 import { MODES } from "../constants.js";
-import { testSchema3 } from "./__fixtures__/schemas.js";
+import { testSchema3, testSchema4 } from "./__fixtures__/schemas.js";
 
 describe.each([
   {
@@ -143,10 +143,8 @@ describe.each([
   // TODO: should provide true/false completions
   // {
   //   name: "include value completions for boolean",
-  // mode: MODES.JSON,
-  // docs: ['{ "booleanWithDefault": | }',
-  //  },
-  //   ],
+  //   mode: MODES.JSON,
+  //   docs: ['{ "booleanWithDefault": | }'],
   //   expectedResults: [
   //     {
   //       detail: "boolean",
@@ -363,6 +361,28 @@ describe.each([
       },
     ],
     schema: testSchema3,
+  },
+  {
+    name: "autocomplete for a schema with top level complex type",
+    mode: MODES.JSON,
+    docs: ['{ "| }'],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "foo",
+        template: '"foo": "#{}"',
+      },
+      {
+        type: "property",
+        detail: "number",
+        info: "",
+        label: "bar",
+        template: '"bar": #{0}',
+      },
+    ],
+    schema: testSchema4,
   },
   // JSON5
   {

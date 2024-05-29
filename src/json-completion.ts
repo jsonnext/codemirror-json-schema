@@ -270,6 +270,7 @@ export class JSONCompletion {
 
     // Get matching schemas
     const schemas = this.getSchemas(schema, ctx);
+    debug.log("xxx", "propertyCompletion schemas", schemas);
 
     schemas.forEach((s) => {
       if (typeof s !== "object") {
@@ -814,8 +815,9 @@ export class JSONCompletion {
     debug.log("xxx", "pointer..", JSON.stringify(pointer));
 
     // For some reason, it returns undefined schema for the root pointer
+    // We use the root schema in that case as the relevant (sub)schema
     if (!pointer || pointer === "/") {
-      return [schema];
+      subSchema = this.expandSchemaProperty(schema, schema) ?? schema;
     }
     // const subSchema = new Draft07(this.schema).getSchema(pointer);
     debug.log("xxx", "subSchema..", subSchema);
