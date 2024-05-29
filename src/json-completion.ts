@@ -58,7 +58,8 @@ export class JSONCompletion {
     this.mode = opts.mode ?? MODES.JSON;
   }
   public doComplete(ctx: CompletionContext) {
-    this.schema = getJSONSchema(ctx.state)!;
+    const s = getJSONSchema(ctx.state)!;
+    this.schema = this.expandSchemaProperty(s, s) ?? s;
     if (!this.schema) {
       // todo: should we even do anything without schema
       // without taking over the existing mode responsibilties?
@@ -484,13 +485,10 @@ export class JSONCompletion {
     switch (this.mode) {
       case MODES.JSON5:
         return `'${prf}{${value}}'`;
-        break;
       case MODES.YAML:
         return `${prf}{${value}}`;
-        break;
       default:
         return `"${prf}{${value}}"`;
-        break;
     }
   }
 
@@ -847,8 +845,8 @@ export class JSONCompletion {
     return [subSchema as JSONSchema7];
   }
 
-  private expandSchemaProperty(
-    property: JSONSchema7Definition,
+  private expandSchemaProperty<T extends JSONSchema7Definition>(
+    property: T,
     schema: JSONSchema7
   ) {
     if (typeof property === "object" && property.$ref) {

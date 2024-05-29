@@ -2,6 +2,7 @@ import { describe, it } from "vitest";
 
 import { expectCompletion } from "./__helpers__/completion.js";
 import { MODES } from "../constants.js";
+import { testSchema3 } from "./__fixtures__/schemas.js";
 
 describe.each([
   {
@@ -46,6 +47,35 @@ describe.each([
       },
     ],
   },
+  {
+    name: "include defaults for string when available",
+    mode: MODES.JSON,
+    docs: ['{ "stringWithDefault| }'],
+    expectedResults: [
+      {
+        label: "stringWithDefault",
+        type: "property",
+        detail: "string",
+        info: "a string with a default value",
+        template: '"stringWithDefault": "${defaultString}"',
+      },
+    ],
+  },
+  // TODO: fix the default template with braces: https://discuss.codemirror.net/t/inserting-literal-via-snippets/8136/4
+  // {
+  //   name: "include defaults for string with braces",
+  //   mode: MODES.JSON,
+  //   docs: ['{ "bracedStringDefault| }'],
+  //   expectedResults: [
+  //     {
+  //       label: "bracedStringDefault",
+  //       type: "property",
+  //       detail: "string",
+  //       info: "a string with a default value containing braces",
+  //       template: '"bracedStringDefault": "${✨ A message from %{whom}: ✨}"',
+  //     },
+  //   ],
+  // },
   {
     name: "include defaults for enum when available",
     mode: MODES.JSON,
@@ -222,6 +252,20 @@ describe.each([
   },
   // TODO: completion for array of objects should enhance the template
   {
+    name: "autocomplete for array of objects with filter",
+    mode: MODES.JSON,
+    docs: ['{ "arrayOfObjects": [ { "f|" } ] }'],
+    expectedResults: [
+      {
+        detail: "string",
+        info: "",
+        label: "foo",
+        template: '"foo": "#{}"',
+        type: "property",
+      },
+    ],
+  },
+  {
     name: "autocomplete for array of objects with items",
     mode: MODES.JSON,
     docs: ['{ "array| }'],
@@ -297,6 +341,28 @@ describe.each([
         type: "property",
       },
     ],
+  },
+  {
+    name: "autocomplete for a schema with top level $ref",
+    mode: MODES.JSON,
+    docs: ['{ "| }'],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "foo",
+        template: '"foo": "#{}"',
+      },
+      {
+        type: "property",
+        detail: "number",
+        info: "",
+        label: "bar",
+        template: '"bar": #{0}',
+      },
+    ],
+    schema: testSchema3,
   },
   // JSON5
   {
@@ -653,8 +719,8 @@ describe.each([
       },
     ],
   },
-])("jsonCompletion", ({ name, docs, mode, expectedResults }) => {
+])("jsonCompletion", ({ name, docs, mode, expectedResults, schema }) => {
   it.each(docs)(`${name} (mode: ${mode})`, async (doc) => {
-    await expectCompletion(doc, expectedResults, { mode });
+    await expectCompletion(doc, expectedResults, { mode, schema });
   });
 });

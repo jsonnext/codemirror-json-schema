@@ -47,7 +47,7 @@ export async function expectCompletion(
   } = {}
 ) {
   let cur = doc.indexOf("|"),
-    currentSchema = conf?.schema || testSchema2;
+    currentSchema = conf?.schema ?? testSchema2;
   doc = doc.slice(0, cur) + doc.slice(cur + 1);
 
   let state = EditorState.create({
