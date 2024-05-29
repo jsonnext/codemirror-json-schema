@@ -140,7 +140,7 @@ describe.each([
       },
     ],
   },
-  // TODO: should provide true/false completions
+  // TODO: should provide true/false completions. Issue is the detected node is the Property node, which contains the property name and value. The prefix for the autocompletion therefore contains the property name, so it never matches the results
   // {
   //   name: "include value completions for boolean",
   //   mode: MODES.JSON,

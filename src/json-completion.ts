@@ -77,7 +77,7 @@ export class JSONCompletion {
     let node: SyntaxNode | null = getNodeAtPosition(ctx.state, ctx.pos);
 
     // position node word prefix (without quotes) for matching
-    const prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^("|')/, "");
+    let prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^(["'])/, "");
 
     debug.log("xxx", "node", node, "prefix", prefix, "ctx", ctx);
 
@@ -213,7 +213,14 @@ export class JSONCompletion {
       const types: { [type: string]: boolean } = {};
 
       // value proposals with schema
-      this.getValueCompletions(this.schema, ctx, types, collector);
+      const res = this.getValueCompletions(this.schema, ctx, types, collector);
+      debug.log("xxx", "getValueCompletions res", res);
+      if (res) {
+        // TODO: While this works, we also need to handle the completion from and to positions to use it
+        // // use the value node to calculate the prefix
+        // prefix = res.valuePrefix;
+        // debug.log("xxx", "using valueNode prefix", prefix);
+      }
     }
 
     // handle filtering
@@ -460,15 +467,7 @@ export class JSONCompletion {
   }
   private getInsertTextForPropertyName(key: string, rawWord: string) {
     switch (this.mode) {
-      case MODES.JSON5: {
-        if (rawWord.startsWith('"')) {
-          return `"${key}"`;
-        }
-        if (rawWord.startsWith("'")) {
-          return `'${key}'`;
-        }
-        return key;
-      }
+      case MODES.JSON5:
       case MODES.YAML: {
         if (rawWord.startsWith('"')) {
           return `"${key}"`;
@@ -660,6 +659,19 @@ export class JSONCompletion {
         }
       }
     }
+
+    // TODO: We need to pass the from and to for the value node as well
+    // TODO: What should be the from and to when the value node is null?
+    // TODO: (NOTE: if we pass a prefix but no from and to, it will autocomplete the value but replace
+    // TODO: the entire property nodewhich isn't what we want). Instead we need to change the from and to
+    // TODO: based on the corresponding (relevant) value node
+    const valuePrefix = valueNode
+      ? getWord(ctx.state.doc, valueNode, true, false)
+      : "";
+
+    return {
+      valuePrefix,
+    };
   }
 
   private addSchemaValueCompletions(

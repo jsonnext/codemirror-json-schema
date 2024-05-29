@@ -23,10 +23,17 @@ export const surroundingDoubleQuotesToSingle = (str: string) => {
 export const getWord = (
   doc: Text,
   node: SyntaxNode | null,
-  stripQuotes = true
+  stripQuotes = true,
+  onlyEvenQuotes = true
 ) => {
   const word = node ? doc.sliceString(node.from, node.to) : "";
-  return stripQuotes ? stripSurroundingQuotes(word) : word;
+  if (!stripQuotes) {
+    return word;
+  }
+  if (onlyEvenQuotes) {
+    return stripSurroundingQuotes(word);
+  }
+  return word.replace(/(^["'])|(["']$)/g, "");
 };
 
 export const isInvalidValueNode = (node: SyntaxNode, mode: JSONMode) => {
