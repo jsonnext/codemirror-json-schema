@@ -110,6 +110,7 @@ export class JSONValidation {
     const message = error.message
       // don't mention root object
       .replaceAll("in `#` ", "")
+      .replaceAll("at `#`", "")
       .replaceAll("/", ".")
       .replaceAll("#.", "");
     return message;
