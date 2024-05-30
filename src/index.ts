@@ -1,13 +1,19 @@
-export { jsonCompletion } from "./json-completion.js";
+export {
+  jsonCompletion,
+  JSONCompletion,
+  type JSONCompletionOptions,
+} from "./json-completion.js";
 
 export {
   jsonSchemaLinter,
+  JSONValidation,
   type JSONValidationOptions,
   handleRefresh,
 } from "./json-validation.js";
 
 export {
   jsonSchemaHover,
+  JSONHover,
   type HoverOptions,
   type FoundCursorData,
   type CursorData,
