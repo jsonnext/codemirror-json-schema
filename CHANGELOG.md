@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.3
+
+### Patch Changes
+
+- [#103](https://github.com/acao/codemirror-json-schema/pull/103) [`da7f368`](https://github.com/acao/codemirror-json-schema/commit/da7f36888c5efa31b5b32becdf9f839e476eed85) Thanks [@imolorhe](https://github.com/imolorhe)! - Handle generic validation error
+
 ## 0.7.2
 
 ### Patch Changes
