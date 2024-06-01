@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.7
+
+### Patch Changes
+
+- [#117](https://github.com/jsonnext/codemirror-json-schema/pull/117) [`edafa8f`](https://github.com/jsonnext/codemirror-json-schema/commit/edafa8f6993a4004c9ffe6aa7cde58c9da704d6b) Thanks [@acao](https://github.com/acao)! - validate all strings with length > 1
+
 ## 0.7.6
 
 ### Patch Changes
