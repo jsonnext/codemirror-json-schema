@@ -111,7 +111,7 @@
     "build": "pnpm tsc && tsc --module commonjs --outDir cjs && vite build ./dev --outDir ../public --emptyOutDir",
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage ",
-    "tsc": "NODE_OPTIONS=--experimental-specifier-resolution=node tsc && pnpm replace:env",
+    "tsc": "tsc && pnpm replace:env",
     "version-packages": "changeset version && pnpm typedoc && pnpm prettier:write CHANGELOG.md && git add package.json pnpm-lock.yaml CHANGELOG.md",
     "release": "pnpm build && changeset publish",
     "typedoc": "typedoc --out docs src/index.ts src/json5.ts && pnpm prettier:write docs/**/*",
