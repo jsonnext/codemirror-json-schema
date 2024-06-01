@@ -58,7 +58,8 @@ export class JSONCompletion {
     this.mode = opts.mode ?? MODES.JSON;
   }
   public doComplete(ctx: CompletionContext) {
-    this.schema = getJSONSchema(ctx.state)!;
+    const s = getJSONSchema(ctx.state)!;
+    this.schema = this.expandSchemaProperty(s, s) ?? s;
     if (!this.schema) {
       // todo: should we even do anything without schema
       // without taking over the existing mode responsibilties?
@@ -76,7 +77,7 @@ export class JSONCompletion {
     let node: SyntaxNode | null = getNodeAtPosition(ctx.state, ctx.pos);
 
     // position node word prefix (without quotes) for matching
-    const prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^("|')/, "");
+    let prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^(["'])/, "");
 
     debug.log("xxx", "node", node, "prefix", prefix, "ctx", ctx);
 
@@ -212,7 +213,14 @@ export class JSONCompletion {
       const types: { [type: string]: boolean } = {};
 
       // value proposals with schema
-      this.getValueCompletions(this.schema, ctx, types, collector);
+      const res = this.getValueCompletions(this.schema, ctx, types, collector);
+      debug.log("xxx", "getValueCompletions res", res);
+      if (res) {
+        // TODO: While this works, we also need to handle the completion from and to positions to use it
+        // // use the value node to calculate the prefix
+        // prefix = res.valuePrefix;
+        // debug.log("xxx", "using valueNode prefix", prefix);
+      }
     }
 
     // handle filtering
@@ -269,6 +277,7 @@ export class JSONCompletion {
 
     // Get matching schemas
     const schemas = this.getSchemas(schema, ctx);
+    debug.log("xxx", "propertyCompletion schemas", schemas);
 
     schemas.forEach((s) => {
       if (typeof s !== "object") {
@@ -458,15 +467,7 @@ export class JSONCompletion {
   }
   private getInsertTextForPropertyName(key: string, rawWord: string) {
     switch (this.mode) {
-      case MODES.JSON5: {
-        if (rawWord.startsWith('"')) {
-          return `"${key}"`;
-        }
-        if (rawWord.startsWith("'")) {
-          return `'${key}'`;
-        }
-        return key;
-      }
+      case MODES.JSON5:
       case MODES.YAML: {
         if (rawWord.startsWith('"')) {
           return `"${key}"`;
@@ -484,13 +485,10 @@ export class JSONCompletion {
     switch (this.mode) {
       case MODES.JSON5:
         return `'${prf}{${value}}'`;
-        break;
       case MODES.YAML:
         return `${prf}{${value}}`;
-        break;
       default:
         return `"${prf}{${value}}"`;
-        break;
     }
   }
 
@@ -661,6 +659,19 @@ export class JSONCompletion {
         }
       }
     }
+
+    // TODO: We need to pass the from and to for the value node as well
+    // TODO: What should be the from and to when the value node is null?
+    // TODO: (NOTE: if we pass a prefix but no from and to, it will autocomplete the value but replace
+    // TODO: the entire property nodewhich isn't what we want). Instead we need to change the from and to
+    // TODO: based on the corresponding (relevant) value node
+    const valuePrefix = valueNode
+      ? getWord(ctx.state.doc, valueNode, true, false)
+      : "";
+
+    return {
+      valuePrefix,
+    };
   }
 
   private addSchemaValueCompletions(
@@ -816,8 +827,9 @@ export class JSONCompletion {
     debug.log("xxx", "pointer..", JSON.stringify(pointer));
 
     // For some reason, it returns undefined schema for the root pointer
+    // We use the root schema in that case as the relevant (sub)schema
     if (!pointer || pointer === "/") {
-      return [schema];
+      subSchema = this.expandSchemaProperty(schema, schema) ?? schema;
     }
     // const subSchema = new Draft07(this.schema).getSchema(pointer);
     debug.log("xxx", "subSchema..", subSchema);
@@ -847,8 +859,8 @@ export class JSONCompletion {
     return [subSchema as JSONSchema7];
   }
 
-  private expandSchemaProperty(
-    property: JSONSchema7Definition,
+  private expandSchemaProperty<T extends JSONSchema7Definition>(
+    property: T,
     schema: JSONSchema7
   ) {
     if (typeof property === "object" && property.$ref) {

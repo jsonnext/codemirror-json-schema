@@ -17,6 +17,16 @@ export const testSchema2 = {
     foo: {
       type: "string",
     },
+    stringWithDefault: {
+      type: "string",
+      description: "a string with a default value",
+      default: "defaultString",
+    },
+    bracedStringDefault: {
+      type: "string",
+      description: "a string with a default value containing braces",
+      default: "✨ A message from %{whom}: ✨",
+    },
     object: {
       type: "object",
       properties: {
