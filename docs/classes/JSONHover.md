@@ -35,13 +35,13 @@
 
 #### Defined in
 
-[json-hover.ts:67](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L67)
+[features/hover.ts:88](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/hover.ts#L88)
 
 ## Methods
 
 ### doHover
 
-▸ **doHover**(`view`, `pos`, `side`): `Promise`<`null` \| `Tooltip`\>
+▸ **doHover**(`view`, `pos`, `side`): `Promise`\<`null` \| `Tooltip`\>
 
 #### Parameters
 
@@ -53,11 +53,11 @@
 
 #### Returns
 
-`Promise`<`null` \| `Tooltip`\>
+`Promise`\<`null` \| `Tooltip`\>
 
 #### Defined in
 
-[json-hover.ts:176](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L176)
+[features/hover.ts:203](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/hover.ts#L203)
 
 ---
 
@@ -77,7 +77,7 @@
 
 #### Defined in
 
-[json-hover.ts:115](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L115)
+[features/hover.ts:136](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/hover.ts#L136)
 
 ---
 
@@ -99,7 +99,7 @@
 
 #### Defined in
 
-[json-hover.ts:74](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L74)
+[features/hover.ts:95](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/hover.ts#L95)
 
 ---
 
@@ -109,10 +109,10 @@
 
 #### Parameters
 
-| Name    | Type                                                 |
-| :------ | :--------------------------------------------------- |
-| `data`  | `Required`<[`CursorData`](../README.md#cursordata)\> |
-| `draft` | `Draft`                                              |
+| Name    | Type                                                  |
+| :------ | :---------------------------------------------------- |
+| `data`  | `Required`\<[`CursorData`](../README.md#cursordata)\> |
+| `draft` | `Draft`                                               |
 
 #### Returns
 
@@ -120,7 +120,7 @@
 
 #### Defined in
 
-[json-hover.ts:141](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L141)
+[features/hover.ts:162](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/hover.ts#L162)
 
 ## Properties
 
@@ -130,7 +130,7 @@
 
 #### Defined in
 
-[json-hover.ts:66](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L66)
+[features/hover.ts:87](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/hover.ts#L87)
 
 ---
 
@@ -140,7 +140,7 @@
 
 #### Defined in
 
-[json-hover.ts:67](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L67)
+[features/hover.ts:88](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/hover.ts#L88)
 
 ---
 
@@ -150,4 +150,4 @@
 
 #### Defined in
 
-[json-hover.ts:65](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L65)
+[features/hover.ts:86](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/hover.ts#L86)

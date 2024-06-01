@@ -17,7 +17,7 @@
 
 ### jsonParser
 
-• `Optional` **jsonParser**: (`state`: `EditorState`) => { `data`: `any` ; `pointers`: [`JSONPointersMap`](../README.md#jsonpointersmap) }
+• `Optional` **jsonParser**: (`state`: `EditorState`) => \{ `data`: `any` ; `pointers`: [`JSONPointersMap`](../README.md#jsonpointersmap) }
 
 #### Type declaration
 
@@ -42,7 +42,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-validation.ts:43](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-validation.ts#L43)
+[features/validation.ts:43](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/validation.ts#L43)
 
 ## Properties
 
@@ -66,7 +66,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-validation.ts:42](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-validation.ts#L42)
+[features/validation.ts:42](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/validation.ts#L42)
 
 ---
 
@@ -76,4 +76,4 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-validation.ts:41](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-validation.ts#L41)
+[features/validation.ts:41](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/validation.ts#L41)
