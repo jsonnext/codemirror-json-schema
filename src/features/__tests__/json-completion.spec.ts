@@ -1,8 +1,8 @@
 import { describe, it } from "vitest";
 
-import { expectCompletion } from "./__helpers__/completion.js";
-import { MODES } from "../../constants.js";
-import { testSchema3, testSchema4 } from "./__fixtures__/schemas.js";
+import { expectCompletion } from "./__helpers__/completion";
+import { MODES } from "../../constants";
+import { testSchema3, testSchema4 } from "./__fixtures__/schemas";
 
 describe.each([
   {
