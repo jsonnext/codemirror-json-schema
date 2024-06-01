@@ -2,16 +2,16 @@ import type { EditorView, ViewUpdate } from "@codemirror/view";
 import { type Diagnostic } from "@codemirror/lint";
 import { Draft04, type Draft, type JsonError } from "json-schema-library";
 
-import { getJSONSchema, schemaStateField } from "./state.js";
-import { joinWithOr } from "./utils/formatting.js";
-import { JSONMode, JSONPointerData, RequiredPick } from "./types.js";
-import { parseJSONDocumentState } from "./utils/parseJSONDocument.js";
-import { el } from "./utils/dom.js";
-import { renderMarkdown } from "./utils/markdown.js";
-import { MODES } from "./constants.js";
-import { parseYAMLDocumentState } from "./utils/parse-yaml-document.js";
-import { parseJSON5DocumentState } from "./utils/parseJSON5Document.js";
-import { debug } from "./utils/debug.js";
+import { getJSONSchema, schemaStateField } from "./state";
+import { joinWithOr } from "../utils/formatting";
+import { JSONMode, JSONPointerData, RequiredPick } from "../types";
+import { parseJSONDocumentState } from "../utils/parse-json-document";
+import { el } from "../utils/dom";
+import { renderMarkdown } from "../utils/markdown";
+import { MODES } from "../constants";
+import { parseYAMLDocumentState } from "../utils/parse-yaml-document";
+import { parseJSON5DocumentState } from "../utils/parse-json5-document";
+import { debug } from "../utils/debug";
 
 const getDefaultParser = (mode: JSONMode): typeof parseJSONDocumentState => {
   switch (mode) {
@@ -150,7 +150,7 @@ export class JSONValidation {
           source: this.schemaTitle,
           renderMessage: () => {
             const dom = el("div", {});
-            dom.innerHTML = errorString;
+            dom.innerHTML = renderMarkdown(errorString);
             return dom;
           },
         });

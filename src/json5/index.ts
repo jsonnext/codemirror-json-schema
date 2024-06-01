@@ -1,11 +1,11 @@
 // json5
-export { json5SchemaLinter } from "./validation.js";
-export { json5SchemaHover } from "./hover.js";
-export { json5Completion } from "./completion.js";
+export { json5SchemaLinter } from "./validation";
+export { json5SchemaHover } from "./hover";
+export { json5Completion } from "./completion";
 
 /**
  * @group Bundled Codemirror Extensions
  */
-export { json5Schema } from "./bundled.js";
+export { json5Schema } from "./bundled";
 
-export * from "../utils/parseJSON5Document.js";
+export * from "../utils/parse-json5-document";

@@ -1,7 +1,7 @@
 import { json } from "@codemirror/lang-json";
 import { EditorState } from "@codemirror/state";
-import { getJsonPointers } from "./jsonPointers.js";
-import { MODES } from "../constants.js";
+import { getJsonPointers } from "./json-pointers";
+import { MODES } from "../constants";
 
 /**
  * Return parsed data and json pointers for a given codemirror EditorState

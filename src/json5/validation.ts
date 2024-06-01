@@ -2,9 +2,9 @@ import { EditorView } from "@codemirror/view";
 import {
   JSONValidation,
   type JSONValidationOptions,
-} from "../json-validation.js";
-import { parseJSON5DocumentState } from "../utils/parseJSON5Document.js";
-import { MODES } from "../constants.js";
+} from "../features/validation";
+import { parseJSON5DocumentState } from "../utils/parse-json5-document";
+import { MODES } from "../constants";
 
 /**
  * Instantiates a JSONValidation instance with the JSON5 mode

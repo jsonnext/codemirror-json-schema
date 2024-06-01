@@ -38,6 +38,9 @@ export const testSchema2 = {
       required: ["foo"],
       additionalProperties: false,
     },
+    objectWithRef: {
+      $ref: "#/definitions/fancyObject",
+    },
     oneOfEg: {
       description: "an example oneOf",
       title: "oneOfEg",

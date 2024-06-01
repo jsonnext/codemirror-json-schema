@@ -1,8 +1,8 @@
 import { type EditorView } from "@codemirror/view";
-import { type HoverOptions, JSONHover } from "../json-hover.js";
+import { type HoverOptions, JSONHover } from "../features/hover";
 import json5 from "json5";
-import { Side } from "../types.js";
-import { MODES } from "../constants.js";
+import { Side } from "../types";
+import { MODES } from "../constants";
 
 export type JSON5HoverOptions = Exclude<HoverOptions, "mode">;
 

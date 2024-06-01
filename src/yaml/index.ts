@@ -1,11 +1,11 @@
 // yaml
-export { yamlSchemaLinter } from "./validation.js";
-export { yamlSchemaHover } from "./hover.js";
-export { yamlCompletion } from "./completion.js";
+export { yamlSchemaLinter } from "./validation";
+export { yamlSchemaHover } from "./hover";
+export { yamlCompletion } from "./completion";
 
 /**
  * @group Bundled Codemirror Extensions
  */
-export { yamlSchema } from "./bundled.js";
+export { yamlSchema } from "./bundled";
 
-export * from "../utils/parseJSON5Document.js";
+export * from "../utils/parse-yaml-document";

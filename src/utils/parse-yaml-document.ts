@@ -5,8 +5,8 @@
 import { yaml } from "@codemirror/lang-yaml";
 import YAML from "yaml";
 import { EditorState } from "@codemirror/state";
-import { getJsonPointers } from "./jsonPointers.js";
-import { MODES } from "../constants.js";
+import { getJsonPointers } from "./json-pointers";
+import { MODES } from "../constants";
 
 /**
  * Return parsed data and YAML pointers for a given codemirror EditorState

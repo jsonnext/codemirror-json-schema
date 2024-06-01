@@ -3,7 +3,7 @@ import { JSONMode } from "../../types";
 import { MODES } from "../../constants";
 import { EditorState } from "@codemirror/state";
 import { getNodeAtPosition } from "../node";
-import { getExtensions } from "../../__tests__/__helpers__";
+import { getExtensions } from "../../features/__tests__/__helpers__";
 
 // complex data structure for testing. Keep these in sync.
 const testJsonData = `

@@ -1,9 +1,9 @@
 import { SyntaxNode } from "@lezer/common";
-import { COMPLEX_TYPES, TOKENS, PRIMITIVE_TYPES, MODES } from "../constants.js";
+import { COMPLEX_TYPES, TOKENS, PRIMITIVE_TYPES, MODES } from "../constants";
 import { EditorState, Text } from "@codemirror/state";
 import { syntaxTree } from "@codemirror/language";
-import { JSONMode, Side } from "../types.js";
-import { resolveTokenName } from "./jsonPointers.js";
+import { JSONMode, Side } from "../types";
+import { resolveTokenName } from "./json-pointers";
 
 export const getNodeAtPosition = (
   state: EditorState,

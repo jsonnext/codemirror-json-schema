@@ -7,7 +7,7 @@ import {
 import { syntaxTree } from "@codemirror/language";
 import { SyntaxNode } from "@lezer/common";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { debug } from "./utils/debug";
+import { debug } from "../utils/debug";
 import {
   findNodeIndexInArrayNode,
   getChildValueNode,
@@ -21,15 +21,16 @@ import {
   getMatchingChildNode,
   getChildrenNodes,
   surroundingDoubleQuotesToSingle,
-} from "./utils/node";
-import { getJSONSchema } from "./features/state";
+} from "../utils/node";
+import { getJSONSchema } from "./state";
 import { Draft07, isJsonError } from "json-schema-library";
 import {
   jsonPointerForPosition,
   resolveTokenName,
-} from "./utils/json-pointers";
-import { MODES, TOKENS } from "./constants";
-import { JSONMode } from "./types";
+} from "../utils/json-pointers";
+import { MODES, TOKENS } from "../constants";
+import { JSONMode } from "../types";
+import { renderMarkdown } from "../utils/markdown";
 
 class CompletionCollector {
   completions = new Map<string, Completion>();
@@ -55,7 +56,7 @@ export class JSONCompletion {
   private schema: JSONSchema7 | null = null;
   private mode: JSONMode = MODES.JSON;
   constructor(private opts: JSONCompletionOptions) {
-    this.mode = this.opts.mode ?? MODES.JSON;
+    this.mode = opts.mode ?? MODES.JSON;
   }
   public doComplete(ctx: CompletionContext) {
     const s = getJSONSchema(ctx.state)!;
@@ -302,7 +303,7 @@ export class JSONCompletion {
               ),
               type: "property",
               detail: typeStr,
-              info: description,
+              info: renderMarkdown(description),
             };
             collector.add(this.applySnippetCompletion(completion));
           }
@@ -918,9 +919,9 @@ export class JSONCompletion {
     }
   }
 
-  // private getValueFromLabel(value: any): string {
-  //   return JSON.parse(value);
-  // }
+  private getValueFromLabel(value: any): string {
+    return JSON.parse(value);
+  }
 
   private extendedRegExp(pattern: string): RegExp | undefined {
     let flags = "";

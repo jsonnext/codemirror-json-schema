@@ -1,19 +1,19 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import { JSONMode, JSONPointersMap, Side } from "../types.js";
+import { JSONMode, JSONPointersMap, Side } from "../types";
 import {
   JSON5_TOKENS_MAPPING,
   MODES,
   TOKENS,
   YAML_TOKENS_MAPPING,
-} from "../constants.js";
+} from "../constants";
 import {
   findNodeIndexInArrayNode,
   getMatchingChildNode,
   getWord,
   isValueNode,
-} from "./node.js";
+} from "./node";
 
 export const resolveTokenName = (nodeName: string, mode: JSONMode) => {
   switch (mode) {

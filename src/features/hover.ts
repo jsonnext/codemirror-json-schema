@@ -6,14 +6,15 @@ import {
   isJsonError,
 } from "json-schema-library";
 
-import { jsonPointerForPosition } from "./utils/jsonPointers.js";
-import { joinWithOr } from "./utils/formatting.js";
-import { debug } from "./utils/debug.js";
-import { JSONMode, Side } from "./types.js";
-import { el } from "./utils/dom.js";
-import { getJSONSchema } from "./state.js";
-import { MODES } from "./constants.js";
-import { renderMarkdown } from "./utils/markdown.js";
+import { jsonPointerForPosition } from "../utils/json-pointers";
+import { joinWithOr } from "../utils/formatting";
+import { debug } from "../utils/debug";
+import { JSONMode, Side } from "../types";
+import { el } from "../utils/dom";
+import { getJSONSchema } from "./state";
+import { MODES } from "../constants";
+import { renderMarkdown } from "../utils/markdown";
+import { JSONSchema7Type } from "json-schema";
 
 export type CursorData = { schema?: JsonSchema; pointer: string };
 
@@ -49,14 +50,34 @@ export function jsonSchemaHover(options?: HoverOptions) {
   };
 }
 
+function formatType(data: { type?: JSONSchema7Type; $ref?: string }) {
+  if (data.type) {
+    if (data.$ref) {
+      return `${data.$ref} (${data.type})`;
+    }
+    return data.type;
+  }
+  if (data.$ref) {
+    return `${data.$ref}`;
+  }
+}
+
 function formatComplexType(
   schema: JsonSchema,
-  type: "oneOf" | "anyOf" | "allOf",
+  complexType: "oneOf" | "anyOf" | "allOf",
   draft: Draft
 ) {
-  return `${type}: ${joinWithOr(
-    schema[type].map((s: JsonSchema) => {
-      return s.type ?? draft.resolveRef(s).type;
+  return `${complexType}: ${joinWithOr(
+    schema[complexType].map((s: JsonSchema) => {
+      try {
+        const { data } = draft.resolveRef({ data: s, pointer: s.$ref });
+        if (data) {
+          return formatType(data);
+        }
+        return formatType(s);
+      } catch (err) {
+        return s.type;
+      }
     })
   )}`;
 }
@@ -118,12 +139,12 @@ export class JSONHover {
       return el("div", { class: "cm6-json-schema-hover" }, [
         el("div", {
           class: "cm6-json-schema-hover--description",
-          text: message,
+          inner: renderMarkdown(message, false),
         }),
         el("div", { class: "cm6-json-schema-hover--code-wrapper" }, [
           el("div", {
             class: "cm6-json-schema-hover--code",
-            inner: renderMarkdown(typeInfo),
+            inner: renderMarkdown(typeInfo, false),
           }),
         ]),
       ]);
@@ -132,7 +153,7 @@ export class JSONHover {
       el("div", { class: "cm6-json-schema-hover--code-wrapper" }, [
         el("code", {
           class: "cm6-json-schema-hover--code",
-          inner: renderMarkdown(typeInfo),
+          inner: renderMarkdown(typeInfo, false),
         }),
       ]),
     ]);
@@ -143,6 +164,7 @@ export class JSONHover {
     let message = null;
 
     const { schema } = data;
+
     if (schema.oneOf) {
       typeInfo = formatComplexType(schema, "oneOf", draft);
     }
@@ -152,10 +174,14 @@ export class JSONHover {
     if (schema.allOf) {
       typeInfo = formatComplexType(schema, "allOf", draft);
     }
+
     if (schema.type) {
       typeInfo = Array.isArray(schema.type)
         ? joinWithOr(schema.type)
         : schema.type;
+    }
+    if (schema.$ref) {
+      typeInfo = ` Reference: ${schema.$ref}`;
     }
     if (schema.enum) {
       typeInfo = `\`enum\`: ${joinWithOr(schema.enum)}`;
@@ -166,6 +192,7 @@ export class JSONHover {
     if (schema.pattern) {
       typeInfo += `\`pattern\`: ${schema.pattern}`;
     }
+
     if (schema.description) {
       message = schema.description;
     }

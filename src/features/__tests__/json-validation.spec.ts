@@ -1,13 +1,13 @@
 import { JSONSchema7 } from "json-schema";
-import { JSONValidation } from "../json-validation";
+import { JSONValidation } from "../validation";
 import type { Diagnostic } from "@codemirror/lint";
 import { describe, it, expect } from "vitest";
 import { EditorView } from "@codemirror/view";
 
-import { testSchema, testSchema2 } from "./__fixtures__/schemas.js";
-import { JSONMode } from "../types.js";
-import { getExtensions } from "./__helpers__/index.js";
-import { MODES } from "../constants.js";
+import { testSchema, testSchema2 } from "./__fixtures__/schemas";
+import { JSONMode } from "../../types";
+import { getExtensions } from "./__helpers__/index";
+import { MODES } from "../../constants";
 
 const getErrors = (
   jsonString: string,

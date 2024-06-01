@@ -2,9 +2,9 @@ import { EditorView } from "@codemirror/view";
 import {
   JSONValidation,
   type JSONValidationOptions,
-} from "../json-validation.js";
-import { parseYAMLDocumentState } from "../utils/parse-yaml-document.js";
-import { MODES } from "../constants.js";
+} from "../features/validation";
+import { parseYAMLDocumentState } from "../utils/parse-yaml-document";
+import { MODES } from "../constants";
 
 /**
  * Instantiates a JSONValidation instance with the YAML mode
