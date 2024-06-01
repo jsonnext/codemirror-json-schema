@@ -12,6 +12,8 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -45,12 +47,11 @@ jobs:
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
+
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: pnpm release
           version: pnpm version-packages
-          commit: "chore(release): changesets versioning & publication"
-          title: "Changesets: Versioning & Publication"
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
