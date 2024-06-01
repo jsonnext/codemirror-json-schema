@@ -6,7 +6,7 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
     "lib": ["ESNext", "DOM"],
     "declaration": true,
     "resolveJsonModule": true,
