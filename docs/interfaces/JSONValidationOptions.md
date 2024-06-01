@@ -42,7 +42,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-validation.ts:43](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-validation.ts#L43)
+[json-validation.ts:43](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-validation.ts#L43)
 
 ## Properties
 
@@ -66,7 +66,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-validation.ts:42](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-validation.ts#L42)
+[json-validation.ts:42](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-validation.ts#L42)
 
 ---
 
@@ -76,4 +76,4 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[json-validation.ts:41](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-validation.ts#L41)
+[json-validation.ts:41](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-validation.ts#L41)
