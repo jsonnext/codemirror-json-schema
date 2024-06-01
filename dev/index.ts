@@ -169,14 +169,16 @@ const setFileName = (value) => {
   });
 };
 
-if (schemaValue) {
-  schemaSelect!.value = schemaValue;
-  await getSchema(schemaValue);
-  document.querySelectorAll("h2 code span").forEach((el) => {
-    el.textContent = schemaValue.split(".")[0];
-  });
-  setFileName(schemaValue.split(".")[0]);
-}
+(async () => {
+  if (schemaValue) {
+    schemaSelect!.value = schemaValue;
+    await getSchema(schemaValue);
+    document.querySelectorAll("h2 code span").forEach((el) => {
+      el.textContent = schemaValue.split(".")[0];
+    });
+    setFileName(schemaValue.split(".")[0]);
+  }
+})();
 
 schemaSelect!.onchange = async (e) => {
   const val = e.target!.value!;

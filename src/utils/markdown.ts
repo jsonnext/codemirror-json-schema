@@ -27,14 +27,15 @@ const renderer = md({
   typographer: true,
 });
 
-renderer.use(
-  await shiki({
+(async () => {
+  const shikiRenderer = await shiki({
     themes: {
       light: "vitesse-light",
       dark: "vitesse-dark",
     },
-  })
-);
+  });
+  renderer.use(shikiRenderer);
+})();
 
 export function renderMarkdown(markdown: string, inline: boolean = true) {
   if (!inline) return renderer.render(markdown);

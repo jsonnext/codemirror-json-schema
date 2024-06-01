@@ -108,7 +108,7 @@
   },
   "scripts": {
     "dev": "vite ./dev --port 3000",
-    "build": "pnpm tsc && tsc --module commonjs --target es2017 --outDir cjs && vite build ./dev --outDir ../public --emptyOutDir",
+    "build": "pnpm tsc && tsc --module commonjs --outDir cjs && vite build ./dev --outDir ../public --emptyOutDir",
     "test": "vitest --dom",
     "test:coverage": "vitest run --dom --coverage ",
     "tsc": "NODE_OPTIONS=--experimental-specifier-resolution=node tsc && pnpm replace:env",
