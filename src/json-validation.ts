@@ -4,7 +4,7 @@ import { Draft04, type Draft, type JsonError } from "json-schema-library";
 
 import { getJSONSchema, schemaStateField } from "./state.js";
 import { joinWithOr } from "./utils/formatting.js";
-import { JSONMode, JSONPointerData, RequiredPick } from "./types.js";
+import { JSONMode, JSONPointerData } from "./types.js";
 import { parseJSONDocumentState } from "./utils/parseJSONDocument.js";
 import { el } from "./utils/dom.js";
 import { renderMarkdown } from "./utils/markdown.js";
@@ -43,7 +43,7 @@ export interface JSONValidationOptions {
   jsonParser?: typeof parseJSONDocumentState;
 }
 
-type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
+// type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
 
 export const handleRefresh = (vu: ViewUpdate) => {
   return (

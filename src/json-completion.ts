@@ -55,7 +55,7 @@ export class JSONCompletion {
   private schema: JSONSchema7 | null = null;
   private mode: JSONMode = MODES.JSON;
   constructor(private opts: JSONCompletionOptions) {
-    this.mode = opts.mode ?? MODES.JSON;
+    this.mode = this.opts.mode ?? MODES.JSON;
   }
   public doComplete(ctx: CompletionContext) {
     const s = getJSONSchema(ctx.state)!;
@@ -918,9 +918,9 @@ export class JSONCompletion {
     }
   }
 
-  private getValueFromLabel(value: any): string {
-    return JSON.parse(value);
-  }
+  // private getValueFromLabel(value: any): string {
+  //   return JSON.parse(value);
+  // }
 
   private extendedRegExp(pattern: string): RegExp | undefined {
     let flags = "";

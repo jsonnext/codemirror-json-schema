@@ -6,14 +6,15 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "lib": ["ESNext", "DOM"],
     "declaration": true,
     "resolveJsonModule": true,
     "removeComments": false,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "stripInternal": true,
+    "noUnusedLocals": true
   },
-  "compileOnSave": true,
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/__tests__/**"]
+  "exclude": ["node_modules/**", "**/__tests__/**"]
 }

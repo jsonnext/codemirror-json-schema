@@ -1,4 +1,4 @@
-import { MODES } from "./constants";
+import { MODES } from "./constants.js";
 
 export type RequiredPick<T, F extends keyof T> = Omit<T, F> &
   Required<Pick<T, F>>;

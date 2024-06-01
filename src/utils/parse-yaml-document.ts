@@ -2,7 +2,6 @@
  * Mimics the behavior of `json-source-map`'s `parseJSONDocument` function using codemirror EditorState... for YAML
  */
 
-import { yaml } from "@codemirror/lang-yaml";
 import YAML from "yaml";
 import { EditorState } from "@codemirror/state";
 import { getJsonPointers } from "./jsonPointers.js";
