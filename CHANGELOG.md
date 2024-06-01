@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.4
+
+### Patch Changes
+
+- [#102](https://github.com/acao/codemirror-json-schema/pull/102) [`296617f`](https://github.com/acao/codemirror-json-schema/commit/296617f4800d875ddd579cbb544240e8a6985bc1) Thanks [@imolorhe](https://github.com/imolorhe)! - Improvements to completion logic (mainly for top level)
+
 ## 0.7.3
 
 ### Patch Changes

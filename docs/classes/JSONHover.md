@@ -35,7 +35,7 @@
 
 #### Defined in
 
-[json-hover.ts:67](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-hover.ts#L67)
+[json-hover.ts:67](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L67)
 
 ## Methods
 
@@ -57,7 +57,7 @@
 
 #### Defined in
 
-[json-hover.ts:176](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-hover.ts#L176)
+[json-hover.ts:176](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L176)
 
 ---
 
@@ -77,7 +77,7 @@
 
 #### Defined in
 
-[json-hover.ts:115](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-hover.ts#L115)
+[json-hover.ts:115](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L115)
 
 ---
 
@@ -99,7 +99,7 @@
 
 #### Defined in
 
-[json-hover.ts:74](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-hover.ts#L74)
+[json-hover.ts:74](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L74)
 
 ---
 
@@ -120,7 +120,7 @@
 
 #### Defined in
 
-[json-hover.ts:141](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-hover.ts#L141)
+[json-hover.ts:141](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L141)
 
 ## Properties
 
@@ -130,7 +130,7 @@
 
 #### Defined in
 
-[json-hover.ts:66](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-hover.ts#L66)
+[json-hover.ts:66](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L66)
 
 ---
 
@@ -140,7 +140,7 @@
 
 #### Defined in
 
-[json-hover.ts:67](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-hover.ts#L67)
+[json-hover.ts:67](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L67)
 
 ---
 
@@ -150,4 +150,4 @@
 
 #### Defined in
 
-[json-hover.ts:65](https://github.com/acao/codemirror-json-schema/blob/da7f368/src/json-hover.ts#L65)
+[json-hover.ts:65](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-hover.ts#L65)
