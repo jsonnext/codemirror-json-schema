@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.6
+
+### Patch Changes
+
+- [#115](https://github.com/jsonnext/codemirror-json-schema/pull/115) [`c8d2594`](https://github.com/jsonnext/codemirror-json-schema/commit/c8d259443ffdc5eb792dd373dac64e1d4895c876) Thanks [@acao](https://github.com/acao)! - set @codemirror/autocomplete as an optional peer, at a fix version for a bug with curly braces
+
 ## 0.7.5
 
 ### Patch Changes
