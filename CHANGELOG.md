@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.5
+
+### Patch Changes
+
+- [#112](https://github.com/jsonnext/codemirror-json-schema/pull/112) [`ccffa61`](https://github.com/jsonnext/codemirror-json-schema/commit/ccffa6195e45d0eb52ed2253831eb396e930a1cc) Thanks [@acao](https://github.com/acao)! - fixes bundling - remove .js imports and remains as moduleResolution: 'Node' to match cm6
+
 ## 0.7.4
 
 ### Patch Changes

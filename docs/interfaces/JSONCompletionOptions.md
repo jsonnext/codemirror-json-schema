@@ -16,4 +16,4 @@
 
 #### Defined in
 
-[json-completion.ts:51](https://github.com/acao/codemirror-json-schema/blob/296617f/src/json-completion.ts#L51)
+[features/completion.ts:52](https://github.com/jsonnext/codemirror-json-schema/blob/c982a74/src/features/completion.ts#L52)
