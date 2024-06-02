@@ -42,7 +42,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:43](https://github.com/jsonnext/codemirror-json-schema/blob/c8d2594/src/features/validation.ts#L43)
+[features/validation.ts:43](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L43)
 
 ## Properties
 
@@ -66,7 +66,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:42](https://github.com/jsonnext/codemirror-json-schema/blob/c8d2594/src/features/validation.ts#L42)
+[features/validation.ts:42](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L42)
 
 ---
 
@@ -76,4 +76,4 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:41](https://github.com/jsonnext/codemirror-json-schema/blob/c8d2594/src/features/validation.ts#L41)
+[features/validation.ts:41](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L41)
