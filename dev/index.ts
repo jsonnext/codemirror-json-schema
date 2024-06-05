@@ -1,4 +1,4 @@
-import { EditorState, StateEffect, StateField } from "@codemirror/state";
+import { EditorState } from "@codemirror/state";
 import {
   gutter,
   EditorView,
@@ -8,9 +8,7 @@ import {
   highlightActiveLineGutter,
   ViewUpdate,
 } from "@codemirror/view";
-// import { basicSetup } from "@codemirror/basic-setup";
-import { lintGutter } from "@codemirror/lint";
-import { lintKeymap } from "@codemirror/lint";
+import { lintKeymap, lintGutter } from "@codemirror/lint";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import {
   syntaxHighlighting,

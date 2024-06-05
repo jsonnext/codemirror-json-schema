@@ -128,7 +128,7 @@ export class JSONValidation {
     const text = view.state.doc.toString();
 
     // ignore blank json strings
-    if (!text || !text.length) return [];
+    if (!text?.length) return [];
 
     const json = this.parser(view.state);
 
