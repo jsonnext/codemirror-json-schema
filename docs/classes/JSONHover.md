@@ -35,7 +35,7 @@
 
 #### Defined in
 
-[features/hover.ts:88](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/hover.ts#L88)
+[features/hover.ts:88](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L88)
 
 ## Methods
 
@@ -57,7 +57,7 @@
 
 #### Defined in
 
-[features/hover.ts:203](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/hover.ts#L203)
+[features/hover.ts:203](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L203)
 
 ---
 
@@ -77,7 +77,7 @@
 
 #### Defined in
 
-[features/hover.ts:136](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/hover.ts#L136)
+[features/hover.ts:136](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L136)
 
 ---
 
@@ -99,7 +99,7 @@
 
 #### Defined in
 
-[features/hover.ts:95](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/hover.ts#L95)
+[features/hover.ts:95](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L95)
 
 ---
 
@@ -120,7 +120,7 @@
 
 #### Defined in
 
-[features/hover.ts:162](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/hover.ts#L162)
+[features/hover.ts:162](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L162)
 
 ## Properties
 
@@ -130,7 +130,7 @@
 
 #### Defined in
 
-[features/hover.ts:87](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/hover.ts#L87)
+[features/hover.ts:87](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L87)
 
 ---
 
@@ -140,7 +140,7 @@
 
 #### Defined in
 
-[features/hover.ts:88](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/hover.ts#L88)
+[features/hover.ts:88](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L88)
 
 ---
 
@@ -150,4 +150,4 @@
 
 #### Defined in
 
-[features/hover.ts:86](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/hover.ts#L86)
+[features/hover.ts:86](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L86)
