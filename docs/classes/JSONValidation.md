@@ -56,7 +56,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:78](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L78)
+[features/validation.ts:78](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L78)
 
 ## Accessors
 
@@ -70,7 +70,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:89](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L89)
+[features/validation.ts:89](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L89)
 
 ## Constructors
 
@@ -86,7 +86,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:79](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L79)
+[features/validation.ts:79](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L79)
 
 ## Methods
 
@@ -106,7 +106,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:120](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L120)
+[features/validation.ts:120](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L120)
 
 ---
 
@@ -126,7 +126,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:94](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L94)
+[features/validation.ts:94](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L94)
 
 ## Properties
 
@@ -136,7 +136,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:77](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L77)
+[features/validation.ts:77](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L77)
 
 ---
 
@@ -146,7 +146,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:79](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L79)
+[features/validation.ts:79](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L79)
 
 ---
 
@@ -156,4 +156,4 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:75](https://github.com/jsonnext/codemirror-json-schema/blob/edafa8f/src/features/validation.ts#L75)
+[features/validation.ts:75](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L75)

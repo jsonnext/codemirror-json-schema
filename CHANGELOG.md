@@ -1,5 +1,13 @@
 # codemirror-json-schema
 
+## 0.7.8
+
+### Patch Changes
+
+- [#122](https://github.com/jsonnext/codemirror-json-schema/pull/122) [`c2dfcc1`](https://github.com/jsonnext/codemirror-json-schema/commit/c2dfcc154abfc0dea0d3c0646a8b681565acf0f3) Thanks [@imolorhe](https://github.com/imolorhe)! - fix demo highlighting
+
+- [#123](https://github.com/jsonnext/codemirror-json-schema/pull/123) [`2356a94`](https://github.com/jsonnext/codemirror-json-schema/commit/2356a94de080c00869a8b1b41763dbc577530894) Thanks [@imolorhe](https://github.com/imolorhe)! - updated json-schema-library to get upstream fixes
+
 ## 0.7.7
 
 ### Patch Changes
