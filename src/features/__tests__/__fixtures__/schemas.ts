@@ -134,3 +134,52 @@ export const testSchema4 = {
     },
   },
 } as JSONSchema7;
+
+export const testSchemaConditionalProperties = {
+  type: "object",
+  properties: {
+    type: {
+      type: "string",
+      enum: ["Test_1", "Test_2"],
+    },
+    props: {
+      type: "object",
+    },
+  },
+  allOf: [
+    {
+      if: {
+        properties: {
+          type: { const: "Test_1" },
+        },
+      },
+      then: {
+        properties: {
+          props: {
+            properties: {
+              test1Props: { type: "string" },
+            },
+            additionalProperties: false,
+          },
+        },
+      },
+    },
+    {
+      if: {
+        properties: {
+          type: { const: "Test_2" },
+        },
+      },
+      then: {
+        properties: {
+          props: {
+            properties: {
+              test2Props: { type: "number" },
+            },
+            additionalProperties: false,
+          },
+        },
+      },
+    },
+  ],
+} as JSONSchema7;

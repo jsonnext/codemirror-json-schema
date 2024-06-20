@@ -2,7 +2,11 @@ import { describe, it } from "vitest";
 
 import { expectCompletion } from "./__helpers__/completion";
 import { MODES } from "../../constants";
-import { testSchema3, testSchema4 } from "./__fixtures__/schemas";
+import {
+  testSchema3,
+  testSchema4,
+  testSchemaConditionalProperties,
+} from "./__fixtures__/schemas";
 
 describe.each([
   {
@@ -390,6 +394,21 @@ describe.each([
     ],
     schema: testSchema4,
   },
+  {
+    name: "autocomplete for a schema with conditional properties",
+    mode: MODES.JSON,
+    docs: ['{ "type": "Test_1", "props": { t| }}'],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "test1Props",
+        template: '"test1Props": "#{}"',
+      },
+    ],
+    schema: testSchemaConditionalProperties,
+  },
   // JSON5
   {
     name: "return bare property key when no quotes are used",
@@ -549,6 +568,21 @@ describe.each([
         template: "'banana': #{0}",
       },
     ],
+  },
+  {
+    name: "autocomplete for a schema with conditional properties",
+    mode: MODES.JSON5,
+    docs: ["{ type: 'Test_1', props: { t| }}"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "test1Props",
+        template: "test1Props: '#{}'",
+      },
+    ],
+    schema: testSchemaConditionalProperties,
   },
   // YAML
   {
@@ -751,6 +785,21 @@ describe.each([
         type: "property",
       },
     ],
+  },
+  {
+    name: "autocomplete for a schema with conditional properties",
+    mode: MODES.YAML,
+    docs: ["type: Test_1\nprops: { t| }"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "test1Props",
+        template: "test1Props: #{}",
+      },
+    ],
+    schema: testSchemaConditionalProperties,
   },
 ])("jsonCompletion", ({ name, docs, mode, expectedResults, schema }) => {
   it.each(docs)(`${name} (mode: ${mode})`, async (doc) => {

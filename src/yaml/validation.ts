@@ -4,7 +4,7 @@ import {
   type JSONValidationOptions,
 } from "../features/validation";
 import { MODES } from "../constants";
-import { parseYAMLDocumentState } from "@parsers/yaml-parser";
+import { parseYAMLDocumentState } from "../parsers/yaml-parser";
 
 /**
  * Instantiates a JSONValidation instance with the YAML mode
