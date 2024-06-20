@@ -3,8 +3,8 @@ import {
   JSONValidation,
   type JSONValidationOptions,
 } from "../features/validation";
-import { parseJSON5DocumentState } from "../utils/parse-json5-document";
 import { MODES } from "../constants";
+import { parseJSON5DocumentState } from "@parsers/json5-parser";
 
 /**
  * Instantiates a JSONValidation instance with the JSON5 mode

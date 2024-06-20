@@ -61,21 +61,20 @@ describe.each([
       },
     ],
   },
-  // TODO: fix the default template with braces: https://discuss.codemirror.net/t/inserting-literal-via-snippets/8136/4
-  // {
-  //   name: "include defaults for string with braces",
-  //   mode: MODES.JSON,
-  //   docs: ['{ "bracedStringDefault| }'],
-  //   expectedResults: [
-  //     {
-  //       label: "bracedStringDefault",
-  //       type: "property",
-  //       detail: "string",
-  //       info: "a string with a default value containing braces",
-  //       template: '"bracedStringDefault": "${✨ A message from %{whom}: ✨}"',
-  //     },
-  //   ],
-  // },
+  {
+    name: "include defaults for string with braces",
+    mode: MODES.JSON,
+    docs: ['{ "bracedStringDefault| }'],
+    expectedResults: [
+      {
+        label: "bracedStringDefault",
+        type: "property",
+        detail: "string",
+        info: "a string with a default value containing braces",
+        template: '"bracedStringDefault": "${✨ A message from %{whom\\}: ✨}"',
+      },
+    ],
+  },
   {
     name: "include defaults for enum when available",
     mode: MODES.JSON,

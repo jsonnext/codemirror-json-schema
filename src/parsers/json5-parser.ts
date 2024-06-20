@@ -5,19 +5,29 @@
 import { json5 as json5mode } from "codemirror-json5";
 import json5 from "json5";
 import { EditorState } from "@codemirror/state";
-import { getJsonPointers } from "./json-pointers";
+import { parse } from "best-effort-json-parser";
+import { getJsonPointers } from "../utils/json-pointers";
 import { MODES } from "../constants";
 
 /**
  * Return parsed data and json5 pointers for a given codemirror EditorState
  * @group Utilities
  */
-export function parseJSON5DocumentState(state: EditorState) {
+export function parseJSON5DocumentState(
+  state: EditorState,
+  bestEffort = false
+) {
   let data = null;
   try {
     data = json5.parse(state.doc.toString());
     // return pointers regardless of whether JSON.parse succeeds
-  } catch {}
+  } catch {
+    if (bestEffort) {
+      try {
+        data = parse(state.doc.toString());
+      } catch {}
+    }
+  }
   const pointers = getJsonPointers(state, MODES.JSON5);
   return { data, pointers };
 }

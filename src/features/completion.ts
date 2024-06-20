@@ -31,6 +31,7 @@ import {
 import { MODES, TOKENS } from "../constants";
 import { JSONMode } from "../types";
 import { renderMarkdown } from "../utils/markdown";
+import { DocumentParser, getDefaultParser } from "../parsers";
 
 class CompletionCollector {
   completions = new Map<string, Completion>();
@@ -50,13 +51,17 @@ class CompletionCollector {
 
 export interface JSONCompletionOptions {
   mode?: JSONMode;
+  jsonParser?: DocumentParser;
 }
 
 export class JSONCompletion {
   private schema: JSONSchema7 | null = null;
   private mode: JSONMode = MODES.JSON;
+  private parser: DocumentParser;
+
   constructor(private opts: JSONCompletionOptions) {
     this.mode = opts.mode ?? MODES.JSON;
+    this.parser = this.opts?.jsonParser ?? getDefaultParser(this.mode);
   }
   public doComplete(ctx: CompletionContext) {
     const s = getJSONSchema(ctx.state)!;
@@ -810,7 +815,21 @@ export class JSONCompletion {
   ): JSONSchema7Definition[] {
     const draft = new Draft07(this.schema!);
     let pointer = jsonPointerForPosition(ctx.state, ctx.pos, -1, this.mode);
-    let subSchema = draft.getSchema({ pointer });
+    // Pass parsed data to getSchema to get the correct schema based on the data context
+    const { data } = this.parser(ctx.state, true);
+    let subSchema = draft.getSchema({
+      pointer,
+      data: data ?? undefined,
+    });
+    debug.log(
+      "xxxx",
+      "draft.getSchema",
+      subSchema,
+      "data",
+      data,
+      "pointer",
+      pointer
+    );
     if (isJsonError(subSchema)) {
       subSchema = subSchema.data?.schema;
     }
@@ -819,7 +838,8 @@ export class JSONCompletion {
       !subSchema ||
       subSchema.name === "UnknownPropertyError" ||
       subSchema.enum ||
-      subSchema.type === "undefined"
+      subSchema.type === "undefined" ||
+      subSchema.type === "null"
     ) {
       pointer = pointer.replace(/\/[^/]*$/, "/");
       subSchema = draft.getSchema({ pointer });

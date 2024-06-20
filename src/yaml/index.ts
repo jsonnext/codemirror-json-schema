@@ -8,4 +8,4 @@ export { yamlCompletion } from "./completion";
  */
 export { yamlSchema } from "./bundled";
 
-export * from "../utils/parse-yaml-document";
+export * from "../parsers/yaml-parser";
