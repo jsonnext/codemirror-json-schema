@@ -16,10 +16,7 @@ export const getDefaultParser = (mode: JSONMode): DocumentParser => {
   }
 };
 
-export type DocumentParser = (
-  state: EditorState,
-  bestEffort?: boolean
-) => {
+export type DocumentParser = (state: EditorState) => {
   data: unknown;
   pointers: JSONPointersMap;
 };

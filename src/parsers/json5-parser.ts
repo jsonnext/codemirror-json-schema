@@ -13,20 +13,15 @@ import { MODES } from "../constants";
  * Return parsed data and json5 pointers for a given codemirror EditorState
  * @group Utilities
  */
-export function parseJSON5DocumentState(
-  state: EditorState,
-  bestEffort = false
-) {
+export function parseJSON5DocumentState(state: EditorState) {
   let data = null;
   try {
     data = json5.parse(state.doc.toString());
     // return pointers regardless of whether JSON.parse succeeds
   } catch {
-    if (bestEffort) {
-      try {
-        data = parse(state.doc.toString());
-      } catch {}
-    }
+    try {
+      data = parse(state.doc.toString());
+    } catch {}
   }
   const pointers = getJsonPointers(state, MODES.JSON5);
   return { data, pointers };

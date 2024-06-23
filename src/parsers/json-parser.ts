@@ -8,17 +8,15 @@ import { getJsonPointers } from "../utils/json-pointers";
  * Return parsed data and json pointers for a given codemirror EditorState
  * @group Utilities
  */
-export function parseJSONDocumentState(state: EditorState, bestEffort = false) {
+export function parseJSONDocumentState(state: EditorState) {
   let data = null;
   try {
     data = JSON.parse(state.doc.toString());
     // return pointers regardless of whether JSON.parse succeeds
   } catch {
-    if (bestEffort) {
-      try {
-        data = parse(state.doc.toString());
-      } catch {}
-    }
+    try {
+      data = parse(state.doc.toString());
+    } catch {}
   }
   const pointers = getJsonPointers(state, MODES.JSON);
   return { data, pointers };

@@ -816,7 +816,7 @@ export class JSONCompletion {
     const draft = new Draft07(this.schema!);
     let pointer = jsonPointerForPosition(ctx.state, ctx.pos, -1, this.mode);
     // Pass parsed data to getSchema to get the correct schema based on the data context
-    const { data } = this.parser(ctx.state, true);
+    const { data } = this.parser(ctx.state);
     let subSchema = draft.getSchema({
       pointer,
       data: data ?? undefined,
