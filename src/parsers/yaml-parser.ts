@@ -5,7 +5,7 @@
 import { yaml } from "@codemirror/lang-yaml";
 import YAML from "yaml";
 import { EditorState } from "@codemirror/state";
-import { getJsonPointers } from "./json-pointers";
+import { getJsonPointers } from "../utils/json-pointers";
 import { MODES } from "../constants";
 
 /**

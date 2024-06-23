@@ -67,10 +67,18 @@ describe("json-validation", () => {
       ],
     },
     {
-      name: "not handle invalid json",
+      name: "can handle invalid json",
       mode: MODES.JSON,
       doc: '{"foo": "example" "bar": 123}',
-      errors: [],
+      // TODO: we don't have a best effort parser for YAML yet so this test will fail
+      skipYaml: true,
+      errors: [
+        {
+          from: 18,
+          message: "Additional property `bar` is not allowed",
+          to: 23,
+        },
+      ],
     },
     {
       name: "provide range for invalid multiline json",
@@ -166,10 +174,16 @@ describe("json-validation", () => {
       ],
     },
     {
-      name: "not handle invalid json",
+      name: "can handle invalid json",
       mode: MODES.JSON5,
       doc: "{foo: 'example' 'bar': 123}",
-      errors: [],
+      errors: [
+        {
+          from: 16,
+          message: "Additional property `bar` is not allowed",
+          to: 21,
+        },
+      ],
     },
     {
       name: "provide range for invalid multiline json",
@@ -237,7 +251,9 @@ describe("json-validation", () => {
       schema: testSchema2,
     },
     // YAML
-    ...jsonSuite.map((t) => ({ ...t, mode: MODES.YAML })),
+    ...jsonSuite
+      .map((t) => (!t.skipYaml ? { ...t, mode: MODES.YAML } : null))
+      .filter((x): x is Exclude<typeof x, null> => !!x),
     {
       name: "provide range for a value error",
       mode: MODES.YAML,

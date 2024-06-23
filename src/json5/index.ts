@@ -8,4 +8,4 @@ export { json5Completion } from "./completion";
  */
 export { json5Schema } from "./bundled";
 
-export * from "../utils/parse-json5-document";
+export * from "../parsers/json5-parser";

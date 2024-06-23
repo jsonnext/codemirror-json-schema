@@ -5,24 +5,12 @@ import { Draft04, type Draft, type JsonError } from "json-schema-library";
 import { getJSONSchema, schemaStateField } from "./state";
 import { joinWithOr } from "../utils/formatting";
 import { JSONMode, JSONPointerData, RequiredPick } from "../types";
-import { parseJSONDocumentState } from "../utils/parse-json-document";
 import { el } from "../utils/dom";
 import { renderMarkdown } from "../utils/markdown";
 import { MODES } from "../constants";
-import { parseYAMLDocumentState } from "../utils/parse-yaml-document";
-import { parseJSON5DocumentState } from "../utils/parse-json5-document";
 import { debug } from "../utils/debug";
+import { DocumentParser, getDefaultParser } from "../parsers";
 
-const getDefaultParser = (mode: JSONMode): typeof parseJSONDocumentState => {
-  switch (mode) {
-    case MODES.JSON:
-      return parseJSONDocumentState;
-    case MODES.JSON5:
-      return parseJSON5DocumentState;
-    case MODES.YAML:
-      return parseYAMLDocumentState;
-  }
-};
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
   // if a pointer is present, return without #
@@ -40,7 +28,7 @@ const getErrorPath = (error: JsonError): string => {
 export interface JSONValidationOptions {
   mode?: JSONMode;
   formatError?: (error: JsonError) => string;
-  jsonParser?: typeof parseJSONDocumentState;
+  jsonParser?: DocumentParser;
 }
 
 type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
@@ -75,7 +63,7 @@ export class JSONValidation {
   private schema: Draft | null = null;
 
   private mode: JSONMode = MODES.JSON;
-  private parser: typeof parseJSONDocumentState = parseJSONDocumentState;
+  private parser: DocumentParser;
   public constructor(private options?: JSONValidationOptions) {
     this.mode = this.options?.mode ?? MODES.JSON;
     this.parser = this.options?.jsonParser ?? getDefaultParser(this.mode);
