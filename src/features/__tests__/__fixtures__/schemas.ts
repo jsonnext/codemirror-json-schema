@@ -140,7 +140,7 @@ export const testSchemaConditionalProperties = {
   properties: {
     type: {
       type: "string",
-      enum: ["Test_1", "Test_2"],
+      enum: ["Test_1", "Test_2", "Test_3"],
     },
     props: {
       type: "object",
@@ -178,6 +178,18 @@ export const testSchemaConditionalProperties = {
             },
             additionalProperties: false,
           },
+        },
+      },
+    },
+    {
+      if: {
+        properties: {
+          type: { const: "Test_3" },
+        },
+      },
+      then: {
+        properties: {
+          props: { type: "string", enum: ["ace", "abu", "bay"] },
         },
       },
     },
