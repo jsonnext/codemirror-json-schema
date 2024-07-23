@@ -65,7 +65,6 @@
     "json-schema": "^0.4.0",
     "json-schema-library": "^9.3.5",
     "loglevel": "^1.9.1",
-    "markdown-it": "^14.0.0",
     "vite-tsconfig-paths": "^4.3.1",
     "yaml": "^2.3.4"
   },
@@ -94,7 +93,6 @@
     "@codemirror/view": "^6.27.0",
     "@evilmartians/lefthook": "^1.4.6",
     "@lezer/common": "^1.2.1",
-    "@types/markdown-it": "^13.0.7",
     "@vitest/coverage-v8": "^0.34.6",
     "codemirror-json5": "^1.0.3",
     "happy-dom": "^10.3.2",
