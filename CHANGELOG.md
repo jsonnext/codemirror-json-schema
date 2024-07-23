@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.7.9
+
+### Patch Changes
+
+- [#133](https://github.com/jsonnext/codemirror-json-schema/pull/133) [`4fd7cc6`](https://github.com/jsonnext/codemirror-json-schema/commit/4fd7cc69084bdad3c8c93d9d0f0a936fa120cbae) Thanks [@imolorhe](https://github.com/imolorhe)! - Get sub schema using parsed data for additional context
+
 ## 0.7.8
 
 ### Patch Changes
