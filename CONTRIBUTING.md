@@ -41,7 +41,8 @@ pnpm test
 
 ### Opening a pull request
 
-1. [Add a changeset](https://github.com/changesets/changesets/blob/main/docs/adding-a-changeset.md) describing your changes
+1. Once your branch is ready, and it contains bugfixes, documentation improvements or features, run `pnpm changeset add` to add a [changeset](https://github.com/changesets/changesets/blob/main/docs/adding-a-changeset.md) file
+   - There you can compose the markdown entry describing your changes that will be published in CHANGELOG.md
 2. Format your code with prettier: `pnpm run prettier:write`
 3. Push your changes to your feature branch
 4. Open a pull request from your fork to the original repository in the Github UI or [CLI](https://cli.github.com/manual/gh_pr_create)
