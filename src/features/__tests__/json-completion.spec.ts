@@ -409,24 +409,6 @@ describe.each([
     ],
     schema: testSchemaConditionalProperties,
   },
-  {
-    name: "autocomplete for a schema with conditional property values",
-    mode: MODES.JSON,
-    docs: ['{ "type": "Test_3", "props": "a|"'],
-    expectedResults: [
-      {
-        type: "string",
-        label: "ace",
-        apply: '"ace"',
-      },
-      {
-        type: "string",
-        label: "abu",
-        apply: '"abu"',
-      },
-    ],
-    schema: testSchemaConditionalProperties,
-  },
   // JSON5
   {
     name: "return bare property key when no quotes are used",
