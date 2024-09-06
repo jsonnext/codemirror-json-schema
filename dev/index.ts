@@ -80,7 +80,7 @@ const persistEditorStateOnChange = (key: string) => {
       if (v.docChanged) {
         ls.setItem(key, v.state.doc.toString());
       }
-    }, 300)
+    }, 300),
   );
 };
 
@@ -161,7 +161,7 @@ const getSchema = async (val: string) => {
 const schemaSelect = document.getElementById("schema-selection");
 const schemaValue = localStorage.getItem("selectedSchema")!;
 
-const setFileName = (value) => {
+const setFileName = (value: any) => {
   document.querySelectorAll("h2 code span").forEach((el) => {
     el.textContent = value;
   });

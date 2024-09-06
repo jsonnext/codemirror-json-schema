@@ -6,6 +6,8 @@ import {
   testSchema3,
   testSchema4,
   testSchemaConditionalProperties,
+  testSchemaConditionalPropertiesOnSameObject,
+  wrappedTestSchemaConditionalPropertiesOnSameObject,
 } from "./__fixtures__/schemas";
 
 describe.each([
@@ -806,3 +808,183 @@ describe.each([
     await expectCompletion(doc, expectedResults, { mode, schema });
   });
 });
+
+describe.each([
+  {
+    name: "newPartialProp for specific type",
+    mode: MODES.JSON5,
+    docs: ["{ type: 'type1', t| }"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "type1Prop",
+        template: "type1Prop: '#{}'",
+      },
+    ],
+    schema: testSchemaConditionalPropertiesOnSameObject,
+  },
+  {
+    name: "newEmptyPropInQuotes",
+    mode: MODES.JSON5,
+    docs: [`{ type: 'type1', "|" }`],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "type1Prop",
+        template: `"type1Prop": '#{}'`,
+      },
+      {
+        type: "property",
+        detail: "",
+        info: "",
+        label: "commonEnum",
+        template: `"commonEnum": #{}`,
+      },
+      {
+        type: "property",
+        detail: "",
+        info: "",
+        label: "commonEnumWithDifferentValues",
+        template: `"commonEnumWithDifferentValues": #{}`,
+      },
+    ],
+    schema: testSchemaConditionalPropertiesOnSameObject,
+  },
+  {
+    name: "type-specific enum values",
+    mode: MODES.JSON5,
+    docs: [`{ type: 'type1', "commonEnumWithDifferentValues": "|" }`],
+    expectedResults: [
+      {
+        label: "type1Specific",
+        apply: `'type1Specific'`,
+        // info: "",
+      },
+      {
+        label: "common",
+        apply: `'common'`,
+        // info: "",
+      },
+    ],
+    schema: testSchemaConditionalPropertiesOnSameObject,
+  },
+  {
+    name: "type-specific enum values - type2",
+    mode: MODES.JSON5,
+    docs: [`{ type: 'type2', "commonEnumWithDifferentValues": "|" }`],
+    expectedResults: [
+      {
+        label: "type2Specific",
+        apply: `'type2Specific'`,
+        // info: "",
+      },
+      {
+        label: "common",
+        apply: `'common'`,
+        // info: "",
+      },
+    ],
+    schema: testSchemaConditionalPropertiesOnSameObject,
+  },
+  {
+    name: "allow changing type afterwards to anything",
+    mode: MODES.JSON5,
+    docs: ["{ type: '|', type1Prop: 'bla' }"],
+    expectedResults: [
+      {
+        label: "type1",
+        apply: "'type1'",
+        type: "string",
+      },
+      {
+        label: "type2",
+        apply: "'type2'",
+        type: "string",
+      },
+    ],
+    schema: testSchemaConditionalPropertiesOnSameObject,
+  },
+  {
+    name: "suggests all possible properties if discriminator is not specified yet",
+    mode: MODES.JSON5,
+    docs: [`{ "|" }`],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "type",
+        template: `"type": #{}`,
+      },
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "type1Prop",
+        template: `"type1Prop": '#{}'`,
+      },
+      {
+        type: "property",
+        detail: "",
+        info: "",
+        label: "commonEnum",
+        template: `"commonEnum": #{}`,
+      },
+      {
+        type: "property",
+        detail: "",
+        info: "",
+        label: "commonEnumWithDifferentValues",
+        template: `"commonEnumWithDifferentValues": #{}`,
+      },
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "type2Prop",
+        template: `"type2Prop": '#{}'`,
+      },
+    ],
+    schema: testSchemaConditionalPropertiesOnSameObject,
+  },
+])(
+  "jsonCompletionFor-testSchemaConditionalPropertiesOnSameObject",
+  ({ name, docs, mode, expectedResults, schema }) => {
+    it.each(docs)(`${name} (mode: ${mode})`, async (doc) => {
+      // if (name === 'autocomplete for array of objects with items (array of objects)') {
+      await expectCompletion(doc, expectedResults, { mode, schema });
+      // }
+    });
+  },
+);
+
+describe.each([
+  {
+    name: "newProp",
+    mode: MODES.JSON5,
+    docs: ["{ original: { type: 'type1', t| }, }"],
+    expectedResults: [
+      {
+        type: "property",
+        detail: "string",
+        info: "",
+        label: "type1Prop",
+        template: "type1Prop: '#{}'",
+      },
+    ],
+    schema: wrappedTestSchemaConditionalPropertiesOnSameObject,
+  },
+])(
+  "jsonCompletionFor-wrappedTestSchemaConditionalPropertiesOnSameObject",
+  ({ name, docs, mode, expectedResults, schema }) => {
+    it.each(docs)(`${name} (mode: ${mode})`, async (doc) => {
+      // if (name === 'autocomplete for array of objects with filter') {
+      await expectCompletion(doc, expectedResults, { mode, schema });
+      // }
+    });
+  },
+);

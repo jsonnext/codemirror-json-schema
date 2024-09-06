@@ -94,6 +94,7 @@ export const testSchema2 = {
         foo: { type: "string" },
         bar: { type: "number" },
       },
+      additionalProperties: false,
     },
     fancyObject2: {
       type: "object",
@@ -101,6 +102,7 @@ export const testSchema2 = {
         apple: { type: "string" },
         banana: { type: "number" },
       },
+      additionalProperties: false,
     },
   },
 } as JSONSchema7;
@@ -182,4 +184,64 @@ export const testSchemaConditionalProperties = {
       },
     },
   ],
+} as JSONSchema7;
+
+export const testSchemaConditionalPropertiesOnSameObject = {
+  type: "object",
+  properties: {
+    type: {
+      type: "string",
+      enum: ["type1", "type2"],
+    },
+  },
+  allOf: [
+    {
+      if: {
+        properties: {
+          type: { const: "type1" },
+        },
+      },
+      then: {
+        properties: {
+          type1Prop: { type: "string" },
+          commonEnum: {
+            enum: ["common1", "common2"],
+          },
+          commonEnumWithDifferentValues: {
+            enum: ["type1Specific", "common"],
+          },
+        },
+        required: ["type1Prop", "commonEnum", "commonEnumWithDifferentValues"],
+      },
+    },
+    {
+      if: {
+        properties: {
+          type: { const: "type2" },
+        },
+      },
+      then: {
+        properties: {
+          type2Prop: { type: "string" },
+          commonEnum: {
+            enum: ["common1", "common2"],
+          },
+          commonEnumWithDifferentValues: {
+            enum: ["type2Specific", "common"],
+          },
+        },
+        required: ["type2Prop", "commonEnum", "commonEnumWithDifferentValues"],
+      },
+    },
+  ],
+  unevaluatedProperties: false,
+  required: ["type"],
+} as JSONSchema7;
+
+export const wrappedTestSchemaConditionalPropertiesOnSameObject = {
+  type: "object",
+  properties: {
+    original: testSchemaConditionalPropertiesOnSameObject,
+  },
+  required: ["original"],
 } as JSONSchema7;
