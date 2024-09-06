@@ -837,19 +837,50 @@ export class JSONCompletion {
     if (
       !subSchema ||
       subSchema.name === "UnknownPropertyError" ||
+      // TODO: Looking into why this is needed
       subSchema.enum ||
       subSchema.type === "undefined" ||
       subSchema.type === "null"
     ) {
+      debug.log(
+        "xxx",
+        "no schema for pointer. Try parent pointer..",
+        pointer,
+        subSchema
+      );
       pointer = pointer.replace(/\/[^/]*$/, "/");
-      subSchema = draft.getSchema({ pointer });
+      pointer = "/" ? "" : pointer; // root pointer should be empty ("/" is a JSON pointer for an empty string key)
+      subSchema = draft.getSchema({ pointer, data: data ?? undefined });
+      debug.log(
+        "xxx",
+        "subSchema for parent pointer",
+        subSchema,
+        pointer,
+        data
+      );
+      // resolve all direct child schemas
+      // TODO: This is a bit hacky, but it works for now
+      if (subSchema?.properties) {
+        Object.entries(subSchema.properties).forEach(([key, value]) => {
+          if (subSchema?.properties && typeof value === "object") {
+            subSchema.properties[key] = {
+              ...value,
+              ...draft.getSchema({
+                pointer: pointer + "/" + key,
+                data: data ?? undefined,
+              }),
+            };
+          }
+        });
+        debug.log("xxx", "direct children resolved", subSchema);
+      }
     }
 
     debug.log("xxx", "pointer..", JSON.stringify(pointer));
 
     // For some reason, it returns undefined schema for the root pointer
     // We use the root schema in that case as the relevant (sub)schema
-    if (!pointer || pointer === "/") {
+    if (!subSchema && (!pointer || pointer === "/")) {
       subSchema = this.expandSchemaProperty(schema, schema) ?? schema;
     }
     // const subSchema = new Draft07(this.schema).getSchema(pointer);
