@@ -11,6 +11,6 @@ export default defineConfig({
     maxConcurrency: 10,
     // configuration to be able to view console.log messages while debugging
     pool: "forks",
-    disableConsoleIntercept: true,
+    disableConsoleIntercept: Boolean(process.env.CI)
   },
 });
