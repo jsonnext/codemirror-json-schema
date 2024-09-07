@@ -57,17 +57,13 @@
   "repository": "github:acao/codemirror-json-schema",
   "homepage": "https://codemirror-json-schema.netlify.app/",
   "dependencies": {
-    "@changesets/changelog-github": "^0.4.8",
     "@sagold/json-pointer": "^5.1.1",
     "@shikijs/markdown-it": "^1.1.7",
-    "@types/json-schema": "^7.0.12",
-    "@types/node": "^20.4.2",
     "best-effort-json-parser": "^1.1.2",
     "json-schema": "^0.4.0",
     "json-schema-library": "^9.3.5",
     "loglevel": "^1.9.1",
     "markdown-it": "^14.0.0",
-    "vite-tsconfig-paths": "^4.3.1",
     "yaml": "^2.3.4"
   },
   "optionalDependencies": {
@@ -85,6 +81,9 @@
     "@lezer/common": "^1.2.1"
   },
   "devDependencies": {
+    "@types/json-schema": "^7.0.12",
+    "@types/node": "^20.4.2",
+    "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.2",
     "@codemirror/autocomplete": "^6.16.2",
     "@codemirror/commands": "^6.6.0",
@@ -105,7 +104,8 @@
     "typescript": "^5.1.6",
     "vite": "^5.2.12",
     "vitest": "0.34.6",
-    "vitest-dom": "^0.1.0"
+    "vitest-dom": "^0.1.0",
+    "vite-tsconfig-paths": "^4.3.1"
   },
   "scripts": {
     "dev": "vite ./dev --port 3000",
