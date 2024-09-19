@@ -66,7 +66,10 @@ export async function expectCompletion(
   }
   const filteredResults = result.options.map((item) => ({
     detail: item.detail,
-    info: item.info,
+    info:
+      typeof item.info === "function"
+        ? (item.info(item) as HTMLElement).innerText
+        : item.info,
     label: item.label,
     type: item.type,
     apply: typeof item.apply === "string" ? item.apply : undefined,
