@@ -1,7 +1,13 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import { JSONMode, JSONPointersMap, Side } from "../types";
+import {
+  JSONMode,
+  JSONPartialPointerData,
+  JSONPointerData,
+  JSONPointersMap,
+  Side,
+} from "../types";
 import {
   JSON5_TOKENS_MAPPING,
   MODES,
@@ -90,19 +96,12 @@ export const getJsonPointers = (
   const pointers: JSONPointersMap = new Map();
   tree.iterate({
     enter: (type: SyntaxNodeRef) => {
-      if (
-        [TOKENS.PROPERTY_NAME, TOKENS.OBJECT].includes(
-          resolveTokenName(type.name, mode) as any
-        )
-      ) {
-        const pointer = getJsonPointerAt(state.doc, type.node, mode);
+      const tokenName = resolveTokenName(type.name, mode) as any;
 
+      if ([TOKENS.PROPERTY_NAME].includes(tokenName)) {
+        const pointer = getJsonPointerAt(state.doc, type.node, mode);
         const { from: keyFrom, to: keyTo } = type.node;
-        // if there's no value, we can't get the valueFrom/to
-        if (!type.node?.nextSibling?.node) {
-          pointers.set(pointer, { keyFrom, keyTo });
-          return true;
-        }
+
         // TODO: Make this generic enough to avoid mode-specific checks
         const nextNode =
           mode === MODES.JSON
@@ -114,6 +113,29 @@ export const getJsonPointers = (
         }
         const { from: valueFrom, to: valueTo } = nextNode as SyntaxNode;
         pointers.set(pointer, { keyFrom, keyTo, valueFrom, valueTo });
+        return true;
+      } else if (
+        [
+          TOKENS.NULL,
+          TOKENS.FALSE,
+          TOKENS.TRUE,
+          TOKENS.NUMBER,
+          TOKENS.STRING,
+          TOKENS.OBJECT,
+        ].includes(tokenName)
+      ) {
+        const pointer = getJsonPointerAt(state.doc, type.node, mode);
+        // if the pointer already exists, it's been created by the above, and therefore we can skip
+        if (pointers.has(pointer)) {
+          return true;
+        }
+        // otherwise, we're in a value node with no key (parent is an array or we're a root)
+        const { from, to } = type.node;
+        const data = {
+          valueFrom: from,
+          valueTo: to,
+        };
+        pointers.set(pointer, data);
         return true;
       }
     },

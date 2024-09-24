@@ -3,5 +3,8 @@
   "editor.formatOnSave": true,
   "files.insertFinalNewline": true,
   "coverage-gutters.coverageBaseDir": "**",
-  "coverage-gutters.coverageFileNames": ["clover.xml"]
+  "coverage-gutters.coverageFileNames": ["clover.xml"],
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
 }
