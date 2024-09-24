@@ -104,8 +104,8 @@ describe("json-validation", () => {
   }`,
       errors: [
         {
-          from: 46,
-          to: 48,
+          from: 36,
+          to: 44,
           message: "The required property `foo` is missing at `object`",
         },
       ],
@@ -209,8 +209,8 @@ describe("json-validation", () => {
   }`,
       errors: [
         {
-          from: 42,
-          to: 44,
+          from: 34,
+          to: 40,
           message: "The required property `foo` is missing at `object`",
         },
       ],
@@ -282,7 +282,15 @@ describe("json-validation", () => {
       name: "not handle invalid yaml",
       mode: MODES.YAML,
       doc: "foo: example\n- - -bar: 123",
-      errors: [],
+      errors: [
+        {
+          from: 0,
+          message: "Expected `object` but received `null`",
+          severity: "error",
+          source: "json-schema",
+          to: 26,
+        },
+      ],
     },
     {
       name: "provide range for invalid multiline yaml",
@@ -306,8 +314,8 @@ object: {}
   `,
       errors: [
         {
-          from: 21,
-          to: 23,
+          from: 13,
+          to: 19,
           message: "The required property `foo` is missing at `object`",
         },
       ],

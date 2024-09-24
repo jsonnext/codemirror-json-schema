@@ -14,8 +14,25 @@ import { DocumentParser, getDefaultParser } from "../parsers";
 // return an object path that matches with the json-source-map pointer
 const getErrorPath = (error: JsonError): string => {
   // if a pointer is present, return without #
-  if (error?.data?.pointer && error?.data?.pointer !== "#") {
-    return error.data.pointer.slice(1);
+  if (error?.data?.pointer) {
+    const pointer =
+      error?.data?.pointer !== "#" ? error?.data?.pointer.slice(1) : "";
+
+    // the following checks allow for highlighting the key of the errors
+    if (["PatternPropertiesError"].includes(error?.name) && error?.data?.key) {
+      return `${pointer}/${error.data.key}`;
+    }
+    if (
+      [
+        "NoAdditionalPropertiesError",
+        "InvalidPropertyNameError",
+        "ForbiddenPropertyError",
+      ].includes(error?.name) &&
+      error?.data?.property
+    ) {
+      return `${pointer}/${error.data.property}`;
+    }
+    return pointer;
   }
   // return plain data.property if present
   if (error?.data?.property) {
@@ -57,6 +74,7 @@ const positionalErrors = [
   "InvalidPropertyNameError",
   "ForbiddenPropertyError",
   "UndefinedValueError",
+  "PatternPropertiesError",
 ];
 
 export class JSONValidation {
@@ -145,6 +163,7 @@ export class JSONValidation {
       };
       const errorPath = getErrorPath(error);
       const pointer = json.pointers.get(errorPath) as JSONPointerData;
+
       if (
         error.name === "MaxPropertiesError" ||
         error.name === "MinPropertiesError"
@@ -154,8 +173,10 @@ export class JSONValidation {
         // if the error is a property error, use the key position
         const isKeyError = positionalErrors.includes(error.name);
         const errorString = this.rewriteError(error);
-        const from = isKeyError ? pointer.keyFrom : pointer.valueFrom;
-        const to = isKeyError ? pointer.keyTo : pointer.valueTo;
+        const from =
+          isKeyError && pointer.keyFrom ? pointer.keyFrom : pointer.valueFrom;
+        const to =
+          isKeyError && pointer.keyTo ? pointer.keyTo : pointer.valueTo;
         // skip error if no from/to value is found
         if (to !== undefined && from !== undefined) {
           acc.push({
