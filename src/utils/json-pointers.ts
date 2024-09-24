@@ -1,13 +1,7 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import {
-  JSONMode,
-  JSONPartialPointerData,
-  JSONPointerData,
-  JSONPointersMap,
-  Side,
-} from "../types";
+import { JSONMode, JSONPointersMap, Side } from "../types";
 import {
   JSON5_TOKENS_MAPPING,
   MODES,
