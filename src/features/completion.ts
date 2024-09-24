@@ -30,6 +30,7 @@ import {
 } from "../utils/json-pointers";
 import { MODES, TOKENS } from "../constants";
 import { JSONMode } from "../types";
+import { el } from "../utils/dom";
 import { renderMarkdown } from "../utils/markdown";
 import { DocumentParser, getDefaultParser } from "../parsers";
 
@@ -308,7 +309,10 @@ export class JSONCompletion {
               ),
               type: "property",
               detail: typeStr,
-              info: renderMarkdown(description),
+              info: () =>
+                el("div", {
+                  inner: renderMarkdown(description),
+                }),
             };
             collector.add(this.applySnippetCompletion(completion));
           }
