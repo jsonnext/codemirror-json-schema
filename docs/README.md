@@ -74,13 +74,13 @@ Full featured cm6 extension for json, including `@codemirror/lang-json`
 
 #### Defined in
 
-[json/bundled.ts:15](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/json/bundled.ts#L15)
+[json/bundled.ts:15](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/json/bundled.ts#L15)
 
 ## Codemirror Extensions
 
 ### jsonCompletion
 
-▸ **jsonCompletion**(`opts?`): (`ctx`: `CompletionContext`) => `CompletionResult` \| `never`[]
+▸ **jsonCompletion**(`opts?`): (`ctx`: `CompletionContext`) => `never`[] \| `CompletionResult`
 
 provides a JSON schema enabled autocomplete extension for codemirror
 
@@ -94,7 +94,7 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 `fn`
 
-▸ (`ctx`): `CompletionResult` \| `never`[]
+▸ (`ctx`): `never`[] \| `CompletionResult`
 
 ##### Parameters
 
@@ -104,11 +104,11 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 ##### Returns
 
-`CompletionResult` \| `never`[]
+`never`[] \| `CompletionResult`
 
 #### Defined in
 
-[features/completion.ts:949](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L949)
+[features/completion.ts:973](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L973)
 
 ___
 
@@ -144,7 +144,7 @@ provides a JSON schema enabled tooltip extension for codemirror
 
 #### Defined in
 
-[features/hover.ts:46](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L46)
+[features/hover.ts:46](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/hover.ts#L46)
 
 ___
 
@@ -178,7 +178,7 @@ Helper for simpler class instantiaton
 
 #### Defined in
 
-[features/validation.ts:58](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L58)
+[features/validation.ts:46](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L46)
 
 ## Utilities
 
@@ -201,7 +201,7 @@ retrieve a Map of all the json pointers in a document
 
 #### Defined in
 
-[utils/json-pointers.ts:85](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/utils/json-pointers.ts#L85)
+[utils/json-pointers.ts:85](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/utils/json-pointers.ts#L85)
 
 ___
 
@@ -226,7 +226,7 @@ retrieve a JSON pointer for a given position in the editor
 
 #### Defined in
 
-[utils/json-pointers.ts:68](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/utils/json-pointers.ts#L68)
+[utils/json-pointers.ts:68](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/utils/json-pointers.ts#L68)
 
 ___
 
@@ -253,7 +253,7 @@ Mimics the behavior of `json-source-map`'s `parseJSONDocument` function using co
 
 #### Defined in
 
-[utils/parse-json-document.ts:24](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/utils/parse-json-document.ts#L24)
+[parsers/json-parser.ts:29](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/parsers/json-parser.ts#L29)
 
 ___
 
@@ -280,7 +280,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[utils/parse-json-document.ts:10](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/utils/parse-json-document.ts#L10)
+[parsers/json-parser.ts:11](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/parsers/json-parser.ts#L11)
 
 ## Functions
 
@@ -300,7 +300,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/state.ts:25](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/state.ts#L25)
+[features/state.ts:25](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/state.ts#L25)
 
 ___
 
@@ -322,7 +322,7 @@ ___
 
 #### Defined in
 
-[utils/json-pointers.ts:31](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/utils/json-pointers.ts#L31)
+[utils/json-pointers.ts:31](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/utils/json-pointers.ts#L31)
 
 ___
 
@@ -342,7 +342,7 @@ ___
 
 #### Defined in
 
-[features/validation.ts:48](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L48)
+[features/validation.ts:36](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L36)
 
 ___
 
@@ -363,7 +363,7 @@ ___
 
 #### Defined in
 
-[utils/json-pointers.ts:18](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/utils/json-pointers.ts#L18)
+[utils/json-pointers.ts:18](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/utils/json-pointers.ts#L18)
 
 ___
 
@@ -383,7 +383,7 @@ ___
 
 #### Defined in
 
-[features/state.ts:29](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/state.ts#L29)
+[features/state.ts:29](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/state.ts#L29)
 
 ___
 
@@ -404,7 +404,7 @@ ___
 
 #### Defined in
 
-[features/state.ts:19](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/state.ts#L19)
+[features/state.ts:19](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/state.ts#L19)
 
 ## Type Aliases
 
@@ -421,7 +421,7 @@ ___
 
 #### Defined in
 
-[features/hover.ts:19](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L19)
+[features/hover.ts:19](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/hover.ts#L19)
 
 ___
 
@@ -431,7 +431,7 @@ ___
 
 #### Defined in
 
-[features/hover.ts:21](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L21)
+[features/hover.ts:21](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/hover.ts#L21)
 
 ___
 
@@ -450,7 +450,7 @@ ___
 
 #### Defined in
 
-[features/hover.ts:25](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/hover.ts#L25)
+[features/hover.ts:25](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/hover.ts#L25)
 
 ___
 
@@ -467,7 +467,7 @@ ___
 
 #### Defined in
 
-[types.ts:6](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/types.ts#L6)
+[types.ts:6](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/types.ts#L6)
 
 ___
 
@@ -486,7 +486,7 @@ ___
 
 #### Defined in
 
-[types.ts:11](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/types.ts#L11)
+[types.ts:11](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/types.ts#L11)
 
 ___
 
@@ -496,7 +496,7 @@ ___
 
 #### Defined in
 
-[types.ts:20](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/types.ts#L20)
+[types.ts:20](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/types.ts#L20)
 
 ## Variables
 
@@ -506,4 +506,4 @@ ___
 
 #### Defined in
 
-[features/state.ts:6](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/state.ts#L6)
+[features/state.ts:6](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/state.ts#L6)

@@ -4,10 +4,6 @@
 
 ## Table of contents
 
-### Utilities
-
-- [parser](JSONValidation.md#parser)
-
 ### Accessors
 
 - [schemaTitle](JSONValidation.md#schematitle)
@@ -25,38 +21,8 @@
 
 - [mode](JSONValidation.md#mode)
 - [options](JSONValidation.md#options)
+- [parser](JSONValidation.md#parser)
 - [schema](JSONValidation.md#schema)
-
-## Utilities
-
-### parser
-
-• `Private` **parser**: (`state`: `EditorState`) => \{ `data`: `any` ; `pointers`: [`JSONPointersMap`](../README.md#jsonpointersmap) } = `parseJSONDocumentState`
-
-#### Type declaration
-
-▸ (`state`): `Object`
-
-Return parsed data and json pointers for a given codemirror EditorState
-
-##### Parameters
-
-| Name    | Type          |
-| :------ | :------------ |
-| `state` | `EditorState` |
-
-##### Returns
-
-`Object`
-
-| Name       | Type                                              |
-| :--------- | :------------------------------------------------ |
-| `data`     | `any`                                             |
-| `pointers` | [`JSONPointersMap`](../README.md#jsonpointersmap) |
-
-#### Defined in
-
-[features/validation.ts:78](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L78)
 
 ## Accessors
 
@@ -70,7 +36,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:89](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L89)
+[features/validation.ts:77](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L77)
 
 ## Constructors
 
@@ -86,7 +52,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:79](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L79)
+[features/validation.ts:67](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L67)
 
 ## Methods
 
@@ -106,7 +72,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:120](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L120)
+[features/validation.ts:108](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L108)
 
 ---
 
@@ -126,7 +92,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:94](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L94)
+[features/validation.ts:82](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L82)
 
 ## Properties
 
@@ -136,7 +102,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:77](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L77)
+[features/validation.ts:65](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L65)
 
 ---
 
@@ -146,7 +112,17 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:79](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L79)
+[features/validation.ts:67](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L67)
+
+---
+
+### parser
+
+• `Private` **parser**: `DocumentParser`
+
+#### Defined in
+
+[features/validation.ts:66](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L66)
 
 ---
 
@@ -156,4 +132,4 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:75](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L75)
+[features/validation.ts:63](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L63)

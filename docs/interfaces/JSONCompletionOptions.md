@@ -6,9 +6,20 @@
 
 ### Properties
 
+- [jsonParser](JSONCompletionOptions.md#jsonparser)
 - [mode](JSONCompletionOptions.md#mode)
 
 ## Properties
+
+### jsonParser
+
+• `Optional` **jsonParser**: `DocumentParser`
+
+#### Defined in
+
+[features/completion.ts:55](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L55)
+
+---
 
 ### mode
 
@@ -16,4 +27,4 @@
 
 #### Defined in
 
-[features/completion.ts:52](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L52)
+[features/completion.ts:54](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L54)
