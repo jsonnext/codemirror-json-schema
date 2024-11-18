@@ -4,45 +4,11 @@
 
 ## Table of contents
 
-### Utilities
-
-- [jsonParser](JSONValidationOptions.md#jsonparser)
-
 ### Properties
 
 - [formatError](JSONValidationOptions.md#formaterror)
+- [jsonParser](JSONValidationOptions.md#jsonparser)
 - [mode](JSONValidationOptions.md#mode)
-
-## Utilities
-
-### jsonParser
-
-• `Optional` **jsonParser**: (`state`: `EditorState`) => \{ `data`: `any` ; `pointers`: [`JSONPointersMap`](../README.md#jsonpointersmap) }
-
-#### Type declaration
-
-▸ (`state`): `Object`
-
-Return parsed data and json pointers for a given codemirror EditorState
-
-##### Parameters
-
-| Name    | Type          |
-| :------ | :------------ |
-| `state` | `EditorState` |
-
-##### Returns
-
-`Object`
-
-| Name       | Type                                              |
-| :--------- | :------------------------------------------------ |
-| `data`     | `any`                                             |
-| `pointers` | [`JSONPointersMap`](../README.md#jsonpointersmap) |
-
-#### Defined in
-
-[features/validation.ts:43](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L43)
 
 ## Properties
 
@@ -66,7 +32,17 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:42](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L42)
+[features/validation.ts:30](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L30)
+
+---
+
+### jsonParser
+
+• `Optional` **jsonParser**: `DocumentParser`
+
+#### Defined in
+
+[features/validation.ts:31](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L31)
 
 ---
 
@@ -76,4 +52,4 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Defined in
 
-[features/validation.ts:41](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/validation.ts#L41)
+[features/validation.ts:29](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L29)

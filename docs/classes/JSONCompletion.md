@@ -37,6 +37,7 @@
 
 - [mode](JSONCompletion.md#mode)
 - [opts](JSONCompletion.md#opts)
+- [parser](JSONCompletion.md#parser)
 - [schema](JSONCompletion.md#schema)
 
 ## Constructors
@@ -53,7 +54,7 @@
 
 #### Defined in
 
-[features/completion.ts:58](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L58)
+[features/completion.ts:63](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L63)
 
 ## Methods
 
@@ -74,7 +75,7 @@
 
 #### Defined in
 
-[features/completion.ts:775](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L775)
+[features/completion.ts:784](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L784)
 
 ---
 
@@ -96,7 +97,7 @@
 
 #### Defined in
 
-[features/completion.ts:704](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L704)
+[features/completion.ts:713](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L713)
 
 ---
 
@@ -117,7 +118,7 @@
 
 #### Defined in
 
-[features/completion.ts:750](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L750)
+[features/completion.ts:759](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L759)
 
 ---
 
@@ -137,7 +138,7 @@
 
 #### Defined in
 
-[features/completion.ts:785](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L785)
+[features/completion.ts:794](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L794)
 
 ---
 
@@ -159,7 +160,7 @@
 
 #### Defined in
 
-[features/completion.ts:678](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L678)
+[features/completion.ts:687](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L687)
 
 ---
 
@@ -179,7 +180,7 @@
 
 #### Defined in
 
-[features/completion.ts:245](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L245)
+[features/completion.ts:251](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L251)
 
 ---
 
@@ -200,13 +201,13 @@
 
 #### Defined in
 
-[features/completion.ts:792](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L792)
+[features/completion.ts:801](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L801)
 
 ---
 
 ### doComplete
 
-▸ **doComplete**(`ctx`): `CompletionResult` \| `never`[]
+▸ **doComplete**(`ctx`): `never`[] \| `CompletionResult`
 
 #### Parameters
 
@@ -216,11 +217,11 @@
 
 #### Returns
 
-`CompletionResult` \| `never`[]
+`never`[] \| `CompletionResult`
 
 #### Defined in
 
-[features/completion.ts:61](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L61)
+[features/completion.ts:67](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L67)
 
 ---
 
@@ -247,7 +248,7 @@
 
 #### Defined in
 
-[features/completion.ts:863](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L863)
+[features/completion.ts:887](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L887)
 
 ---
 
@@ -267,7 +268,7 @@
 
 #### Defined in
 
-[features/completion.ts:926](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L926)
+[features/completion.ts:950](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L950)
 
 ---
 
@@ -292,7 +293,7 @@
 
 #### Defined in
 
-[features/completion.ts:901](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L901)
+[features/completion.ts:925](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L925)
 
 ---
 
@@ -313,7 +314,7 @@
 
 #### Defined in
 
-[features/completion.ts:497](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L497)
+[features/completion.ts:506](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L506)
 
 ---
 
@@ -333,7 +334,7 @@
 
 #### Defined in
 
-[features/completion.ts:519](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L519)
+[features/completion.ts:528](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L528)
 
 ---
 
@@ -356,7 +357,7 @@
 
 #### Defined in
 
-[features/completion.ts:352](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L352)
+[features/completion.ts:361](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L361)
 
 ---
 
@@ -377,7 +378,7 @@
 
 #### Defined in
 
-[features/completion.ts:469](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L469)
+[features/completion.ts:478](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L478)
 
 ---
 
@@ -398,7 +399,7 @@
 
 #### Defined in
 
-[features/completion.ts:485](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L485)
+[features/completion.ts:494](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L494)
 
 ---
 
@@ -419,7 +420,7 @@
 
 #### Defined in
 
-[features/completion.ts:523](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L523)
+[features/completion.ts:532](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L532)
 
 ---
 
@@ -444,7 +445,7 @@
 
 #### Defined in
 
-[features/completion.ts:254](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L254)
+[features/completion.ts:260](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L260)
 
 ---
 
@@ -465,7 +466,7 @@
 
 #### Defined in
 
-[features/completion.ts:882](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L882)
+[features/completion.ts:906](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L906)
 
 ---
 
@@ -486,7 +487,7 @@
 
 #### Defined in
 
-[features/completion.ts:807](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L807)
+[features/completion.ts:816](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L816)
 
 ---
 
@@ -509,7 +510,7 @@
 
 #### Defined in
 
-[features/completion.ts:533](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L533)
+[features/completion.ts:542](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L542)
 
 ---
 
@@ -529,7 +530,7 @@
 
 #### Defined in
 
-[features/completion.ts:922](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L922)
+[features/completion.ts:946](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L946)
 
 ## Properties
 
@@ -539,7 +540,7 @@
 
 #### Defined in
 
-[features/completion.ts:57](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L57)
+[features/completion.ts:60](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L60)
 
 ---
 
@@ -549,7 +550,17 @@
 
 #### Defined in
 
-[features/completion.ts:58](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L58)
+[features/completion.ts:63](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L63)
+
+---
+
+### parser
+
+• `Private` **parser**: `DocumentParser`
+
+#### Defined in
+
+[features/completion.ts:61](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L61)
 
 ---
 
@@ -559,4 +570,4 @@
 
 #### Defined in
 
-[features/completion.ts:56](https://github.com/jsonnext/codemirror-json-schema/blob/2356a94/src/features/completion.ts#L56)
+[features/completion.ts:59](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L59)
