@@ -104,8 +104,10 @@ describe("getJsonPointers", () => {
       mode: MODES.JSON,
       expected: {
         "": {
-          keyFrom: 0,
-          keyTo: 80,
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 0,
+          valueTo: 80,
         },
         "/bar": {
           keyFrom: 28,
@@ -120,12 +122,24 @@ describe("getJsonPointers", () => {
           valueTo: 54,
         },
         // TODO: return pointers for all array indexes, not just objects
-        // "/baz/0": {
-        //   keyFrom: 40,
-        //   keyTo: 45,
-        //   valueFrom: 47,
-        //   valueTo: 55,
-        // },
+        "/baz/0": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 48,
+          valueTo: 49,
+        },
+        "/baz/1": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 50,
+          valueTo: 51,
+        },
+        "/baz/2": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 52,
+          valueTo: 53,
+        },
         "/boop": {
           keyFrom: 56,
           keyTo: 62,
@@ -133,11 +147,10 @@ describe("getJsonPointers", () => {
           valueTo: 79,
         },
         "/boop/0": {
-          keyFrom: 65,
-          keyTo: 78,
-          // TODO: These look erroneous. There is no key-value pair for array items
-          valueFrom: 78,
-          valueTo: 79,
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 65,
+          valueTo: 78,
         },
         "/boop/0/foo": {
           keyFrom: 66,
@@ -146,8 +159,10 @@ describe("getJsonPointers", () => {
           valueTo: 77,
         },
         "/object": {
-          keyFrom: 11,
-          keyTo: 26,
+          keyFrom: 1,
+          keyTo: 9,
+          valueFrom: 11,
+          valueTo: 26,
         },
         "/object/foo": {
           keyFrom: 13,
@@ -162,8 +177,10 @@ describe("getJsonPointers", () => {
       mode: MODES.JSON5,
       expected: {
         "": {
-          keyFrom: 0,
-          keyTo: 72,
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 0,
+          valueTo: 72,
         },
         "/bar": {
           keyFrom: 26,
@@ -177,13 +194,24 @@ describe("getJsonPointers", () => {
           valueFrom: 43,
           valueTo: 50,
         },
-        // TODO: return pointers for all array indexes, not just objects
-        // "/baz/0": {
-        //   keyFrom: 40,
-        //   keyTo: 45,
-        //   valueFrom: 47,
-        //   valueTo: 55,
-        // },
+        "/baz/0": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 44,
+          valueTo: 45,
+        },
+        "/baz/1": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 46,
+          valueTo: 47,
+        },
+        "/baz/2": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 48,
+          valueTo: 49,
+        },
         "/boop": {
           keyFrom: 52,
           keyTo: 56,
@@ -191,8 +219,10 @@ describe("getJsonPointers", () => {
           valueTo: 71,
         },
         "/boop/0": {
-          keyFrom: 59,
-          keyTo: 70,
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 59,
+          valueTo: 70,
         },
         "/boop/0/foo": {
           keyFrom: 60,
@@ -201,8 +231,10 @@ describe("getJsonPointers", () => {
           valueTo: 69,
         },
         "/object": {
-          keyFrom: 11,
-          keyTo: 24,
+          keyFrom: 1,
+          keyTo: 9,
+          valueFrom: 11,
+          valueTo: 24,
         },
         "/object/foo": {
           keyFrom: 13,
@@ -227,8 +259,10 @@ boop:
       mode: MODES.YAML,
       expected: {
         "": {
-          keyFrom: 4,
-          keyTo: 75,
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 0,
+          valueTo: 75,
         },
         "/bar": {
           keyFrom: 24,
@@ -242,13 +276,24 @@ boop:
           valueFrom: 40,
           valueTo: 55,
         },
-        // TODO: return pointers for all array indexes, not just objects
-        // "/baz/0": {
-        //   keyFrom: 40,
-        //   keyTo: 45,
-        //   valueFrom: 47,
-        //   valueTo: 55,
-        // },
+        "/baz/0": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 42,
+          valueTo: 43,
+        },
+        "/baz/1": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 48,
+          valueTo: 49,
+        },
+        "/baz/2": {
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 54,
+          valueTo: 55,
+        },
         "/boop": {
           keyFrom: 56,
           keyTo: 60,
@@ -256,8 +301,10 @@ boop:
           valueTo: 75,
         },
         "/boop/0": {
-          keyFrom: 66,
-          keyTo: 75,
+          keyFrom: undefined,
+          keyTo: undefined,
+          valueFrom: 66,
+          valueTo: 75,
         },
         "/boop/0/foo": {
           keyFrom: 66,
@@ -266,8 +313,10 @@ boop:
           valueTo: 75,
         },
         "/object": {
-          keyFrom: 14,
-          keyTo: 23,
+          keyFrom: 4,
+          keyTo: 10,
+          valueFrom: 14,
+          valueTo: 23,
         },
         "/object/foo": {
           keyFrom: 14,

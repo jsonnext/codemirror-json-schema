@@ -64,8 +64,8 @@ Full featured cm6 extension for json, including `@codemirror/lang-json`
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name      | Type          |
+| :-------- | :------------ |
 | `schema?` | `JSONSchema7` |
 
 #### Returns
@@ -86,8 +86,8 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name   | Type                                                           |
+| :----- | :------------------------------------------------------------- |
 | `opts` | [`JSONCompletionOptions`](interfaces/JSONCompletionOptions.md) |
 
 #### Returns
@@ -98,8 +98,8 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name  | Type                |
+| :---- | :------------------ |
 | `ctx` | `CompletionContext` |
 
 ##### Returns
@@ -110,43 +110,43 @@ provides a JSON schema enabled autocomplete extension for codemirror
 
 [features/completion.ts:973](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L973)
 
-___
+---
 
 ### jsonSchemaHover
 
-▸ **jsonSchemaHover**(`options?`): (`view`: `EditorView`, `pos`: `number`, `side`: `Side`) => `Promise`\<``null`` \| `Tooltip`\>
+▸ **jsonSchemaHover**(`options?`): (`view`: `EditorView`, `pos`: `number`, `side`: `Side`) => `Promise`\<`null` \| `Tooltip`\>
 
 provides a JSON schema enabled tooltip extension for codemirror
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name       | Type                                     |
+| :--------- | :--------------------------------------- |
 | `options?` | [`HoverOptions`](README.md#hoveroptions) |
 
 #### Returns
 
 `fn`
 
-▸ (`view`, `pos`, `side`): `Promise`\<``null`` \| `Tooltip`\>
+▸ (`view`, `pos`, `side`): `Promise`\<`null` \| `Tooltip`\>
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name   | Type         |
+| :----- | :----------- |
 | `view` | `EditorView` |
-| `pos` | `number` |
-| `side` | `Side` |
+| `pos`  | `number`     |
+| `side` | `Side`       |
 
 ##### Returns
 
-`Promise`\<``null`` \| `Tooltip`\>
+`Promise`\<`null` \| `Tooltip`\>
 
 #### Defined in
 
 [features/hover.ts:46](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/hover.ts#L46)
 
-___
+---
 
 ### jsonSchemaLinter
 
@@ -156,8 +156,8 @@ Helper for simpler class instantiaton
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name       | Type                                                           |
+| :--------- | :------------------------------------------------------------- |
 | `options?` | [`JSONValidationOptions`](interfaces/JSONValidationOptions.md) |
 
 #### Returns
@@ -168,8 +168,8 @@ Helper for simpler class instantiaton
 
 ##### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name   | Type         |
+| :----- | :----------- |
 | `view` | `EditorView` |
 
 ##### Returns
@@ -190,10 +190,10 @@ retrieve a Map of all the json pointers in a document
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name    | Type          |
+| :------ | :------------ |
 | `state` | `EditorState` |
-| `mode` | `JSONMode` |
+| `mode`  | `JSONMode`    |
 
 #### Returns
 
@@ -203,7 +203,7 @@ retrieve a Map of all the json pointers in a document
 
 [utils/json-pointers.ts:85](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/utils/json-pointers.ts#L85)
 
-___
+---
 
 ### jsonPointerForPosition
 
@@ -213,12 +213,12 @@ retrieve a JSON pointer for a given position in the editor
 
 #### Parameters
 
-| Name | Type | Default value |
-| :------ | :------ | :------ |
-| `state` | `EditorState` | `undefined` |
-| `pos` | `number` | `undefined` |
-| `side` | `Side` | `-1` |
-| `mode` | `JSONMode` | `undefined` |
+| Name    | Type          | Default value |
+| :------ | :------------ | :------------ |
+| `state` | `EditorState` | `undefined`   |
+| `pos`   | `number`      | `undefined`   |
+| `side`  | `Side`        | `-1`          |
+| `mode`  | `JSONMode`    | `undefined`   |
 
 #### Returns
 
@@ -228,7 +228,7 @@ retrieve a JSON pointer for a given position in the editor
 
 [utils/json-pointers.ts:68](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/utils/json-pointers.ts#L68)
 
-___
+---
 
 ### parseJSONDocument
 
@@ -238,24 +238,24 @@ Mimics the behavior of `json-source-map`'s `parseJSONDocument` function using co
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name         | Type     |
+| :----------- | :------- |
 | `jsonString` | `string` |
 
 #### Returns
 
 `Object`
 
-| Name | Type |
-| :------ | :------ |
-| `data` | `any` |
+| Name       | Type                                           |
+| :--------- | :--------------------------------------------- |
+| `data`     | `any`                                          |
 | `pointers` | [`JSONPointersMap`](README.md#jsonpointersmap) |
 
 #### Defined in
 
 [parsers/json-parser.ts:29](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/parsers/json-parser.ts#L29)
 
-___
+---
 
 ### parseJSONDocumentState
 
@@ -265,17 +265,17 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name    | Type          |
+| :------ | :------------ |
 | `state` | `EditorState` |
 
 #### Returns
 
 `Object`
 
-| Name | Type |
-| :------ | :------ |
-| `data` | `any` |
+| Name       | Type                                           |
+| :--------- | :--------------------------------------------- |
+| `data`     | `any`                                          |
 | `pointers` | [`JSONPointersMap`](README.md#jsonpointersmap) |
 
 #### Defined in
@@ -290,8 +290,8 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name    | Type          |
+| :------ | :------------ |
 | `state` | `EditorState` |
 
 #### Returns
@@ -302,7 +302,7 @@ Return parsed data and json pointers for a given codemirror EditorState
 
 [features/state.ts:25](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/state.ts#L25)
 
-___
+---
 
 ### getJsonPointerAt
 
@@ -310,11 +310,11 @@ ___
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `docText` | `Text` |
-| `node` | `SyntaxNode` |
-| `mode` | `JSONMode` |
+| Name      | Type         |
+| :-------- | :----------- |
+| `docText` | `Text`       |
+| `node`    | `SyntaxNode` |
+| `mode`    | `JSONMode`   |
 
 #### Returns
 
@@ -324,7 +324,7 @@ ___
 
 [utils/json-pointers.ts:31](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/utils/json-pointers.ts#L31)
 
-___
+---
 
 ### handleRefresh
 
@@ -332,8 +332,8 @@ ___
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name | Type         |
+| :--- | :----------- |
 | `vu` | `ViewUpdate` |
 
 #### Returns
@@ -344,7 +344,7 @@ ___
 
 [features/validation.ts:36](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/validation.ts#L36)
 
-___
+---
 
 ### resolveTokenName
 
@@ -352,10 +352,10 @@ ___
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `nodeName` | `string` |
-| `mode` | `JSONMode` |
+| Name       | Type       |
+| :--------- | :--------- |
+| `nodeName` | `string`   |
+| `mode`     | `JSONMode` |
 
 #### Returns
 
@@ -365,7 +365,7 @@ ___
 
 [utils/json-pointers.ts:18](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/utils/json-pointers.ts#L18)
 
-___
+---
 
 ### stateExtensions
 
@@ -373,8 +373,8 @@ ___
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
+| Name      | Type          |
+| :-------- | :------------ |
 | `schema?` | `JSONSchema7` |
 
 #### Returns
@@ -385,7 +385,7 @@ ___
 
 [features/state.ts:29](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/state.ts#L29)
 
-___
+---
 
 ### updateSchema
 
@@ -393,9 +393,9 @@ ___
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `view` | `EditorView` |
+| Name      | Type          |
+| :-------- | :------------ |
+| `view`    | `EditorView`  |
 | `schema?` | `JSONSchema7` |
 
 #### Returns
@@ -414,16 +414,16 @@ ___
 
 #### Type declaration
 
-| Name | Type |
-| :------ | :------ |
-| `pointer` | `string` |
+| Name      | Type         |
+| :-------- | :----------- |
+| `pointer` | `string`     |
 | `schema?` | `JsonSchema` |
 
 #### Defined in
 
 [features/hover.ts:19](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/hover.ts#L19)
 
-___
+---
 
 ### FoundCursorData
 
@@ -433,7 +433,7 @@ ___
 
 [features/hover.ts:21](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/hover.ts#L21)
 
-___
+---
 
 ### HoverOptions
 
@@ -441,18 +441,18 @@ ___
 
 #### Type declaration
 
-| Name | Type |
-| :------ | :------ |
-| `formatHover?` | (`data`: `HoverTexts`) => `HTMLElement` |
+| Name             | Type                                                                     |
+| :--------------- | :----------------------------------------------------------------------- |
+| `formatHover?`   | (`data`: `HoverTexts`) => `HTMLElement`                                  |
 | `getHoverTexts?` | (`data`: [`FoundCursorData`](README.md#foundcursordata)) => `HoverTexts` |
-| `mode?` | `JSONMode` |
-| `parser?` | (`text`: `string`) => `any` |
+| `mode?`          | `JSONMode`                                                               |
+| `parser?`        | (`text`: `string`) => `any`                                              |
 
 #### Defined in
 
 [features/hover.ts:25](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/hover.ts#L25)
 
-___
+---
 
 ### JSONPartialPointerData
 
@@ -460,16 +460,16 @@ ___
 
 #### Type declaration
 
-| Name | Type |
-| :------ | :------ |
+| Name      | Type     |
+| :-------- | :------- |
 | `keyFrom` | `number` |
-| `keyTo` | `number` |
+| `keyTo`   | `number` |
 
 #### Defined in
 
 [types.ts:6](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/types.ts#L6)
 
-___
+---
 
 ### JSONPointerData
 
@@ -477,18 +477,18 @@ ___
 
 #### Type declaration
 
-| Name | Type |
-| :------ | :------ |
-| `keyFrom` | `number` |
-| `keyTo` | `number` |
+| Name        | Type     |
+| :---------- | :------- |
+| `keyFrom`   | `number` |
+| `keyTo`     | `number` |
 | `valueFrom` | `number` |
-| `valueTo` | `number` |
+| `valueTo`   | `number` |
 
 #### Defined in
 
 [types.ts:11](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/types.ts#L11)
 
-___
+---
 
 ### JSONPointersMap
 
