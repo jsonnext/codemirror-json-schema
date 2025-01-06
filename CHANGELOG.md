@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.8.0
+
+### Minor Changes
+
+- [#138](https://github.com/jsonnext/codemirror-json-schema/pull/138) [`aa27ad7`](https://github.com/jsonnext/codemirror-json-schema/commit/aa27ad740fec447069bacd1d817e1d32fbbf8d90) Thanks [@thomasjahoda](https://github.com/thomasjahoda)! - More robust conditional types support (thanks @thomasjahoda!)
+
 ## 0.7.9
 
 ### Patch Changes

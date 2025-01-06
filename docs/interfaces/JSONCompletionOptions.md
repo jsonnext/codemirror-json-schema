@@ -17,7 +17,7 @@
 
 #### Defined in
 
-[features/completion.ts:55](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L55)
+[features/completion.ts:57](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/completion.ts#L57)
 
 ---
 
@@ -27,4 +27,4 @@
 
 #### Defined in
 
-[features/completion.ts:54](https://github.com/jsonnext/codemirror-json-schema/blob/ef7f336/src/features/completion.ts#L54)
+[features/completion.ts:56](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/completion.ts#L56)
