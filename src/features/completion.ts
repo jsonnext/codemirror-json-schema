@@ -35,7 +35,6 @@ import { el } from "../utils/dom";
 import { renderMarkdown } from "../utils/markdown";
 import { DocumentParser, getDefaultParser } from "../parsers";
 import { replacePropertiesDeeply } from "../utils/recordUtil";
-import { omit } from "radash";
 
 class CompletionCollector {
   completions = new Map<string, Completion>();
