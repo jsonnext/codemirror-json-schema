@@ -36,7 +36,7 @@
 
 #### Defined in
 
-[features/validation.ts:77](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/validation.ts#L77)
+[features/validation.ts:77](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L77)
 
 ## Constructors
 
@@ -52,7 +52,7 @@
 
 #### Defined in
 
-[features/validation.ts:67](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/validation.ts#L67)
+[features/validation.ts:67](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L67)
 
 ## Methods
 
@@ -72,7 +72,7 @@
 
 #### Defined in
 
-[features/validation.ts:108](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/validation.ts#L108)
+[features/validation.ts:108](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L108)
 
 ---
 
@@ -92,7 +92,7 @@
 
 #### Defined in
 
-[features/validation.ts:82](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/validation.ts#L82)
+[features/validation.ts:82](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L82)
 
 ## Properties
 
@@ -102,7 +102,7 @@
 
 #### Defined in
 
-[features/validation.ts:65](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/validation.ts#L65)
+[features/validation.ts:65](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L65)
 
 ---
 
@@ -112,7 +112,7 @@
 
 #### Defined in
 
-[features/validation.ts:67](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/validation.ts#L67)
+[features/validation.ts:67](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L67)
 
 ---
 
@@ -122,7 +122,7 @@
 
 #### Defined in
 
-[features/validation.ts:66](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/validation.ts#L66)
+[features/validation.ts:66](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L66)
 
 ---
 
@@ -132,4 +132,4 @@
 
 #### Defined in
 
-[features/validation.ts:63](https://github.com/jsonnext/codemirror-json-schema/blob/aa27ad7/src/features/validation.ts#L63)
+[features/validation.ts:63](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L63)
