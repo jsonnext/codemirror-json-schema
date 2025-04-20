@@ -4,7 +4,11 @@ import type { Diagnostic } from "@codemirror/lint";
 import { describe, it, expect } from "vitest";
 import { EditorView } from "@codemirror/view";
 
-import { testSchema, testSchema2 } from "./__fixtures__/schemas";
+import {
+  testSchema,
+  testSchema2,
+  testSchemaArrayOfObjects,
+} from "./__fixtures__/schemas";
 import { JSONMode } from "../../types";
 import { getExtensions } from "./__helpers__/index";
 import { MODES } from "../../constants";
@@ -12,7 +16,7 @@ import { MODES } from "../../constants";
 const getErrors = (
   jsonString: string,
   mode: JSONMode,
-  schema?: JSONSchema7
+  schema?: JSONSchema7,
 ) => {
   const view = new EditorView({
     doc: jsonString,
@@ -30,13 +34,13 @@ const expectErrors = (
   jsonString: string,
   errors: [from: number | undefined, to: number | undefined, message: string][],
   mode: JSONMode,
-  schema?: JSONSchema7
+  schema?: JSONSchema7,
 ) => {
   const filteredErrors = getErrors(jsonString, mode, schema).map(
-    ({ renderMessage, ...error }) => error
+    ({ renderMessage, ...error }) => error,
   );
   expect(filteredErrors).toEqual(
-    errors.map(([from, to, message]) => ({ ...common, from, to, message }))
+    errors.map(([from, to, message]) => ({ ...common, from, to, message })),
   );
 };
 
@@ -144,6 +148,65 @@ describe("json-validation", () => {
         },
       ],
       schema: testSchema2,
+    },
+    {
+      name: "reject a single object when schema expects an array",
+      mode: MODES.JSON,
+      doc: '{ "name": "John" }',
+      errors: [
+        {
+          from: 0,
+          to: 0,
+          message: "Expected `array` but received `object`",
+        },
+      ],
+      schema: testSchemaArrayOfObjects,
+    },
+    {
+      name: "reject a boolean when schema expects an array",
+      mode: MODES.JSON,
+      doc: "true",
+      errors: [
+        {
+          from: 0,
+          to: 0,
+          message: "Expected `array` but received `boolean`",
+        },
+      ],
+      schema: testSchemaArrayOfObjects,
+    },
+    {
+      name: "reject a string when schema expects an array",
+      mode: MODES.JSON,
+      doc: '"example"',
+      errors: [
+        {
+          from: 0,
+          to: 0,
+          message: "Expected `array` but received `string`",
+        },
+      ],
+      schema: testSchemaArrayOfObjects,
+    },
+    {
+      name: "reject a number when schema expects an array",
+      mode: MODES.JSON,
+      doc: "123",
+      errors: [
+        {
+          from: 0,
+          to: 0,
+          message: "Expected `array` but received `number`",
+        },
+      ],
+      schema: testSchemaArrayOfObjects,
+    },
+    {
+      name: "can handle an array of objects",
+      mode: MODES.JSON,
+      doc: '[{"name": "John"}, {"name": "Jane"}]',
+      errors: [],
+      schema: testSchemaArrayOfObjects,
     },
   ];
   it.each([
@@ -360,7 +423,7 @@ oneOfEg2: 123
       doc,
       errors.map((error) => [error.from, error.to, error.message]),
       mode,
-      schema
+      schema,
     );
   });
 });

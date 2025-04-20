@@ -245,3 +245,10 @@ export const wrappedTestSchemaConditionalPropertiesOnSameObject = {
   },
   required: ["original"],
 } as JSONSchema7;
+
+export const testSchemaArrayOfObjects = {
+  type: "array",
+  items: {
+    type: "object",
+  },
+} as JSONSchema7;
