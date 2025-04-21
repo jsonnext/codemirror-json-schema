@@ -1,5 +1,11 @@
 # codemirror-json-schema
 
+## 0.8.1
+
+### Patch Changes
+
+- [#151](https://github.com/jsonnext/codemirror-json-schema/pull/151) [`d360a86`](https://github.com/jsonnext/codemirror-json-schema/commit/d360a86b90aef61fb1a112ea3298a9ebed1c9012) Thanks [@skrabe](https://github.com/skrabe)! - Fixed validation bugs: single objects incorrectly passed array schemas, invalid YAML caused errors after root-level change(now skipped if unparseable), and added tests ensuring non-array values(object, boolean, string, number) are correctly rejected.
+
 ## 0.8.0
 
 ### Minor Changes
