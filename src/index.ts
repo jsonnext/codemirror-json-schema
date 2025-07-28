@@ -27,7 +27,20 @@ export type {
   JSONPartialPointerData,
 } from "./types";
 
-export * from "./parsers/json-parser";
-export * from "./utils/json-pointers";
+export {
+  parseJSONDocumentState,
+  parseJSONDocument,
+} from "./parsers/json-parser";
 
-export * from "./features/state";
+export {
+  getJsonPointerAt,
+  jsonPointerForPosition,
+  getJsonPointers,
+} from "./utils/json-pointers";
+
+export {
+  schemaStateField,
+  updateSchema,
+  getJSONSchema,
+  stateExtensions,
+} from "./features/state";
