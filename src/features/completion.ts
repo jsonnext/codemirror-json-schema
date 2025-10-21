@@ -506,7 +506,17 @@ export class JSONCompletion {
               }
               break;
             case "array":
-              value = "[#{}]";
+              switch (this.mode) {
+                case MODES.JSON5:
+                  value = "[#{}]";
+                  break;
+                case MODES.YAML:
+                  value = "#{}";
+                  break;
+                default:
+                  value = "[#{}]";
+                  break;
+              }
               break;
             case "number":
             case "integer":
