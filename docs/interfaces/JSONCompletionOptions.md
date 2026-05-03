@@ -1,30 +1,25 @@
-[codemirror-json-schema](../README.md) / JSONCompletionOptions
-
-# Interface: JSONCompletionOptions
-
-## Table of contents
-
-### Properties
-
-- [jsonParser](JSONCompletionOptions.md#jsonparser)
-- [mode](JSONCompletionOptions.md#mode)
-
-## Properties
-
-### jsonParser
-
-• `Optional` **jsonParser**: `DocumentParser`
-
-#### Defined in
-
-[features/completion.ts:57](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/completion.ts#L57)
+[**codemirror-json-schema-refined**](../README.md)
 
 ---
 
-### mode
+[codemirror-json-schema-refined](../README.md) / JSONCompletionOptions
 
-• `Optional` **mode**: `JSONMode`
+# Interface: JSONCompletionOptions
 
-#### Defined in
+Defined in: [src/features/completion.ts:55](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/completion.ts#L55)
 
-[features/completion.ts:56](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/completion.ts#L56)
+## Properties
+
+### jsonParser?
+
+> `optional` **jsonParser?**: `DocumentParser`
+
+Defined in: [src/features/completion.ts:57](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/completion.ts#L57)
+
+---
+
+### mode?
+
+> `optional` **mode?**: `JSONMode`
+
+Defined in: [src/features/completion.ts:56](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/completion.ts#L56)

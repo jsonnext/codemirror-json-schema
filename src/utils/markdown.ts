@@ -1,7 +1,7 @@
-import md from "markdown-it";
 import { fromHighlighter } from "@shikijs/markdown-it/core";
+import md from "markdown-it";
 import { createHighlighterCore, HighlighterGeneric } from "shiki/core";
-
+import { createOnigurumaEngine } from "shiki/engine/oniguruma";
 // const defaultPlugins = [
 //   "markdown-it-abbr",
 //   "markdown-it-deflist",
@@ -30,11 +30,12 @@ const renderer = md({
 
 (async () => {
   const highlighter = (await createHighlighterCore({
+    engine: createOnigurumaEngine(() => import("shiki/wasm")),
     themes: [
-      import("shiki/themes/vitesse-light.mjs"),
-      import("shiki/themes/vitesse-dark.mjs"),
+      import("@shikijs/themes/vitesse-light"),
+      import("@shikijs/themes/vitesse-dark"),
     ],
-    langs: [import("shiki/langs/javascript.mjs")],
+    langs: [import("@shikijs/langs/javascript")],
   })) as HighlighterGeneric<any, any>;
   renderer.use(
     fromHighlighter(highlighter, {
@@ -42,7 +43,7 @@ const renderer = md({
         light: "vitesse-light",
         dark: "vitesse-dark",
       },
-    })
+    }),
   );
 })();
 

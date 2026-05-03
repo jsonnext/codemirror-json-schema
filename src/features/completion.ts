@@ -7,7 +7,18 @@ import {
 import { syntaxTree } from "@codemirror/language";
 import { SyntaxNode } from "@lezer/common";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
+import type { JsonError, JsonSchema, SchemaNode } from "json-schema-library";
+import { compileSchema, draft07, isJsonError } from "json-schema-library";
+import { MODES, TOKENS } from "../constants";
+import { DocumentParser, getDefaultParser } from "../parsers";
+import { JSONMode } from "../types";
 import { debug } from "../utils/debug";
+import { el } from "../utils/dom";
+import {
+  jsonPointerForPosition,
+  resolveTokenName,
+} from "../utils/json-pointers";
+import { renderMarkdown } from "../utils/markdown";
 import {
   findNodeIndexInArrayNode,
   getChildrenNodes,
@@ -22,19 +33,8 @@ import {
   stripSurroundingQuotes,
   surroundingDoubleQuotesToSingle,
 } from "../utils/node";
-import { getJSONSchema } from "./state";
-import type { JsonError, JsonSchema } from "json-schema-library";
-import { Draft07, isJsonError } from "json-schema-library";
-import {
-  jsonPointerForPosition,
-  resolveTokenName,
-} from "../utils/json-pointers";
-import { MODES, TOKENS } from "../constants";
-import { JSONMode } from "../types";
-import { el } from "../utils/dom";
-import { renderMarkdown } from "../utils/markdown";
-import { DocumentParser, getDefaultParser } from "../parsers";
 import { replacePropertiesDeeply } from "../utils/recordUtil";
+import { getJSONSchema } from "./state";
 
 class CompletionCollector {
   completions = new Map<string, Completion>();
@@ -66,6 +66,118 @@ function isRealSchema(
     subSchema.name === "UnknownPropertyError" ||
     subSchema.type === "undefined"
   );
+}
+
+function flattenCandidateSchemas(
+  schema: JSONSchema7 | undefined,
+  rootSchema: JSONSchema7,
+): JSONSchema7[] {
+  if (!schema) {
+    return [];
+  }
+  const expanded = expandSchemaProperty(schema, rootSchema) as JSONSchema7;
+  const candidates = [expanded];
+  const compositeKeys = ["allOf", "anyOf", "oneOf"] as const;
+  for (const key of compositeKeys) {
+    const value = expanded[key];
+    if (Array.isArray(value)) {
+      for (const entry of value) {
+        const expandedEntry = expandSchemaProperty(entry, rootSchema);
+        if (typeof expandedEntry === "object" && expandedEntry != null) {
+          candidates.push(expandedEntry as JSONSchema7);
+        }
+      }
+    }
+  }
+  return candidates;
+}
+
+function getStaticSchemaCandidatesAtPointer(
+  rootSchema: JSONSchema7,
+  pointer: string | undefined,
+): JSONSchema7[] {
+  if (!pointer) {
+    return flattenCandidateSchemas(rootSchema, rootSchema);
+  }
+  const segments = pointer.split("/").filter(Boolean);
+  let currentSchemas = flattenCandidateSchemas(rootSchema, rootSchema);
+
+  for (const segment of segments) {
+    const nextSchemas: JSONSchema7[] = [];
+    const isArrayIndex = /^\d+$/.test(segment);
+
+    for (const candidate of currentSchemas) {
+      for (const schema of flattenCandidateSchemas(candidate, rootSchema)) {
+        if (isArrayIndex) {
+          const itemSchema = schema.items;
+          if (Array.isArray(itemSchema)) {
+            const indexed = itemSchema[Number(segment)];
+            if (typeof indexed === "object" && indexed != null) {
+              nextSchemas.push(...flattenCandidateSchemas(indexed, rootSchema));
+            }
+          } else if (typeof itemSchema === "object" && itemSchema != null) {
+            nextSchemas.push(
+              ...flattenCandidateSchemas(itemSchema, rootSchema),
+            );
+          }
+          continue;
+        }
+
+        const propertySchema = schema.properties?.[segment];
+        if (typeof propertySchema === "object" && propertySchema != null) {
+          nextSchemas.push(
+            ...flattenCandidateSchemas(propertySchema, rootSchema),
+          );
+        }
+      }
+    }
+
+    currentSchemas = nextSchemas;
+    if (currentSchemas.length === 0) {
+      return [];
+    }
+  }
+
+  return currentSchemas;
+}
+
+function getStaticSchemaAtPointer(
+  rootSchema: JSONSchema7,
+  pointer: string | undefined,
+): JSONSchema7 | undefined {
+  const candidates = getStaticSchemaCandidatesAtPointer(rootSchema, pointer);
+  if (candidates.length === 0) {
+    return undefined;
+  }
+  if (candidates.length === 1) {
+    return candidates[0];
+  }
+
+  const combined: JSONSchema7 = {};
+  const propertyEntries = candidates.flatMap((candidate) =>
+    Object.entries(candidate.properties ?? {}),
+  );
+  if (propertyEntries.length > 0) {
+    combined.properties = Object.fromEntries(propertyEntries);
+  }
+
+  const refs = candidates
+    .map((candidate) => candidate.$ref)
+    .filter((ref): ref is string => typeof ref === "string");
+  if (refs.length > 0) {
+    combined.oneOf = refs.map((ref) => ({ $ref: ref }));
+  } else {
+    combined.oneOf = candidates;
+  }
+
+  const description = candidates.find(
+    (candidate) => candidate.description,
+  )?.description;
+  if (description) {
+    combined.description = description;
+  }
+
+  return combined;
 }
 
 export class JSONCompletion {
@@ -131,6 +243,7 @@ export class JSONCompletion {
 
     const text = ctx.state.doc.sliceString(0);
     let node: SyntaxNode | null = getNodeAtPosition(ctx.state, ctx.pos);
+    const rawWord = getWord(ctx.state.doc, node, false);
 
     // position node word prefix (without quotes) for matching
     let prefix = ctx.state.sliceDoc(node.from, ctx.pos).replace(/^(["'])/, "");
@@ -143,14 +256,17 @@ export class JSONCompletion {
         isPrimitiveValueNode(node, this.mode) ||
         isPropertyNameNode(node, this.mode)
       ) &&
-      !ctx.explicit
+      !ctx.explicit &&
+      !(
+        this.mode === MODES.JSON5 &&
+        (rawWord.startsWith("'") || rawWord.startsWith('"'))
+      )
     ) {
       debug.log("xxx", "no completions for non-word/primitive", node);
       return result;
     }
 
     const currentWord = getWord(ctx.state.doc, node);
-    const rawWord = getWord(ctx.state.doc, node, false);
     // Calculate overwrite range
     if (
       node &&
@@ -247,7 +363,9 @@ export class JSONCompletion {
         resolveTokenName(node.name, this.mode) as any,
       ) &&
       (isPropertyNameNode(getNodeAtPosition(ctx.state, ctx.pos), this.mode) ||
-        closestPropertyNameNode)
+        closestPropertyNameNode ||
+        rawWord.startsWith('"') ||
+        rawWord.startsWith("'"))
     ) {
       // don't suggest keys when the cursor is just before the opening curly brace
       if (node.from === ctx.pos) {
@@ -264,6 +382,22 @@ export class JSONCompletion {
         addValue,
         rawWord,
       );
+      if (
+        collector.completions.size === 0 &&
+        this.mode === MODES.JSON5 &&
+        (rawWord.startsWith("'") || rawWord.startsWith('"'))
+      ) {
+        const fallbackNode =
+          getClosestNode(node, TOKENS.OBJECT, this.mode) ?? node;
+        this.getPropertyCompletions(
+          rootSchema,
+          ctx,
+          fallbackNode,
+          collector,
+          true,
+          rawWord,
+        );
+      }
     } else {
       // proposals for values
       const types: { [type: string]: boolean } = {};
@@ -276,6 +410,46 @@ export class JSONCompletion {
         // // use the value node to calculate the prefix
         // prefix = res.valuePrefix;
         // debug.log("xxx", "using valueNode prefix", prefix);
+      }
+    }
+
+    if (
+      collector.completions.size === 0 &&
+      this.mode === MODES.JSON5 &&
+      (rawWord.startsWith("'") || rawWord.startsWith('"'))
+    ) {
+      const fallbackSchema = getStaticSchemaAtPointer(rootSchema, undefined);
+      if (fallbackSchema?.properties) {
+        Object.entries(fallbackSchema.properties).forEach(([key, value]) => {
+          if (typeof value !== "object" || value == null) {
+            return;
+          }
+          const description = value.description ?? "";
+          const type = value.type ?? "";
+          const typeStr =
+            value.$ref != null
+              ? ""
+              : Array.isArray(type)
+                ? type.toString()
+                : type;
+          const completion: Completion = {
+            label: key,
+            apply: this.getInsertTextForProperty(
+              key,
+              true,
+              rawWord,
+              rootSchema,
+              value,
+            ),
+            type: "property",
+            detail: typeStr,
+            info: () =>
+              el("div", {
+                inner: renderMarkdown(description),
+              }),
+          };
+          collector.add(this.applySnippetCompletion(completion));
+        });
       }
     }
 
@@ -347,7 +521,12 @@ export class JSONCompletion {
           if (typeof value === "object") {
             const description = value.description ?? "";
             const type = value.type ?? "";
-            const typeStr = Array.isArray(type) ? type.toString() : type;
+            const typeStr =
+              value.$ref != null
+                ? ""
+                : Array.isArray(type)
+                  ? type.toString()
+                  : type;
             const completion: Completion = {
               // label is the unquoted key which will be displayed.
               label: key,
@@ -891,7 +1070,9 @@ export class JSONCompletion {
   ): JSONSchema7Definition[] {
     const { data: documentData } = this.parser(ctx.state);
 
-    const draft = new Draft07(rootSchema);
+    const schema = compileSchema(rootSchema, {
+      drafts: [draft07],
+    });
     let pointer: string | undefined = jsonPointerForPosition(
       ctx.state,
       ctx.pos,
@@ -933,10 +1114,12 @@ export class JSONCompletion {
       deepestPropertyKey in (effectiveSchemaOfParent?.properties ?? {});
 
     // TODO upgrade json-schema-library, so this actually returns undefined if data and schema are incompatible (currently it sometimes pukes itself with invalid data and imagines schemas on-the-fly)
-    let subSchema = draft.getSchema({
-      pointer,
-      data: documentData ?? undefined,
-    });
+    let subSchema = pointer
+      ? schema.getNode(pointer, documentData ?? undefined).node?.schema
+      : undefined;
+    if (!isRealSchema(subSchema)) {
+      subSchema = getStaticSchemaAtPointer(rootSchema, pointer);
+    }
     if (
       !pointerPointsToKnownProperty &&
       subSchema?.type === "null" &&
@@ -970,7 +1153,12 @@ export class JSONCompletion {
 
     // then try the parent pointer without data
     if (!isRealSchema(subSchema)) {
-      subSchema = draft.getSchema({ pointer: parentPointer });
+      subSchema = parentPointer
+        ? schema.getNode(parentPointer).node?.schema
+        : undefined;
+      if (!isRealSchema(subSchema)) {
+        subSchema = getStaticSchemaAtPointer(rootSchema, parentPointer);
+      }
       // TODO should probably only change pointer if it actually found a schema there, but i left it as-is
       pointer = parentPointer;
     }
@@ -991,7 +1179,9 @@ export class JSONCompletion {
     if (Array.isArray(subSchema.allOf)) {
       return [
         subSchema,
-        ...subSchema.allOf.map((s) => expandSchemaProperty(s, rootSchema)),
+        ...subSchema.allOf.map((s: JSONSchema7Definition) =>
+          expandSchemaProperty(s, rootSchema),
+        ),
       ];
     }
     if (Array.isArray(subSchema.oneOf)) {
@@ -1111,14 +1301,18 @@ function getEffectiveObjectWithPropertiesSchema(
   pointer: string | undefined,
 ): JSONSchema7 | undefined {
   // TODO (unimportant): [performance] cache Draft07 in case it does some pre-processing? but does not seem to be significant
-  const draft = new Draft07(schema);
-  const subSchema = draft.getSchema({
-    pointer,
-    data: data ?? undefined,
-  });
+  const draft = compileSchema(schema, { drafts: [draft07] });
+  const normalizedPointer = pointer ?? "";
+  const subSchema = draft.getNode(normalizedPointer, data ?? undefined).node
+    ?.schema;
   if (!isRealSchema(subSchema)) {
     return undefined;
   }
+  const baseSchema = subSchema as JSONSchema7;
+  const originalProperties =
+    typeof baseSchema.properties === "object"
+      ? baseSchema.properties
+      : undefined;
 
   const possibleDirectPropertyNames = getAllPossibleDirectStaticPropertyNames(
     draft,
@@ -1130,16 +1324,23 @@ function getEffectiveObjectWithPropertiesSchema(
       pointer,
       possibleDirectPropertyName,
     );
-    const subSchemaForPropertyConsideringData = draft.getSchema({
-      // TODO [performance] use subSchema and only check it's sub-properties
-      pointer: propertyPointer,
-      data: data ?? undefined,
-      // pointer: `/${possibleDirectPropertyName}`,
-      // schema: subSchema
-    });
+    const originalSchemaForProperty = originalProperties?.[
+      possibleDirectPropertyName
+    ] as JSONSchema7 | undefined;
+    const subSchemaForPropertyConsideringData = draft.getNode(
+      propertyPointer,
+      data ?? undefined,
+    ).node?.schema;
     if (isRealSchema(subSchemaForPropertyConsideringData)) {
+      const effectiveSchemaForProperty =
+        originalSchemaForProperty && originalSchemaForProperty.$ref
+          ? {
+              ...(subSchemaForPropertyConsideringData as JSONSchema7),
+              $ref: originalSchemaForProperty.$ref,
+            }
+          : (subSchemaForPropertyConsideringData as JSONSchema7);
       Object.assign(effectiveProperties, {
-        [possibleDirectPropertyName]: subSchemaForPropertyConsideringData,
+        [possibleDirectPropertyName]: effectiveSchemaForProperty,
       });
     }
   }
@@ -1167,10 +1368,10 @@ function getEffectiveObjectWithPropertiesSchema(
  * @param schema
  */
 function getAllPossibleDirectStaticPropertyNames(
-  rootDraft: Draft07,
+  rootDraft: SchemaNode,
   schema: JSONSchema7,
 ): string[] {
-  schema = expandSchemaProperty(schema, rootDraft.rootSchema);
+  schema = expandSchemaProperty(schema, rootDraft as JSONSchema7);
   if (typeof schema !== "object" || schema == null) {
     return [];
   }

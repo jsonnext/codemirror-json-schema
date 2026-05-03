@@ -1,153 +1,101 @@
-[codemirror-json-schema](../README.md) / JSONHover
+[**codemirror-json-schema-refined**](../README.md)
+
+---
+
+[codemirror-json-schema-refined](../README.md) / JSONHover
 
 # Class: JSONHover
 
-## Table of contents
-
-### Constructors
-
-- [constructor](JSONHover.md#constructor)
-
-### Methods
-
-- [doHover](JSONHover.md#dohover)
-- [formatMessage](JSONHover.md#formatmessage)
-- [getDataForCursor](JSONHover.md#getdataforcursor)
-- [getHoverTexts](JSONHover.md#gethovertexts)
-
-### Properties
-
-- [mode](JSONHover.md#mode)
-- [opts](JSONHover.md#opts)
-- [schema](JSONHover.md#schema)
+Defined in: [src/features/hover.ts:270](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/hover.ts#L270)
 
 ## Constructors
 
-### constructor
+### Constructor
 
-• **new JSONHover**(`opts?`)
+> **new JSONHover**(`opts?`): `JSONHover`
+
+Defined in: [src/features/hover.ts:273](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/hover.ts#L273)
 
 #### Parameters
 
-| Name    | Type                                        |
-| :------ | :------------------------------------------ |
-| `opts?` | [`HoverOptions`](../README.md#hoveroptions) |
+##### opts?
 
-#### Defined in
+[`HoverOptions`](../type-aliases/HoverOptions.md)
 
-[features/hover.ts:88](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/hover.ts#L88)
+#### Returns
+
+`JSONHover`
 
 ## Methods
 
-### doHover
+### doHover()
 
-▸ **doHover**(`view`, `pos`, `side`): `Promise`\<`null` \| `Tooltip`\>
+> **doHover**(`view`, `pos`, `side`): `Promise`\<`Tooltip` \| `null`\>
+
+Defined in: [src/features/hover.ts:412](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/hover.ts#L412)
 
 #### Parameters
 
-| Name   | Type         |
-| :----- | :----------- |
-| `view` | `EditorView` |
-| `pos`  | `number`     |
-| `side` | `Side`       |
+##### view
+
+`EditorView`
+
+##### pos
+
+`number`
+
+##### side
+
+`Side`
 
 #### Returns
 
-`Promise`\<`null` \| `Tooltip`\>
-
-#### Defined in
-
-[features/hover.ts:203](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/hover.ts#L203)
+`Promise`\<`Tooltip` \| `null`\>
 
 ---
 
-### formatMessage
+### getDataForCursor()
 
-▸ `Private` **formatMessage**(`texts`): `HTMLElement`
+> **getDataForCursor**(`view`, `pos`, `side`): [`CursorData`](../type-aliases/CursorData.md) \| `null`
+
+Defined in: [src/features/hover.ts:280](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/hover.ts#L280)
 
 #### Parameters
 
-| Name    | Type         |
-| :------ | :----------- |
-| `texts` | `HoverTexts` |
+##### view
+
+`EditorView`
+
+##### pos
+
+`number`
+
+##### side
+
+`Side`
 
 #### Returns
 
-`HTMLElement`
-
-#### Defined in
-
-[features/hover.ts:136](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/hover.ts#L136)
+[`CursorData`](../type-aliases/CursorData.md) \| `null`
 
 ---
 
-### getDataForCursor
+### getHoverTexts()
 
-▸ **getDataForCursor**(`view`, `pos`, `side`): `null` \| [`CursorData`](../README.md#cursordata)
+> **getHoverTexts**(`data`, `draft`): `HoverTexts`
 
-#### Parameters
-
-| Name   | Type         |
-| :----- | :----------- |
-| `view` | `EditorView` |
-| `pos`  | `number`     |
-| `side` | `Side`       |
-
-#### Returns
-
-`null` \| [`CursorData`](../README.md#cursordata)
-
-#### Defined in
-
-[features/hover.ts:95](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/hover.ts#L95)
-
----
-
-### getHoverTexts
-
-▸ **getHoverTexts**(`data`, `draft`): `HoverTexts`
+Defined in: [src/features/hover.ts:369](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/hover.ts#L369)
 
 #### Parameters
 
-| Name    | Type                                                  |
-| :------ | :---------------------------------------------------- |
-| `data`  | `Required`\<[`CursorData`](../README.md#cursordata)\> |
-| `draft` | `Draft`                                               |
+##### data
+
+[`FoundCursorData`](../type-aliases/FoundCursorData.md)
+
+##### draft
+
+`SchemaNode`
 
 #### Returns
 
 `HoverTexts`
-
-#### Defined in
-
-[features/hover.ts:162](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/hover.ts#L162)
-
-## Properties
-
-### mode
-
-• `Private` **mode**: `JSONMode` = `MODES.JSON`
-
-#### Defined in
-
-[features/hover.ts:87](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/hover.ts#L87)
-
----
-
-### opts
-
-• `Private` `Optional` **opts**: [`HoverOptions`](../README.md#hoveroptions)
-
-#### Defined in
-
-[features/hover.ts:88](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/hover.ts#L88)
-
----
-
-### schema
-
-• `Private` **schema**: `null` \| `Draft` = `null`
-
-#### Defined in
-
-[features/hover.ts:86](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/hover.ts#L86)

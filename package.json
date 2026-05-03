@@ -1,7 +1,7 @@
 {
-  "name": "codemirror-json-schema",
+  "name": "codemirror-json-schema-refined",
   "license": "MIT",
-  "version": "0.8.1",
+  "version": "0.8.3",
   "description": "Codemirror 6 extensions that provide full JSONSchema support for `@codemirror/lang-json` and `codemirror-json5`",
   "contributors": [
     {
@@ -11,6 +11,10 @@
     {
       "name": "Rikki Schulte",
       "url": "https://rikki.dev"
+    },
+    {
+      "name": "yusing",
+      "url": "https://github.com/yusing"
     }
   ],
   "keywords": [
@@ -23,7 +27,7 @@
     "editor"
   ],
   "type": "module",
-  "packageManager": "pnpm@8.6.6",
+  "packageManager": "bun@1.3.13",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "main": "cjs/index.js",
@@ -54,72 +58,79 @@
       "default": "./cjs/yaml/index.js"
     }
   },
-  "repository": "github:acao/codemirror-json-schema",
+  "repository": "github:yusing/codemirror-json-schema",
   "homepage": "https://codemirror-json-schema.netlify.app/",
   "dependencies": {
-    "@sagold/json-pointer": "^5.1.1",
-    "@shikijs/markdown-it": "^1.22.2",
-    "best-effort-json-parser": "^1.1.2",
+    "@sagold/json-pointer": "^7.2.1",
+    "@shikijs/markdown-it": "^4.0.2",
+    "best-effort-json-parser": "^1.4.0",
     "json-schema": "^0.4.0",
-    "json-schema-library": "^9.3.5",
-    "loglevel": "^1.9.1",
-    "markdown-it": "^14.1.0",
-    "shiki": "^1.22.2",
-    "yaml": "^2.3.4"
+    "json-schema-library": "^11.4.0",
+    "loglevel": "^1.9.2",
+    "markdown-it": "^14.1.1",
+    "shiki": "^4.0.2",
+    "yaml": "^2.8.4"
   },
   "optionalDependencies": {
-    "@codemirror/autocomplete": "^6.16.2",
-    "@codemirror/lang-json": "^6.0.1",
-    "@codemirror/lang-yaml": "^6.1.1",
+    "@codemirror/autocomplete": "^6.20.1",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lang-yaml": "^6.1.3",
     "codemirror-json5": "^1.0.3",
     "json5": "^2.2.3"
   },
   "peerDependencies": {
-    "@codemirror/language": "^6.10.2",
-    "@codemirror/lint": "^6.8.0",
-    "@codemirror/state": "^6.4.1",
-    "@codemirror/view": "^6.27.0",
-    "@lezer/common": "^1.2.1"
+    "@codemirror/language": "^6.12.3",
+    "@codemirror/lint": "^6.9.5",
+    "@codemirror/state": "^6.6.0",
+    "@codemirror/view": "^6.41.1",
+    "@lezer/common": "^1.5.2"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.8",
-    "@changesets/cli": "^2.26.2",
-    "@codemirror/autocomplete": "^6.16.2",
-    "@codemirror/commands": "^6.6.0",
-    "@codemirror/language": "^6.10.2",
-    "@codemirror/lint": "^6.8.0",
-    "@codemirror/state": "^6.4.1",
-    "@codemirror/theme-one-dark": "^6.1.2",
-    "@codemirror/view": "^6.27.0",
-    "@evilmartians/lefthook": "^1.4.6",
-    "@lezer/common": "^1.2.1",
-    "@types/json-schema": "^7.0.12",
-    "@types/markdown-it": "^13.0.7",
-    "@types/node": "^20.4.2",
-    "@vitest/coverage-v8": "^2.0.5",
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.31.0",
+    "@codemirror/autocomplete": "^6.20.1",
+    "@codemirror/commands": "^6.10.3",
+    "@codemirror/language": "^6.12.3",
+    "@codemirror/lint": "^6.9.5",
+    "@codemirror/state": "^6.6.0",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@codemirror/view": "^6.41.1",
+    "@evilmartians/lefthook": "^2.1.6",
+    "@lezer/common": "^1.5.2",
+    "@types/json-schema": "^7.0.15",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "^4.1.5",
     "codemirror-json5": "^1.0.3",
-    "happy-dom": "^10.3.2",
-    "jsdom": "^24.1.1",
+    "happy-dom": "^20.9.0",
+    "jsdom": "^29.1.1",
     "json5": "^2.2.3",
-    "prettier": "^3.3.3",
-    "typedoc": "^0.24.8",
-    "typedoc-plugin-markdown": "^3.15.3",
-    "typescript": "^5.5.2",
-    "vite": "^5.3.1",
-    "vitest": "^1.6.0",
-    "vitest-dom": "^0.1.1",
-    "vite-tsconfig-paths": "^4.3.1"
+    "prettier": "^3.8.3",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.11.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5",
+    "vitest-dom": "^0.1.1"
   },
   "scripts": {
     "dev": "vite ./dev --port 3000",
-    "build": "pnpm tsc && tsc --module commonjs --outDir cjs && vite build ./dev --outDir ../public --emptyOutDir",
-    "test": "vitest --dom",
-    "test:coverage": "vitest run --dom --coverage ",
-    "tsc": "tsc && pnpm replace:env",
-    "version-packages": "changeset version && pnpm typedoc && pnpm prettier:write CHANGELOG.md && git add package.json pnpm-lock.yaml CHANGELOG.md",
-    "release": "pnpm build && changeset publish",
-    "typedoc": "typedoc --out docs src/index.ts src/json5.ts && pnpm prettier:write docs/**/*",
+    "build": "bun tsc && tsc --module commonjs --outDir cjs && vite build ./dev --outDir ../public --emptyOutDir",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "tsc": "tsc && bun replace:env",
+    "version-packages": "changeset version && bun typedoc && bun prettier:write CHANGELOG.md && git add package.json bun-lock.yaml CHANGELOG.md",
+    "release": "bun run build && changeset publish",
+    "typedoc": "typedoc --out docs src/index.ts src/json5.ts && bun prettier:write docs/**/*",
     "prettier:write": "prettier --ignore-path .gitignore --write",
     "replace:env": "sh scripts/replace-env.sh"
+  },
+  "overrides": {
+    "@codemirror/autocomplete": "^6.20.1",
+    "@codemirror/language": "^6.12.3",
+    "@codemirror/lint": "^6.9.5",
+    "@codemirror/state": "^6.6.0",
+    "@codemirror/view": "^6.41.1",
+    "@lezer/common": "^1.5.2"
   }
 }

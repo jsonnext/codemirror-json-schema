@@ -1,13 +1,13 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Text } from "@codemirror/state";
 import { SyntaxNode, SyntaxNodeRef } from "@lezer/common";
-import { JSONMode, JSONPointersMap, Side } from "../types";
 import {
   JSON5_TOKENS_MAPPING,
   MODES,
   TOKENS,
   YAML_TOKENS_MAPPING,
 } from "../constants";
+import { JSONMode, JSONPointersMap, Side } from "../types";
 import {
   findNodeIndexInArrayNode,
   getMatchingChildNode,
@@ -102,25 +102,28 @@ export const getJsonPointers = (
         const pointer = getJsonPointerAt(state.doc, type.node, mode);
 
         const { from: keyFrom, to: keyTo } = type.node;
-        // if there's no value, we can't get the valueFrom/to
-        if (!type.node?.nextSibling?.node) {
+        const valueNode = getPropertyValueNode(type.node, mode);
+
+        if (valueNode) {
+          const { from: valueFrom, to: valueTo } = valueNode;
+          pointers.set(pointer, { keyFrom, keyTo, valueFrom, valueTo });
+        } else {
           pointers.set(pointer, { keyFrom, keyTo });
-          return true;
         }
-        // TODO: Make this generic enough to avoid mode-specific checks
-        const nextNode =
-          mode === MODES.JSON
-            ? type.node?.nextSibling?.node
-            : type.node?.nextSibling?.node?.nextSibling?.node;
-        if (!nextNode) {
-          pointers.set(pointer, { keyFrom, keyTo });
-          return true;
-        }
-        const { from: valueFrom, to: valueTo } = nextNode as SyntaxNode;
-        pointers.set(pointer, { keyFrom, keyTo, valueFrom, valueTo });
         return true;
       }
     },
   });
   return pointers;
 };
+
+function getPropertyValueNode(node: SyntaxNode, mode: JSONMode) {
+  let current: SyntaxNode | null | undefined = node.nextSibling;
+  while (current) {
+    if (isValueNode(current, mode)) {
+      return current;
+    }
+    current = current.nextSibling;
+  }
+  return null;
+}

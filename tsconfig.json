@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "esnext",
     "module": "ESNext",
     "outDir": "dist",
+    "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "lib": ["ESNext", "DOM"],
     "declaration": true,
     "resolveJsonModule": true,
@@ -17,7 +18,9 @@
     "paths": {
       "@*": ["./src/*"]
     },
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "types": ["node"],
+    "ignoreDeprecations": "6.0"
   },
   "compileOnSave": true,
   "include": ["src/**/*"],

@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { getJsonPointers, jsonPointerForPosition } from "../json-pointers";
 import { EditorState } from "@codemirror/state";
 import { MODES } from "../../constants";
 import { getExtensions } from "../../features/__tests__/__helpers__/index";
+import { getJsonPointers, jsonPointerForPosition } from "../json-pointers";
 
 describe("jsonPointerForPosition", () => {
   it.each([
@@ -93,7 +93,7 @@ bar: 123
       });
       const pointer = jsonPointerForPosition(state, pos, 1, mode);
       expect(pointer).toEqual(expected);
-    }
+    },
   );
 });
 
@@ -135,9 +135,6 @@ describe("getJsonPointers", () => {
         "/boop/0": {
           keyFrom: 65,
           keyTo: 78,
-          // TODO: These look erroneous. There is no key-value pair for array items
-          valueFrom: 78,
-          valueTo: 79,
         },
         "/boop/0/foo": {
           keyFrom: 66,
@@ -227,7 +224,7 @@ boop:
       mode: MODES.YAML,
       expected: {
         "": {
-          keyFrom: 4,
+          keyFrom: 3,
           keyTo: 75,
         },
         "/bar": {
@@ -256,7 +253,7 @@ boop:
           valueTo: 75,
         },
         "/boop/0": {
-          keyFrom: 66,
+          keyFrom: 65,
           keyTo: 75,
         },
         "/boop/0/foo": {
@@ -266,7 +263,7 @@ boop:
           valueTo: 75,
         },
         "/object": {
-          keyFrom: 14,
+          keyFrom: 11,
           keyTo: 23,
         },
         "/object/foo": {
@@ -286,6 +283,6 @@ boop:
       });
       const pointers = getJsonPointers(state, mode);
       expect(Object.fromEntries(pointers.entries())).toEqual(expected);
-    }
+    },
   );
 });

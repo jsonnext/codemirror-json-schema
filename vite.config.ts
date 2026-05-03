@@ -1,16 +1,14 @@
 import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [
-    tsconfigPaths({
-      ignoreConfigErrors: true,
-    }),
-  ],
+  resolve: {
+    tsconfigPaths: true,
+  },
   test: {
+    environment: "happy-dom",
     maxConcurrency: 10,
-    // configuration to be able to view console.log messages while debugging
     pool: "forks",
-    disableConsoleIntercept: Boolean(process.env.CI)
+    disableConsoleIntercept: Boolean(process.env.CI),
+    exclude: [".trunk/**", "node_modules/**"],
   },
 });

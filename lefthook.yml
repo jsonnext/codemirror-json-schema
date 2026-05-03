@@ -9,12 +9,12 @@ pre-commit:
   commands:
     prettier:
       glob: "*.{js,ts,jsx,tsx,json,css,html,yml,mdx,md}"
-      run: pnpm prettier:write {staged_files}
+      run: bun prettier:write {staged_files}
       stage_fixed: true
     test:
-      run: pnpm vitest --run --dom related {staged_files}
+      run: bun vitest --run --dom related {staged_files}
       glob: "*.{js,ts,jsx,tsx}"
       fail_text: Tests failed or not found on {staged_files}
     check:
-      run: pnpm tsc --noEmit
+      run: bun tsc --noEmit
       glob: "*.{js,ts,jsx,tsx}"

@@ -95,7 +95,6 @@
 ### Minor Changes
 
 - [#64](https://github.com/acao/codemirror-json-schema/pull/64) [`0aaf308`](https://github.com/acao/codemirror-json-schema/commit/0aaf3080f9451bdbdc45f5a812ce50c25f354c57) Thanks [@acao](https://github.com/acao)! - **Breaking Change**: replaces backticks with `<code>` blocks in hover and completion! This just seemed to make more sense.
-
   - upgrade `json-schema-library` to the latest 8.x with patch fixes, remove "forked" pointer step logic
   - after autocompleting a property, when there is empty value, provide full autocomplete options
   - as noted in the breaking change notice, all psuedo-markdown backtick \`\`delimiters are replaced with`<code>`
@@ -176,7 +175,6 @@
 ### Patch Changes
 
 - [`14a26f8`](https://github.com/acao/codemirror-json-schema/commit/14a26f829f04972080eed822bd14e2e29d907be4) Thanks [@acao](https://github.com/acao)! - fix nested json4 completion bug (#55)
-
   - fix #54, expand properties inside nested objects as expected in json4
   - always advance cursor after property completions
   - add more test coverage
@@ -204,7 +202,6 @@
 ### Patch Changes
 
 - [#37](https://github.com/acao/codemirror-json-schema/pull/37) [`1220706`](https://github.com/acao/codemirror-json-schema/commit/12207063b8243caae814ec87b0c2dbb0ba7cddf6) Thanks [@acao](https://github.com/acao)! - - fix hover on undefined schema props
-
   - configure `above: true` for the hover tooltip, to have vscode-like behavior, and prevent z-index clash with completion on smaller viewports
 
 - [#36](https://github.com/acao/codemirror-json-schema/pull/36) [`23e5721`](https://github.com/acao/codemirror-json-schema/commit/23e572147a3b8d718d52761ee431186a8b297b9d) Thanks [@imolorhe](https://github.com/imolorhe)! - fixed autocompletion in object roots, etc, for json4 and json5

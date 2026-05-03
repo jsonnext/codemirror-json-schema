@@ -132,7 +132,7 @@ describe("getNodeAtPosition", () => {
     {
       mode: MODES.YAML,
       pos: 4,
-      expectedName: "Document",
+      expectedName: "BlockMapping",
     },
     {
       mode: MODES.YAML,
@@ -142,7 +142,7 @@ describe("getNodeAtPosition", () => {
     {
       mode: MODES.YAML,
       pos: 11,
-      expectedName: "Pair",
+      expectedName: "BlockMapping",
     },
     {
       mode: MODES.YAML,
@@ -178,6 +178,6 @@ describe("getNodeAtPosition", () => {
       });
       const node = getNodeAtPosition(state, pos);
       expect(node.name).toBe(expectedName);
-    }
+    },
   );
 });

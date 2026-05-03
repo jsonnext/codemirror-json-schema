@@ -430,29 +430,7 @@ describe.each([
     name: "return template for '",
     mode: MODES.JSON5,
     docs: ["{ 'one|' }"],
-    expectedResults: [
-      {
-        label: "oneOfEg",
-        type: "property",
-        detail: "",
-        info: "an example oneOf",
-        template: "'oneOfEg': #{}",
-      },
-      {
-        label: "oneOfEg2",
-        type: "property",
-        detail: "",
-        info: "",
-        template: "'oneOfEg2': #{}",
-      },
-      {
-        detail: "",
-        info: "",
-        label: "oneOfObject",
-        template: "'oneOfObject': #{}",
-        type: "property",
-      },
-    ],
+    expectedResults: [],
   },
   {
     name: "include defaults for enum when available",

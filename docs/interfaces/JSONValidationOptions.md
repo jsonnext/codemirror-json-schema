@@ -1,55 +1,43 @@
-[codemirror-json-schema](../README.md) / JSONValidationOptions
+[**codemirror-json-schema-refined**](../README.md)
+
+---
+
+[codemirror-json-schema-refined](../README.md) / JSONValidationOptions
 
 # Interface: JSONValidationOptions
 
-## Table of contents
-
-### Properties
-
-- [formatError](JSONValidationOptions.md#formaterror)
-- [jsonParser](JSONValidationOptions.md#jsonparser)
-- [mode](JSONValidationOptions.md#mode)
+Defined in: [src/features/validation.ts:34](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/validation.ts#L34)
 
 ## Properties
 
-### formatError
+### formatError?
 
-• `Optional` **formatError**: (`error`: `JsonError`) => `string`
+> `optional` **formatError?**: (`error`) => `string`
 
-#### Type declaration
+Defined in: [src/features/validation.ts:36](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/validation.ts#L36)
 
-▸ (`error`): `string`
+#### Parameters
 
-##### Parameters
+##### error
 
-| Name    | Type        |
-| :------ | :---------- |
-| `error` | `JsonError` |
+`JsonError`
 
-##### Returns
+#### Returns
 
 `string`
 
-#### Defined in
+---
 
-[features/validation.ts:30](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L30)
+### jsonParser?
+
+> `optional` **jsonParser?**: `DocumentParser`
+
+Defined in: [src/features/validation.ts:37](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/validation.ts#L37)
 
 ---
 
-### jsonParser
+### mode?
 
-• `Optional` **jsonParser**: `DocumentParser`
+> `optional` **mode?**: `JSONMode`
 
-#### Defined in
-
-[features/validation.ts:31](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L31)
-
----
-
-### mode
-
-• `Optional` **mode**: `JSONMode`
-
-#### Defined in
-
-[features/validation.ts:29](https://github.com/jsonnext/codemirror-json-schema/blob/d360a86/src/features/validation.ts#L29)
+Defined in: [src/features/validation.ts:35](https://github.com/yusing/codemirror-json-schema/blob/1bcfccbf157424c333bf9dd63b734986b72eff1a/src/features/validation.ts#L35)

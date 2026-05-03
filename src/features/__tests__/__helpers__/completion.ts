@@ -1,4 +1,4 @@
-import { expect, vitest } from "vitest";
+import { expect, vi } from "vitest";
 
 import { EditorState } from "@codemirror/state";
 import {
@@ -14,10 +14,10 @@ import { JSONMode } from "../../../types";
 import { MODES } from "../../../constants";
 import { getExtensions } from "./index";
 
-vitest.mock("@codemirror/autocomplete", async () => {
-  const mod = await vitest.importActual<
-    typeof import("@codemirror/autocomplete")
-  >("@codemirror/autocomplete");
+vi.mock("@codemirror/autocomplete", async () => {
+  const mod = await vi.importActual<typeof import("@codemirror/autocomplete")>(
+    "@codemirror/autocomplete",
+  );
   return {
     ...mod,
     snippetCompletion(template: string, completion: Completion) {
@@ -44,7 +44,7 @@ export async function expectCompletion(
     explicit?: boolean;
     schema?: JSONSchema7;
     mode?: JSONMode;
-  } = {}
+  } = {},
 ) {
   let cur = doc.indexOf("|"),
     currentSchema = conf?.schema ?? testSchema2;
@@ -59,7 +59,7 @@ export async function expectCompletion(
 
   let result = await state.languageDataAt<CompletionSource>(
     "autocomplete",
-    cur
+    cur,
   )[0](new CompletionContext(state, cur, !!conf.explicit));
   if (!result) {
     return expect(result).toEqual(results);

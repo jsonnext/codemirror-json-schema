@@ -1,23 +1,23 @@
-import * as matchers from "vitest-dom/matchers";
-import { describe, it, expect } from "vitest";
-expect.extend(matchers);
+import { describe, expect, it } from "vitest";
 import "vitest-dom/extend-expect";
+import * as matchers from "vitest-dom/matchers";
+expect.extend(matchers);
 
 import { JSONSchema7 } from "json-schema";
 import { FoundCursorData, JSONHover } from "../hover";
 
 import { EditorView } from "@codemirror/view";
-import { testSchema, testSchema2 } from "./__fixtures__/schemas";
-import { Draft, Draft07 } from "json-schema-library";
+import { compileSchema, draft07, SchemaNode } from "json-schema-library";
 import { MODES } from "../../constants";
 import { JSONMode } from "../../types";
+import { testSchema, testSchema2 } from "./__fixtures__/schemas";
 import { getExtensions } from "./__helpers__/index";
 
 const getHoverData = (
   jsonString: string,
   pos: number,
   mode: JSONMode,
-  schema?: JSONSchema7
+  schema?: JSONSchema7,
 ) => {
   const view = new EditorView({
     doc: jsonString,
@@ -30,7 +30,7 @@ const getHoverResult = async (
   jsonString: string,
   pos: number,
   mode: JSONMode,
-  schema?: JSONSchema7
+  schema?: JSONSchema7,
 ) => {
   const view = new EditorView({
     doc: jsonString,
@@ -44,7 +44,7 @@ const getHoverTexts = async (
   jsonString: string,
   pos: number,
   mode: JSONMode,
-  schema?: JSONSchema7
+  schema?: JSONSchema7,
 ) => {
   const view = new EditorView({
     doc: jsonString,
@@ -52,10 +52,10 @@ const getHoverTexts = async (
   });
   const hover = new JSONHover({ mode });
   const data = hover.getDataForCursor(view, pos, 1) as FoundCursorData;
-  const hoverResult = hover.getHoverTexts(
-    data,
-    new Draft07({ schema: schema ?? testSchema })
-  );
+  const draft = compileSchema(schema ?? testSchema, {
+    drafts: [draft07],
+  }) as SchemaNode;
+  const hoverResult = hover.getHoverTexts(data, draft);
   return hoverResult;
 };
 
@@ -108,7 +108,7 @@ bar: 123
     "should return schema descriptions as expected (mode: $mode)",
     ({ mode, doc, pos, schema, expected }) => {
       expect(getHoverData(doc, pos, mode, schema)).toEqual(expected);
-    }
+    },
   );
 });
 
@@ -163,7 +163,7 @@ describe("JSONHover#getHoverTexts", () => {
     "should return hover texts as expected ($name, mode: $mode)",
     async ({ mode, doc, pos, schema, expected }) => {
       expect(await getHoverTexts(doc, pos, mode, schema)).toEqual(expected);
-    }
+    },
   );
 });
 
@@ -218,6 +218,6 @@ describe("JSONHover#doHover", () => {
       expectedHTMLContents.forEach((content) => {
         expect(hoverEl).toContainHTML(content);
       });
-    }
+    },
   );
 });
