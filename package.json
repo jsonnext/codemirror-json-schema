@@ -23,7 +23,7 @@
     "editor"
   ],
   "type": "module",
-  "packageManager": "pnpm@8.6.6",
+  "packageManager": "pnpm@10.34.1",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "main": "cjs/index.js",
@@ -63,9 +63,9 @@
     "json-schema": "^0.4.0",
     "json-schema-library": "^9.3.5",
     "loglevel": "^1.9.1",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.2.0",
     "shiki": "^1.22.2",
-    "yaml": "^2.3.4"
+    "yaml": "^2.9.0"
   },
   "optionalDependencies": {
     "@codemirror/autocomplete": "^6.16.2",
@@ -96,7 +96,7 @@
     "@types/json-schema": "^7.0.12",
     "@types/markdown-it": "^13.0.7",
     "@types/node": "^20.4.2",
-    "@vitest/coverage-v8": "^2.0.5",
+    "@vitest/coverage-v8": "^1.6.1",
     "codemirror-json5": "^1.0.3",
     "happy-dom": "^10.3.2",
     "jsdom": "^24.1.1",
@@ -106,9 +106,9 @@
     "typedoc-plugin-markdown": "^3.15.3",
     "typescript": "^5.5.2",
     "vite": "^5.3.1",
+    "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.6.0",
-    "vitest-dom": "^0.1.1",
-    "vite-tsconfig-paths": "^4.3.1"
+    "vitest-dom": "^0.1.1"
   },
   "scripts": {
     "dev": "vite ./dev --port 3000",
