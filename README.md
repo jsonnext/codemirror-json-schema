@@ -197,7 +197,7 @@ const json5State = EditorState.create({
     linter(
       json5SchemaLinter({
         needsRefresh: handleRefresh,
-      })
+      }),
     ),
     hoverTooltip(json5SchemaHover()),
     json5Language.data.of({
@@ -247,9 +247,7 @@ schemaSelect!.onchange = async (e) => {
     return;
   }
   // parse the remote schema spec to json
-  const data = await (
-    await fetch(`https://json.schemastore.org/${val}`)
-  ).json();
+  const data = await (await fetch(`https://www.schemastore.org/${val}`)).json();
   // this will update the schema state field, in an editor specific way
   updateSchema(editor, data);
 };

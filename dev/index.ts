@@ -151,9 +151,7 @@ const getSchema = async (val: string) => {
     return;
   }
 
-  const data = await (
-    await fetch(`https://json.schemastore.org/${val}`)
-  ).json();
+  const data = await (await fetch(`https://www.schemastore.org/${val}`)).json();
   schemaCache.set(val, data);
   handleSchemaChange(data);
 };

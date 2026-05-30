@@ -118,7 +118,7 @@
     }
   },
   "description": "This object represents a geometry, feature, or collection of features.",
-  "id": "https://json.schemastore.org/geojson",
+  "id": "https://www.schemastore.org/geojson",
   "oneOf": [
     {
       "title": "Point",
