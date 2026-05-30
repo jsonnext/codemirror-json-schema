@@ -55,6 +55,7 @@ class CompletionCollector {
 export interface JSONCompletionOptions {
   mode?: JSONMode;
   jsonParser?: DocumentParser;
+  formatInfo?: (description: string) => HTMLElement;
 }
 
 function isRealSchema(
@@ -67,6 +68,11 @@ function isRealSchema(
     subSchema.type === "undefined"
   );
 }
+
+const defaultFormatInfo = (description: string) =>
+  el("div", {
+    inner: renderMarkdown(description),
+  });
 
 export class JSONCompletion {
   private originalSchema: JSONSchema7 | null = null;
@@ -81,12 +87,14 @@ export class JSONCompletion {
   private laxSchema: JSONSchema7 | null = null;
   private mode: JSONMode = MODES.JSON;
   private parser: DocumentParser;
+  private formatInfo = defaultFormatInfo;
 
   // private lastKnownValidData: object | null = null;
 
   constructor(private opts: JSONCompletionOptions) {
     this.mode = opts.mode ?? MODES.JSON;
     this.parser = this.opts?.jsonParser ?? getDefaultParser(this.mode);
+    this.formatInfo = opts.formatInfo ?? defaultFormatInfo;
   }
 
   public doComplete(ctx: CompletionContext) {
@@ -345,7 +353,6 @@ export class JSONCompletion {
       if (properties) {
         Object.entries(properties).forEach(([key, value]) => {
           if (typeof value === "object") {
-            const description = value.description ?? "";
             const type = value.type ?? "";
             const typeStr = Array.isArray(type) ? type.toString() : type;
             const completion: Completion = {
@@ -360,10 +367,9 @@ export class JSONCompletion {
               ),
               type: "property",
               detail: typeStr,
-              info: () =>
-                el("div", {
-                  inner: renderMarkdown(description),
-                }),
+              info: value.description
+                ? () => this.formatInfo(value.description!)
+                : undefined,
             };
             collector.add(this.applySnippetCompletion(completion));
           }
@@ -837,7 +843,9 @@ export class JSONCompletion {
         type: schema.type?.toString(),
         ...this.getAppliedValue(schema.const),
 
-        info: schema.description,
+        info: schema.description
+          ? () => this.formatInfo(schema.description!)
+          : undefined,
       });
     }
 
@@ -847,7 +855,10 @@ export class JSONCompletion {
         collector.add({
           type: schema.type?.toString(),
           ...this.getAppliedValue(enm),
-          info: schema.description,
+
+          info: schema.description
+            ? () => this.formatInfo(schema.description!)
+            : undefined,
         });
       }
     }

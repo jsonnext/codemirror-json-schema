@@ -20,7 +20,6 @@ describe.each([
         label: "foo",
         type: "property",
         detail: "string",
-        info: "",
         template: '"foo": "#{}"',
       },
     ],
@@ -41,12 +40,10 @@ describe.each([
         label: "oneOfEg2",
         type: "property",
         detail: "",
-        info: "",
         template: '"oneOfEg2": #{}',
       },
       {
         detail: "",
-        info: "",
         label: "oneOfObject",
         template: '"oneOfObject": #{}',
         type: "property",
@@ -169,7 +166,6 @@ describe.each([
       {
         type: "property",
         detail: "object",
-        info: "",
         label: "object",
         template: '"object": {#{}}',
       },
@@ -177,7 +173,6 @@ describe.each([
         template: '"objectWithRef": {#{}}',
         label: "objectWithRef",
         detail: "",
-        info: "",
         type: "property",
       },
     ],
@@ -218,7 +213,6 @@ describe.each([
     expectedResults: [
       {
         detail: "string",
-        info: "",
         label: "foo",
         template: '"foo": "#{}"',
         type: "property",
@@ -232,28 +226,24 @@ describe.each([
     expectedResults: [
       {
         detail: "string",
-        info: "",
         label: "foo",
         template: '"foo": "#{}"',
         type: "property",
       },
       {
         detail: "number",
-        info: "",
         label: "bar",
         template: '"bar": #{0}',
         type: "property",
       },
       {
         detail: "string",
-        info: "",
         label: "apple",
         template: '"apple": "#{}"',
         type: "property",
       },
       {
         detail: "number",
-        info: "",
         label: "banana",
         template: '"banana": #{0}',
         type: "property",
@@ -268,7 +258,6 @@ describe.each([
     expectedResults: [
       {
         detail: "string",
-        info: "",
         label: "foo",
         template: '"foo": "#{}"',
         type: "property",
@@ -283,14 +272,12 @@ describe.each([
       {
         type: "property",
         detail: "array",
-        info: "",
         label: "arrayOfObjects",
         template: '"arrayOfObjects": [#{}]',
       },
       {
         type: "property",
         detail: "array",
-        info: "",
         label: "arrayOfOneOf",
         template: '"arrayOfOneOf": [#{}]',
       },
@@ -303,14 +290,12 @@ describe.each([
     expectedResults: [
       {
         detail: "string",
-        info: "",
         label: "foo",
         template: `"foo": "#{}"`,
         type: "property",
       },
       {
         detail: "number",
-        info: "",
         label: "bar",
         template: '"bar": #{0}',
         type: "property",
@@ -324,28 +309,24 @@ describe.each([
     expectedResults: [
       {
         detail: "string",
-        info: "",
         label: "foo",
         template: '"foo": "#{}"',
         type: "property",
       },
       {
         detail: "number",
-        info: "",
         label: "bar",
         template: '"bar": #{0}',
         type: "property",
       },
       {
         detail: "string",
-        info: "",
         label: "apple",
         template: '"apple": "#{}"',
         type: "property",
       },
       {
         detail: "number",
-        info: "",
         label: "banana",
         template: '"banana": #{0}',
         type: "property",
@@ -360,14 +341,12 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "foo",
         template: '"foo": "#{}"',
       },
       {
         type: "property",
         detail: "number",
-        info: "",
         label: "bar",
         template: '"bar": #{0}',
       },
@@ -382,14 +361,12 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "foo",
         template: '"foo": "#{}"',
       },
       {
         type: "property",
         detail: "number",
-        info: "",
         label: "bar",
         template: '"bar": #{0}',
       },
@@ -404,7 +381,6 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "test1Props",
         template: '"test1Props": "#{}"',
       },
@@ -421,7 +397,6 @@ describe.each([
         label: "foo",
         type: "property",
         detail: "string",
-        info: "",
         template: "foo: '#{}'",
       },
     ],
@@ -442,12 +417,10 @@ describe.each([
         label: "oneOfEg2",
         type: "property",
         detail: "",
-        info: "",
         template: "'oneOfEg2': #{}",
       },
       {
         detail: "",
-        info: "",
         label: "oneOfObject",
         template: "'oneOfObject': #{}",
         type: "property",
@@ -544,28 +517,24 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "foo",
         template: "'foo': '#{}'",
       },
       {
         type: "property",
         detail: "number",
-        info: "",
         label: "bar",
         template: "'bar': #{0}",
       },
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "apple",
         template: "'apple': '#{}'",
       },
       {
         type: "property",
         detail: "number",
-        info: "",
         label: "banana",
         template: "'banana': #{0}",
       },
@@ -579,7 +548,6 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "test1Props",
         template: "test1Props: '#{}'",
       },
@@ -596,7 +564,6 @@ describe.each([
         label: "foo",
         type: "property",
         detail: "string",
-        info: "",
         template: "foo: #{}",
       },
     ],
@@ -617,12 +584,10 @@ describe.each([
         label: "oneOfEg2",
         type: "property",
         detail: "",
-        info: "",
         template: "oneOfEg2: #{}",
       },
       {
         detail: "",
-        info: "",
         label: "oneOfObject",
         template: "oneOfObject: #{}",
         type: "property",
@@ -684,7 +649,6 @@ describe.each([
       {
         type: "property",
         detail: "object",
-        info: "",
         label: "object",
         template: "object: #{}",
       },
@@ -692,7 +656,6 @@ describe.each([
         template: "objectWithRef: #{}",
         label: "objectWithRef",
         detail: "",
-        info: "",
         type: "property",
       },
     ],
@@ -719,14 +682,12 @@ describe.each([
       {
         type: "property",
         detail: "number",
-        info: "",
         label: "bar",
         template: "bar: #{0}",
       },
       {
         type: "property",
         detail: "number",
-        info: "",
         label: "banana",
         template: "banana: #{0}",
       },
@@ -740,14 +701,12 @@ describe.each([
       {
         type: "property",
         detail: "array",
-        info: "",
         label: "arrayOfObjects",
         template: "arrayOfObjects: [#{}]",
       },
       {
         type: "property",
         detail: "array",
-        info: "",
         label: "arrayOfOneOf",
         template: "arrayOfOneOf: [#{}]",
       },
@@ -760,7 +719,6 @@ describe.each([
     expectedResults: [
       {
         detail: "string",
-        info: "",
         label: "foo",
         template: "foo: #{}",
         type: "property",
@@ -774,14 +732,12 @@ describe.each([
     expectedResults: [
       {
         detail: "number",
-        info: "",
         label: "bar",
         template: "bar: #{0}",
         type: "property",
       },
       {
         detail: "number",
-        info: "",
         label: "banana",
         template: "banana: #{0}",
         type: "property",
@@ -796,7 +752,6 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "test1Props",
         template: "test1Props: #{}",
       },
@@ -818,7 +773,6 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "type1Prop",
         template: "type1Prop: '#{}'",
       },
@@ -833,21 +787,18 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "type1Prop",
         template: `"type1Prop": '#{}'`,
       },
       {
         type: "property",
         detail: "",
-        info: "",
         label: "commonEnum",
         template: `"commonEnum": #{}`,
       },
       {
         type: "property",
         detail: "",
-        info: "",
         label: "commonEnumWithDifferentValues",
         template: `"commonEnumWithDifferentValues": #{}`,
       },
@@ -862,12 +813,10 @@ describe.each([
       {
         label: "type1Specific",
         apply: `'type1Specific'`,
-        // info: "",
       },
       {
         label: "common",
         apply: `'common'`,
-        // info: "",
       },
     ],
     schema: testSchemaConditionalPropertiesOnSameObject,
@@ -880,12 +829,10 @@ describe.each([
       {
         label: "type2Specific",
         apply: `'type2Specific'`,
-        // info: "",
       },
       {
         label: "common",
         apply: `'common'`,
-        // info: "",
       },
     ],
     schema: testSchemaConditionalPropertiesOnSameObject,
@@ -916,35 +863,30 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "type",
         template: `"type": #{}`,
       },
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "type1Prop",
         template: `"type1Prop": '#{}'`,
       },
       {
         type: "property",
         detail: "",
-        info: "",
         label: "commonEnum",
         template: `"commonEnum": #{}`,
       },
       {
         type: "property",
         detail: "",
-        info: "",
         label: "commonEnumWithDifferentValues",
         template: `"commonEnumWithDifferentValues": #{}`,
       },
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "type2Prop",
         template: `"type2Prop": '#{}'`,
       },
@@ -971,7 +913,6 @@ describe.each([
       {
         type: "property",
         detail: "string",
-        info: "",
         label: "type1Prop",
         template: "type1Prop: '#{}'",
       },
