@@ -9,8 +9,8 @@ export type JSONPartialPointerData = {
 };
 
 export type JSONPointerData = {
-  keyFrom: number;
-  keyTo: number;
+  keyFrom?: number;
+  keyTo?: number;
   valueFrom: number;
   valueTo: number;
 };
