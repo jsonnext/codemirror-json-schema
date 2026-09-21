@@ -53,7 +53,6 @@ export function jsonSchemaLinter(options?: JSONValidationOptions) {
 // all the error types that apply to a specific key or value
 const positionalErrors = [
   "NoAdditionalPropertiesError",
-  "RequiredPropertyError",
   "InvalidPropertyNameError",
   "ForbiddenPropertyError",
   "UndefinedValueError",
@@ -154,11 +153,16 @@ export class JSONValidation {
       ) {
         pushRoot();
       } else if (pointer) {
-        // if the error is a property error, use the key position
+        // Highlight existing keys for property errors. Missing required keys
+        // have no range, so keep highlighting their containing value.
         const isKeyError = positionalErrors.includes(error.name);
         const errorString = this.rewriteError(error);
-        const from = isKeyError ? pointer.keyFrom : pointer.valueFrom;
-        const to = isKeyError ? pointer.keyTo : pointer.valueTo;
+        const from = isKeyError
+          ? (pointer.keyFrom ?? pointer.valueFrom)
+          : pointer.valueFrom;
+        const to = isKeyError
+          ? (pointer.keyTo ?? pointer.valueTo)
+          : pointer.valueTo;
         // skip error if no from/to value is found
         if (to !== undefined && from !== undefined) {
           acc.push({

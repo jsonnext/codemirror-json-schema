@@ -93,19 +93,59 @@ bar: 123
       });
       const pointer = jsonPointerForPosition(state, pos, 1, mode);
       expect(pointer).toEqual(expected);
-    }
+    },
   );
 });
 
 describe("getJsonPointers", () => {
+  it.each(Object.values(MODES))(
+    "escapes property names and preserves ranges for nested arrays (%s)",
+    (mode) => {
+      const doc = '{"a/b~c": [[0, "invalid"]]}';
+      const state = EditorState.create({
+        doc,
+        extensions: [getExtensions(mode)],
+      });
+      const pointers = getJsonPointers(state, mode);
+      expect(pointers.get("/a~1b~0c/0/1")).toEqual({
+        valueFrom: doc.indexOf('"invalid"'),
+        valueTo: doc.indexOf('"invalid"') + '"invalid"'.length,
+      });
+      expect(pointers.get("/a~1b~0c/0")).toEqual({
+        valueFrom: doc.indexOf('[0, "invalid"]'),
+        valueTo: doc.indexOf('[0, "invalid"]') + '[0, "invalid"]'.length,
+      });
+    },
+  );
+
+  it.each([
+    { mode: MODES.JSON, doc: '{"value":' },
+    { mode: MODES.JSON5, doc: "{value:" },
+    { mode: MODES.YAML, doc: "value:" },
+  ])(
+    "keeps key-only ranges for unfinished properties (%s)",
+    ({ mode, doc }) => {
+      const state = EditorState.create({
+        doc,
+        extensions: [getExtensions(mode)],
+      });
+      const pointers = getJsonPointers(state, mode);
+      const key = mode === MODES.JSON ? '"value"' : "value";
+      expect(pointers.get("/value")).toEqual({
+        keyFrom: doc.indexOf(key),
+        keyTo: doc.indexOf(key) + key.length,
+      });
+    },
+  );
+
   it.each([
     {
       doc: '{"object": { "foo": true }, "bar": 123, "baz": [1,2,3], "boop": [{"foo": true}]}',
       mode: MODES.JSON,
       expected: {
         "": {
-          keyFrom: 0,
-          keyTo: 80,
+          valueFrom: 0,
+          valueTo: 80,
         },
         "/bar": {
           keyFrom: 28,
@@ -119,13 +159,9 @@ describe("getJsonPointers", () => {
           valueFrom: 47,
           valueTo: 54,
         },
-        // TODO: return pointers for all array indexes, not just objects
-        // "/baz/0": {
-        //   keyFrom: 40,
-        //   keyTo: 45,
-        //   valueFrom: 47,
-        //   valueTo: 55,
-        // },
+        "/baz/0": { valueFrom: 48, valueTo: 49 },
+        "/baz/1": { valueFrom: 50, valueTo: 51 },
+        "/baz/2": { valueFrom: 52, valueTo: 53 },
         "/boop": {
           keyFrom: 56,
           keyTo: 62,
@@ -133,11 +169,8 @@ describe("getJsonPointers", () => {
           valueTo: 79,
         },
         "/boop/0": {
-          keyFrom: 65,
-          keyTo: 78,
-          // TODO: These look erroneous. There is no key-value pair for array items
-          valueFrom: 78,
-          valueTo: 79,
+          valueFrom: 65,
+          valueTo: 78,
         },
         "/boop/0/foo": {
           keyFrom: 66,
@@ -146,8 +179,10 @@ describe("getJsonPointers", () => {
           valueTo: 77,
         },
         "/object": {
-          keyFrom: 11,
-          keyTo: 26,
+          keyFrom: 1,
+          keyTo: 9,
+          valueFrom: 11,
+          valueTo: 26,
         },
         "/object/foo": {
           keyFrom: 13,
@@ -162,8 +197,8 @@ describe("getJsonPointers", () => {
       mode: MODES.JSON5,
       expected: {
         "": {
-          keyFrom: 0,
-          keyTo: 72,
+          valueFrom: 0,
+          valueTo: 72,
         },
         "/bar": {
           keyFrom: 26,
@@ -177,13 +212,9 @@ describe("getJsonPointers", () => {
           valueFrom: 43,
           valueTo: 50,
         },
-        // TODO: return pointers for all array indexes, not just objects
-        // "/baz/0": {
-        //   keyFrom: 40,
-        //   keyTo: 45,
-        //   valueFrom: 47,
-        //   valueTo: 55,
-        // },
+        "/baz/0": { valueFrom: 44, valueTo: 45 },
+        "/baz/1": { valueFrom: 46, valueTo: 47 },
+        "/baz/2": { valueFrom: 48, valueTo: 49 },
         "/boop": {
           keyFrom: 52,
           keyTo: 56,
@@ -191,8 +222,8 @@ describe("getJsonPointers", () => {
           valueTo: 71,
         },
         "/boop/0": {
-          keyFrom: 59,
-          keyTo: 70,
+          valueFrom: 59,
+          valueTo: 70,
         },
         "/boop/0/foo": {
           keyFrom: 60,
@@ -201,8 +232,10 @@ describe("getJsonPointers", () => {
           valueTo: 69,
         },
         "/object": {
-          keyFrom: 11,
-          keyTo: 24,
+          keyFrom: 1,
+          keyTo: 9,
+          valueFrom: 11,
+          valueTo: 24,
         },
         "/object/foo": {
           keyFrom: 13,
@@ -227,8 +260,8 @@ boop:
       mode: MODES.YAML,
       expected: {
         "": {
-          keyFrom: 4,
-          keyTo: 75,
+          valueFrom: 0,
+          valueTo: 75,
         },
         "/bar": {
           keyFrom: 24,
@@ -242,13 +275,9 @@ boop:
           valueFrom: 40,
           valueTo: 55,
         },
-        // TODO: return pointers for all array indexes, not just objects
-        // "/baz/0": {
-        //   keyFrom: 40,
-        //   keyTo: 45,
-        //   valueFrom: 47,
-        //   valueTo: 55,
-        // },
+        "/baz/0": { valueFrom: 42, valueTo: 43 },
+        "/baz/1": { valueFrom: 48, valueTo: 49 },
+        "/baz/2": { valueFrom: 54, valueTo: 55 },
         "/boop": {
           keyFrom: 56,
           keyTo: 60,
@@ -256,8 +285,8 @@ boop:
           valueTo: 75,
         },
         "/boop/0": {
-          keyFrom: 66,
-          keyTo: 75,
+          valueFrom: 66,
+          valueTo: 75,
         },
         "/boop/0/foo": {
           keyFrom: 66,
@@ -266,8 +295,10 @@ boop:
           valueTo: 75,
         },
         "/object": {
-          keyFrom: 14,
-          keyTo: 23,
+          keyFrom: 4,
+          keyTo: 10,
+          valueFrom: 14,
+          valueTo: 23,
         },
         "/object/foo": {
           keyFrom: 14,
@@ -286,6 +317,6 @@ boop:
       });
       const pointers = getJsonPointers(state, mode);
       expect(Object.fromEntries(pointers.entries())).toEqual(expected);
-    }
+    },
   );
 });

@@ -94,31 +94,37 @@ export const getJsonPointers = (
   const pointers: JSONPointersMap = new Map();
   tree.iterate({
     enter: (type: SyntaxNodeRef) => {
-      if (
-        [TOKENS.PROPERTY_NAME, TOKENS.OBJECT].includes(
-          resolveTokenName(type.name, mode) as any,
-        )
-      ) {
+      const node = type.node;
+      const tokenName = resolveTokenName(node.name, mode);
+      if (tokenName === TOKENS.PROPERTY_NAME) {
         const pointer = getJsonPointerAt(state.doc, type.node, mode);
 
-        const { from: keyFrom, to: keyTo } = type.node;
-        // if there's no value, we can't get the valueFrom/to
-        if (!type.node?.nextSibling?.node) {
-          pointers.set(pointer, { keyFrom, keyTo });
-          return true;
+        const { from: keyFrom, to: keyTo } = node;
+        // Grammar versions differ in whether punctuation is a named node.
+        // Find the value instead of assuming a fixed number of siblings.
+        let value = node.nextSibling;
+        while (
+          value &&
+          (!isValueNode(value, mode) || value.from === value.to)
+        ) {
+          value = value.nextSibling;
         }
-        // TODO: Make this generic enough to avoid mode-specific checks
-        const nextNode =
-          mode === MODES.JSON
-            ? type.node?.nextSibling?.node
-            : type.node?.nextSibling?.node?.nextSibling?.node;
-        if (!nextNode) {
-          pointers.set(pointer, { keyFrom, keyTo });
-          return true;
+        pointers.set(
+          pointer,
+          value
+            ? { keyFrom, keyTo, valueFrom: value.from, valueTo: value.to }
+            : { keyFrom, keyTo },
+        );
+        // YAML keys contain scalar nodes; those are not property values.
+        return false;
+      }
+      if (isValueNode(node, mode) && tokenName !== TOKENS.ITEM) {
+        const pointer = getJsonPointerAt(state.doc, node, mode);
+        // Preserve property key/value ranges when visiting their value nodes.
+        // Root values and array items have no property key of their own.
+        if (!pointers.has(pointer)) {
+          pointers.set(pointer, { valueFrom: node.from, valueTo: node.to });
         }
-        const { from: valueFrom, to: valueTo } = nextNode as SyntaxNode;
-        pointers.set(pointer, { keyFrom, keyTo, valueFrom, valueTo });
-        return true;
       }
     },
   });
