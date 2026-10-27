@@ -1,6 +1,8 @@
 import { type EditorState, StateEffect, StateField } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import type { JSONSchema7 } from "json-schema";
+import { normalizeRefSiblings } from "../utils/normalize-schema";
+
 const schemaEffect = StateEffect.define<JSONSchema7 | undefined>();
 
 export const schemaStateField = StateField.define<JSONSchema7 | void>({
@@ -18,7 +20,7 @@ export const schemaStateField = StateField.define<JSONSchema7 | void>({
 
 export const updateSchema = (view: EditorView, schema?: JSONSchema7) => {
   view.dispatch({
-    effects: schemaEffect.of(schema),
+    effects: schemaEffect.of(schema ? normalizeRefSiblings(schema) : schema),
   });
 };
 
@@ -27,5 +29,5 @@ export const getJSONSchema = (state: EditorState) => {
 };
 
 export const stateExtensions = (schema?: JSONSchema7) => [
-  schemaStateField.init(() => schema),
+  schemaStateField.init(() => (schema ? normalizeRefSiblings(schema) : schema)),
 ];

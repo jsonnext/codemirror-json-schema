@@ -23,8 +23,9 @@ import {
   surroundingDoubleQuotesToSingle,
 } from "../utils/node";
 import { getJSONSchema } from "./state";
-import type { JsonError, JsonSchema } from "json-schema-library";
-import { Draft07, isJsonError } from "json-schema-library";
+import type { JsonError, JsonSchema, SchemaNode } from "json-schema-library";
+import { isJsonError } from "json-schema-library";
+import { compileSchema } from "../utils/compile-schema";
 import {
   jsonPointerForPosition,
   resolveTokenName,
@@ -891,7 +892,7 @@ export class JSONCompletion {
   ): JSONSchema7Definition[] {
     const { data: documentData } = this.parser(ctx.state);
 
-    const draft = new Draft07(rootSchema);
+    const draft = compileSchema(rootSchema);
     let pointer: string | undefined = jsonPointerForPosition(
       ctx.state,
       ctx.pos,
@@ -933,10 +934,16 @@ export class JSONCompletion {
       deepestPropertyKey in (effectiveSchemaOfParent?.properties ?? {});
 
     // TODO upgrade json-schema-library, so this actually returns undefined if data and schema are incompatible (currently it sometimes pukes itself with invalid data and imagines schemas on-the-fly)
-    let subSchema = draft.getSchema({
-      pointer,
-      data: documentData ?? undefined,
-    });
+    let subSchema: JsonSchema | undefined;
+    const getNodeResult =
+      pointer != null
+        ? draft.getNode(pointer, documentData ?? undefined)
+        : { node: undefined, error: undefined };
+    if (getNodeResult.error) {
+      subSchema = getNodeResult.error?.data?.schema;
+    } else if (getNodeResult.node) {
+      subSchema = getNodeResult.node.schema;
+    }
     if (
       !pointerPointsToKnownProperty &&
       subSchema?.type === "null" &&
@@ -948,7 +955,7 @@ export class JSONCompletion {
 
     debug.log(
       "xxxx",
-      "draft.getSchema",
+      "draft.getNode",
       subSchema,
       "data",
       documentData,
@@ -957,9 +964,6 @@ export class JSONCompletion {
       "pointerPointsToKnownProperty",
       pointerPointsToKnownProperty,
     );
-    if (isJsonError(subSchema)) {
-      subSchema = subSchema.data?.schema;
-    }
 
     // if we don't have a schema for the current pointer, try the parent pointer with data to get a list of possible properties
     if (!isRealSchema(subSchema)) {
@@ -970,7 +974,11 @@ export class JSONCompletion {
 
     // then try the parent pointer without data
     if (!isRealSchema(subSchema)) {
-      subSchema = draft.getSchema({ pointer: parentPointer });
+      const parentResult =
+        parentPointer != null
+          ? draft.getNode(parentPointer)
+          : { node: undefined };
+      subSchema = parentResult.node?.schema;
       // TODO should probably only change pointer if it actually found a schema there, but i left it as-is
       pointer = parentPointer;
     }
@@ -988,22 +996,34 @@ export class JSONCompletion {
       return [];
     }
 
-    if (Array.isArray(subSchema.allOf)) {
+    // `$ref` + sibling applicator keywords (e.g. oneOf alongside a $ref) are
+    // lifted into `allOf` by normalizeRefSiblings before compilation, so the
+    // siblings survive getNode() resolution and are handled by the branches
+    // below — no raw-schema fallback navigation is needed.
+    const effectiveSchema: JsonSchema = subSchema;
+
+    if (Array.isArray(effectiveSchema.allOf)) {
       return [
-        subSchema,
-        ...subSchema.allOf.map((s) => expandSchemaProperty(s, rootSchema)),
+        effectiveSchema,
+        ...effectiveSchema.allOf.map((s) =>
+          expandSchemaProperty(s, rootSchema),
+        ),
       ];
     }
-    if (Array.isArray(subSchema.oneOf)) {
+    if (Array.isArray(effectiveSchema.oneOf)) {
       return [
-        subSchema,
-        ...subSchema.oneOf.map((s) => expandSchemaProperty(s, rootSchema)),
+        effectiveSchema,
+        ...effectiveSchema.oneOf.map((s) =>
+          expandSchemaProperty(s, rootSchema),
+        ),
       ];
     }
-    if (Array.isArray(subSchema.anyOf)) {
+    if (Array.isArray(effectiveSchema.anyOf)) {
       return [
-        subSchema,
-        ...subSchema.anyOf.map((s) => expandSchemaProperty(s, rootSchema)),
+        effectiveSchema,
+        ...effectiveSchema.anyOf.map((s) =>
+          expandSchemaProperty(s, rootSchema),
+        ),
       ];
     }
 
@@ -1110,12 +1130,13 @@ function getEffectiveObjectWithPropertiesSchema(
   data: unknown,
   pointer: string | undefined,
 ): JSONSchema7 | undefined {
-  // TODO (unimportant): [performance] cache Draft07 in case it does some pre-processing? but does not seem to be significant
-  const draft = new Draft07(schema);
-  const subSchema = draft.getSchema({
-    pointer,
-    data: data ?? undefined,
-  });
+  // TODO (unimportant): [performance] cache compileSchema in case it does some pre-processing? but does not seem to be significant
+  const draft = compileSchema(schema);
+  const subSchemaResult =
+    pointer != null
+      ? draft.getNode(pointer, data ?? undefined)
+      : { node: draft, error: undefined };
+  const subSchema = subSchemaResult.node?.schema;
   if (!isRealSchema(subSchema)) {
     return undefined;
   }
@@ -1130,13 +1151,12 @@ function getEffectiveObjectWithPropertiesSchema(
       pointer,
       possibleDirectPropertyName,
     );
-    const subSchemaForPropertyConsideringData = draft.getSchema({
+    const propResult = draft.getNode(
       // TODO [performance] use subSchema and only check it's sub-properties
-      pointer: propertyPointer,
-      data: data ?? undefined,
-      // pointer: `/${possibleDirectPropertyName}`,
-      // schema: subSchema
-    });
+      propertyPointer,
+      data ?? undefined,
+    );
+    const subSchemaForPropertyConsideringData = propResult.node?.schema;
     if (isRealSchema(subSchemaForPropertyConsideringData)) {
       Object.assign(effectiveProperties, {
         [possibleDirectPropertyName]: subSchemaForPropertyConsideringData,
@@ -1167,10 +1187,13 @@ function getEffectiveObjectWithPropertiesSchema(
  * @param schema
  */
 function getAllPossibleDirectStaticPropertyNames(
-  rootDraft: Draft07,
+  rootDraft: SchemaNode,
   schema: JSONSchema7,
 ): string[] {
-  schema = expandSchemaProperty(schema, rootDraft.rootSchema);
+  schema = expandSchemaProperty(
+    schema,
+    rootDraft.getNodeRoot().schema as JSONSchema7,
+  );
   if (typeof schema !== "object" || schema == null) {
     return [];
   }
