@@ -252,3 +252,29 @@ export const testSchemaArrayOfObjects = {
     type: "object",
   },
 } as JSONSchema7;
+
+export const testSchemaRefWithOneOf = {
+  type: "object",
+  properties: {
+    invoiceType: {
+      $ref: "#/definitions/keyType",
+      oneOf: [
+        {
+          const: "standard",
+          title: "Standard",
+          description: "Standard invoice",
+        },
+        {
+          const: "proforma",
+          title: "Proforma",
+          description: "Proforma invoice",
+        },
+      ],
+      title: "Type",
+      description: "Type of invoice document.",
+    },
+  },
+  definitions: {
+    keyType: { type: "string" },
+  },
+} as JSONSchema7;

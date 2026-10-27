@@ -61,7 +61,7 @@
     "@shikijs/markdown-it": "^1.22.2",
     "best-effort-json-parser": "^1.1.2",
     "json-schema": "^0.4.0",
-    "json-schema-library": "^9.3.5",
+    "json-schema-library": "^10.5.4",
     "loglevel": "^1.9.1",
     "markdown-it": "^14.1.0",
     "shiki": "^1.22.2",
