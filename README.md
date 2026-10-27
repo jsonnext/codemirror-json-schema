@@ -1,4 +1,4 @@
-Codemirror 6 extensions that provide full [JSON Schema](https://json-schema.org/) support for `@codemirror/lang-json` & `codemirror-json5` language modes
+Codemirror 6 extensions that provide full [JSON Schema](https://json-schema.org/) support for `@codemirror/lang-json`, `codemirror-json5` & `@codemirror/lang-yaml` language modes
 
 <a href="https://npmjs.com/codemirror-json-schema">
 <img alt="npm" src="https://img.shields.io/npm/dm/codemirror-json-schema?label=npm%20downloads">
@@ -15,6 +15,7 @@ This is now a full-featured library for json schema for `json`, `json5` and `yam
 - ✅ hover tooltips
 - ✅ dynamic, per-editor-instance schemas using codemirror `StateField` and linting refresh
 - ✅ markdown rendering for `schema.description` and custom `formatHover` and `formatError` configuration
+- ✅ automatic resolution of external `$ref` URLs with a user-configurable `fetchSchema` hook
 
 ## Resources
 
@@ -65,8 +66,8 @@ const schema = {
   },
 };
 
-const json5State = EditorState.create({
-  doc: "{ example: true }",
+const state = EditorState.create({
+  doc: '{ "example": true }',
   extensions: [jsonSchema(schema)],
 });
 ```
@@ -86,7 +87,7 @@ import {
   jsonSchemaHover,
   jsonCompletion,
   stateExtensions,
-  handleRefresh
+  handleRefresh,
 } from "codemirror-json-schema";
 
 const schema = {
@@ -104,7 +105,7 @@ const state = EditorState.create({
     json(),
     linter(jsonParseLinter(), {
       // default is 750ms
-      delay: 300
+      delay: 300,
     }),
     linter(jsonSchemaLinter(), {
       needsRefresh: handleRefresh,
@@ -113,9 +114,9 @@ const state = EditorState.create({
       autocomplete: jsonCompletion(),
     }),
     hoverTooltip(jsonSchemaHover()),
-    stateExtensions(schema)
-  ];
-})
+    stateExtensions(schema),
+  ],
+});
 ```
 
 ### json5
@@ -166,6 +167,7 @@ This approach allows you to configure the json5 mode and parse linter, as well a
 ```ts
 import { EditorState } from "@codemirror/state";
 import { linter } from "@codemirror/lint";
+import { hoverTooltip } from "@codemirror/view";
 import { json5, json5ParseLinter, json5Language } from "codemirror-json5";
 import {
   json5SchemaLinter,
@@ -194,11 +196,9 @@ const json5State = EditorState.create({
       // the default linting delay is 750ms
       delay: 300,
     }),
-    linter(
-      json5SchemaLinter({
-        needsRefresh: handleRefresh,
-      })
-    ),
+    linter(json5SchemaLinter(), {
+      needsRefresh: handleRefresh,
+    }),
     hoverTooltip(json5SchemaHover()),
     json5Language.data.of({
       autocomplete: json5Completion(),
@@ -267,10 +267,72 @@ const state = EditorState.create({
   extensions: [
     linter(json5SchemaLinter(), {
       needsRefresh: handleRefresh,
-    })
-  ];
-}
+    }),
+  ],
+});
 ```
+
+### External `$ref` Resolution
+
+Schemas that use external `$ref` URLs (e.g. `"$ref": "https://example.com/schemas/address"`) can be automatically resolved by providing a `fetchSchema` hook. This enables full autocomplete, validation, and hover support for referenced types.
+
+Pass an options object instead of a raw schema to any of the bundled extensions:
+
+```ts
+import { EditorState } from "@codemirror/state";
+import { jsonSchema } from "codemirror-json-schema";
+
+const state = EditorState.create({
+  doc: "{}",
+  extensions: [
+    jsonSchema({
+      schema: mySchema,
+      fetchSchema: async (url) => {
+        const res = await fetch(url);
+        return res.ok ? res.json() : undefined;
+      },
+    }),
+  ],
+});
+```
+
+The `fetchSchema` function receives the base URL of each external `$ref` and should return the parsed JSON schema, or `undefined` if it can't be resolved. If a `$ref` URL includes a fragment (e.g. `https://example.com/schemas/party#/$defs/Address`), the fragment is stripped before calling `fetchSchema` — so it receives `https://example.com/schemas/party`. Local refs like `#/$defs/Foo` are resolved internally and never trigger a fetch. The resolver automatically:
+
+- Discovers all external `$ref` URLs in the schema
+- Fetches them in parallel
+- Follows transitive `$ref`s in fetched schemas
+- Deduplicates and caches requests
+- Prevents infinite cycles
+
+The same option is available for all modes:
+
+```ts
+import { json5Schema } from "codemirror-json-schema/json5";
+import { yamlSchema } from "codemirror-json-schema/yaml";
+
+// json5
+json5Schema({ schema: mySchema, fetchSchema: myFetcher });
+
+// yaml
+yamlSchema({ schema: mySchema, fetchSchema: myFetcher });
+```
+
+You can also customize the fetch to rewrite URLs. For example, to proxy schema requests through a local server:
+
+```ts
+const SCHEMA_PREFIX = "https://example.com/schemas/";
+
+jsonSchema({
+  fetchSchema: async (url) => {
+    if (!url.startsWith(SCHEMA_PREFIX)) return undefined;
+    const path = url.slice(SCHEMA_PREFIX.length);
+    const res = await fetch(`/api/schemas/${path}`);
+    return res.ok ? res.json() : undefined;
+  },
+});
+```
+
+When `updateSchema()` is called to change the schema dynamically, any external `$ref`s in the new schema are automatically resolved. Features (validation, completion, hover) work immediately with a locally-compiled schema, then update seamlessly once remote schemas finish loading.
 
 ## Current Constraints:
 

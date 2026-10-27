@@ -6,6 +6,6 @@ export { json5Completion } from "./completion";
 /**
  * @group Bundled Codemirror Extensions
  */
-export { json5Schema } from "./bundled";
+export { json5Schema, type Json5SchemaOptions } from "./bundled";
 
 export * from "../parsers/json5-parser";

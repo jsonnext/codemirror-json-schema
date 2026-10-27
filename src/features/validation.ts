@@ -1,8 +1,14 @@
 import type { EditorView, ViewUpdate } from "@codemirror/view";
 import { type Diagnostic } from "@codemirror/lint";
-import { Draft04, type Draft, type JsonError } from "json-schema-library";
+import { type SchemaNode, type JsonError } from "json-schema-library";
+import { compileSchema } from "../utils/compile-schema";
 
-import { getJSONSchema, schemaStateField } from "./state";
+import {
+  getJSONSchema,
+  schemaStateField,
+  getCompiledSchema,
+  compiledSchemaStateField,
+} from "./state";
 import { joinWithOr } from "../utils/formatting";
 import { JSONMode, JSONPointerData, RequiredPick } from "../types";
 import { el } from "../utils/dom";
@@ -35,7 +41,10 @@ type JSONValidationSettings = RequiredPick<JSONValidationOptions, "jsonParser">;
 
 export const handleRefresh = (vu: ViewUpdate) => {
   return (
-    vu.startState.field(schemaStateField) !== vu.state.field(schemaStateField)
+    vu.startState.field(schemaStateField) !==
+      vu.state.field(schemaStateField) ||
+    vu.startState.field(compiledSchemaStateField, false) !==
+      vu.state.field(compiledSchemaStateField, false)
   );
 };
 
@@ -52,15 +61,15 @@ export function jsonSchemaLinter(options?: JSONValidationOptions) {
 
 // all the error types that apply to a specific key or value
 const positionalErrors = [
-  "NoAdditionalPropertiesError",
-  "RequiredPropertyError",
-  "InvalidPropertyNameError",
-  "ForbiddenPropertyError",
-  "UndefinedValueError",
+  "no-additional-properties-error",
+  "required-property-error",
+  "invalid-property-name-error",
+  "forbidden-property-error",
+  "undefined-value-error",
 ];
 
 export class JSONValidation {
-  private schema: Draft | null = null;
+  private schema: SchemaNode | null = null;
 
   private mode: JSONMode = MODES.JSON;
   private parser: DocumentParser;
@@ -75,7 +84,7 @@ export class JSONValidation {
     // ajv did not support draft 4, so I used json-schema-library
   }
   private get schemaTitle() {
-    return this.schema?.getSchema()?.title ?? "json-schema";
+    return this.schema?.schema?.title ?? "json-schema";
   }
 
   // rewrite the error message to be more human readable
@@ -95,6 +104,10 @@ export class JSONValidation {
           : error?.data?.expected
       }\` but received \`${error?.data?.received}\``;
     }
+    if (error.code === "no-additional-properties-error") {
+      const property = error?.data?.property;
+      return `Additional property \`${property}\` is not allowed`;
+    }
     const message = error.message
       // don't mention root object
       .replaceAll("in `#` ", "")
@@ -110,7 +123,7 @@ export class JSONValidation {
     if (!schema) {
       return [];
     }
-    this.schema = new Draft04(schema);
+    this.schema = getCompiledSchema(view.state) ?? compileSchema(schema);
 
     if (!this.schema) return [];
     const text = view.state.doc.toString();
@@ -124,7 +137,7 @@ export class JSONValidation {
 
     let errors: JsonError[] = [];
     try {
-      errors = this.schema.validate(json.data);
+      errors = this.schema.validate(json.data).errors;
     } catch {}
     debug.log("xxx", "validation errors", errors, json.data);
     if (!errors.length) return [];
@@ -148,14 +161,16 @@ export class JSONValidation {
       const errorPath = getErrorPath(error);
       const pointer = json.pointers.get(errorPath) as JSONPointerData;
       if (
-        error.name === "MaxPropertiesError" ||
-        error.name === "MinPropertiesError" ||
+        error.code === "max-properties-error" ||
+        error.code === "min-properties-error" ||
         errorPath === "" // root level type errors
       ) {
         pushRoot();
       } else if (pointer) {
         // if the error is a property error, use the key position
-        const isKeyError = positionalErrors.includes(error.name);
+        const isKeyError =
+          typeof error.code === "string" &&
+          positionalErrors.includes(error.code);
         const errorString = this.rewriteError(error);
         const from = isKeyError ? pointer.keyFrom : pointer.valueFrom;
         const to = isKeyError ? pointer.keyTo : pointer.valueTo;

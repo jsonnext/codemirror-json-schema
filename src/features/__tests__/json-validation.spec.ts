@@ -8,6 +8,8 @@ import {
   testSchema,
   testSchema2,
   testSchemaArrayOfObjects,
+  testSchemaStringValidation,
+  testSchemaWithExternalRef,
 } from "./__fixtures__/schemas";
 import { JSONMode } from "../../types";
 import { getExtensions } from "./__helpers__/index";
@@ -425,5 +427,77 @@ oneOfEg2: 123
       mode,
       schema,
     );
+  });
+});
+
+describe("string validation keywords", () => {
+  it("should validate minLength", () => {
+    const errors = getErrors(
+      '{"code": ""}',
+      MODES.JSON,
+      testSchemaStringValidation,
+    );
+    const messages = errors.map((e) => e.message);
+    expect(messages.some((m) => m.includes("minimum length"))).toBe(true);
+  });
+
+  it("should validate maxLength", () => {
+    const errors = getErrors(
+      '{"code": "ABCDEFGHIJK"}',
+      MODES.JSON,
+      testSchemaStringValidation,
+    );
+    const messages = errors.map((e) => e.message);
+    expect(messages.some((m) => m.includes("maximum length"))).toBe(true);
+  });
+
+  it("should validate pattern", () => {
+    const errors = getErrors(
+      '{"code": "abc"}',
+      MODES.JSON,
+      testSchemaStringValidation,
+    );
+    const messages = errors.map((e) => e.message);
+    expect(messages.some((m) => m.includes("match"))).toBe(true);
+  });
+
+  it("should accept valid string", () => {
+    const errors = getErrors(
+      '{"code": "ABC"}',
+      MODES.JSON,
+      testSchemaStringValidation,
+    );
+    expect(errors).toEqual([]);
+  });
+});
+
+describe("external $ref validation", () => {
+  it("should validate against schemas referenced by $id in $defs", () => {
+    const errors = getErrors(
+      '{"code": ""}',
+      MODES.JSON,
+      testSchemaWithExternalRef,
+    );
+    const messages = errors.map((e) => e.message);
+    expect(messages.some((m) => m.includes("minimum length"))).toBe(true);
+  });
+
+  it("should validate pattern from $ref target", () => {
+    const errors = getErrors(
+      '{"code": "abc"}',
+      MODES.JSON,
+      testSchemaWithExternalRef,
+    );
+    const messages = errors.map((e) => e.message);
+    expect(messages.some((m) => m.includes("match"))).toBe(true);
+  });
+
+  it("should accept valid data with external ref", () => {
+    const errors = getErrors(
+      '{"code": "ABC"}',
+      MODES.JSON,
+      testSchemaWithExternalRef,
+    );
+    expect(errors).toEqual([]);
   });
 });

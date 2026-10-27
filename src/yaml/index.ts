@@ -6,6 +6,6 @@ export { yamlCompletion } from "./completion";
 /**
  * @group Bundled Codemirror Extensions
  */
-export { yamlSchema } from "./bundled";
+export { yamlSchema, type YamlSchemaOptions } from "./bundled";
 
 export * from "../parsers/yaml-parser";

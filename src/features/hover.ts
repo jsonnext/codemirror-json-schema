@@ -1,17 +1,17 @@
 import { type EditorView, Tooltip } from "@codemirror/view";
 import {
-  type Draft,
-  Draft04,
-  JsonSchema,
+  type SchemaNode,
+  type JsonSchema,
   isJsonError,
 } from "json-schema-library";
+import { compileSchema } from "../utils/compile-schema";
 
 import { jsonPointerForPosition } from "../utils/json-pointers";
 import { joinWithOr } from "../utils/formatting";
 import { debug } from "../utils/debug";
 import { JSONMode, Side } from "../types";
 import { el } from "../utils/dom";
-import { getJSONSchema } from "./state";
+import { getJSONSchema, getCompiledSchema } from "./state";
 import { MODES } from "../constants";
 import { renderMarkdown } from "../utils/markdown";
 import { JSONSchema7Type } from "json-schema";
@@ -65,25 +65,27 @@ function formatType(data: { type?: JSONSchema7Type; $ref?: string }) {
 function formatComplexType(
   schema: JsonSchema,
   complexType: "oneOf" | "anyOf" | "allOf",
-  draft: Draft
+  draft: SchemaNode,
 ) {
   return `${complexType}: ${joinWithOr(
     schema[complexType].map((s: JsonSchema) => {
       try {
-        const { data } = draft.resolveRef({ data: s, pointer: s.$ref });
-        if (data) {
-          return formatType(data);
+        if (s.$ref) {
+          const resolved = draft.getNodeRef(s.$ref);
+          if (resolved) {
+            return formatType({ ...resolved.schema, $ref: s.$ref });
+          }
         }
         return formatType(s);
       } catch (err) {
         return s.type;
       }
-    })
+    }),
   )}`;
 }
 
 export class JSONHover {
-  private schema: Draft | null = null;
+  private schema: SchemaNode | null = null;
   private mode: JSONMode = MODES.JSON;
   public constructor(private opts?: HoverOptions) {
     this.opts = {
@@ -95,7 +97,7 @@ export class JSONHover {
   public getDataForCursor(
     view: EditorView,
     pos: number,
-    side: Side
+    side: Side,
   ): CursorData | null {
     const schema = getJSONSchema(view.state)!;
     if (!schema) {
@@ -103,7 +105,7 @@ export class JSONHover {
       // without taking over the existing mode responsibilties?
       return null;
     }
-    this.schema = new Draft04(schema);
+    this.schema = getCompiledSchema(view.state) ?? compileSchema(schema);
 
     const pointer = jsonPointerForPosition(view.state, pos, side, this.mode);
 
@@ -117,17 +119,21 @@ export class JSONHover {
       return null;
     }
     // if the data is valid, we can infer a type for complex types
-    let subSchema = this.schema.getSchema({
-      pointer,
-      data,
+    const result = this.schema.getNode(pointer, data, {
       withSchemaWarning: true,
     });
-    if (isJsonError(subSchema)) {
-      if (subSchema?.data.schema["$ref"]) {
-        subSchema = this.schema.resolveRef(subSchema);
+    let subSchema: JsonSchema | undefined;
+    if (result.error) {
+      if (result.error?.data?.schema?.["$ref"]) {
+        const resolved = this.schema.getNodeRef(
+          result.error.data.schema["$ref"],
+        );
+        subSchema = resolved?.schema;
       } else {
-        subSchema = subSchema?.data.schema;
+        subSchema = result.error?.data?.schema;
       }
+    } else if (result.node) {
+      subSchema = result.node.schema;
     }
 
     return { schema: subSchema, pointer };
@@ -159,7 +165,7 @@ export class JSONHover {
     ]);
   }
 
-  public getHoverTexts(data: FoundCursorData, draft: Draft): HoverTexts {
+  public getHoverTexts(data: FoundCursorData, draft: SchemaNode): HoverTexts {
     let typeInfo = "";
     let message = null;
 
@@ -203,7 +209,7 @@ export class JSONHover {
   public async doHover(
     view: EditorView,
     pos: number,
-    side: Side
+    side: Side,
   ): Promise<Tooltip | null> {
     const start = pos,
       end = pos;
@@ -216,7 +222,7 @@ export class JSONHover {
       const getHoverTexts = this.opts?.getHoverTexts ?? this.getHoverTexts;
       const hoverTexts = getHoverTexts(
         cursorData as FoundCursorData,
-        this.schema!
+        this.schema!,
       );
       // allow users to override the hover
       const formatter = this.opts?.formatHover ?? this.formatMessage;

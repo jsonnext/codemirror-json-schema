@@ -7,6 +7,8 @@ import {
   testSchema4,
   testSchemaConditionalProperties,
   testSchemaConditionalPropertiesOnSameObject,
+  testSchemaRefWithOneOf,
+  testSchemaArrayItemsRefWithOneOf,
   wrappedTestSchemaConditionalPropertiesOnSameObject,
 } from "./__fixtures__/schemas";
 
@@ -176,7 +178,7 @@ describe.each([
       {
         template: '"objectWithRef": {#{}}',
         label: "objectWithRef",
-        detail: "",
+        detail: "object",
         info: "",
         type: "property",
       },
@@ -691,7 +693,7 @@ describe.each([
       {
         template: "objectWithRef: #{}",
         label: "objectWithRef",
-        detail: "",
+        detail: "object",
         info: "",
         type: "property",
       },
@@ -958,6 +960,62 @@ describe.each([
       // if (name === 'autocomplete for array of objects with items (array of objects)') {
       await expectCompletion(doc, expectedResults, { mode, schema });
       // }
+    });
+  },
+);
+
+describe.each([
+  {
+    name: "$ref + oneOf value completions",
+    mode: MODES.JSON,
+    docs: ['{ "invoiceType": "|" }'],
+    expectedResults: [
+      {
+        label: "standard",
+        apply: '"standard"',
+        info: "Standard invoice",
+      },
+      {
+        label: "proforma",
+        apply: '"proforma"',
+        info: "Proforma invoice",
+      },
+    ],
+    schema: testSchemaRefWithOneOf,
+  },
+])(
+  "jsonCompletionFor-testSchemaRefWithOneOf",
+  ({ name, docs, mode, expectedResults, schema }) => {
+    it.each(docs)(`${name} (mode: ${mode})`, async (doc) => {
+      await expectCompletion(doc, expectedResults, { mode, schema });
+    });
+  },
+);
+
+describe.each([
+  {
+    name: "$ref + oneOf value completions inside array items",
+    mode: MODES.JSON,
+    docs: ['{ "$addons": ["|"] }'],
+    expectedResults: [
+      {
+        label: "es-verifactu-v1",
+        apply: '"es-verifactu-v1"',
+        info: "Spain VERI*FACTU invoicing.",
+      },
+      {
+        label: "mx-cfdi-v4",
+        apply: '"mx-cfdi-v4"',
+        info: "Mexican SAT CFDI invoicing.",
+      },
+    ],
+    schema: testSchemaArrayItemsRefWithOneOf,
+  },
+])(
+  "jsonCompletionFor-testSchemaArrayItemsRefWithOneOf",
+  ({ name, docs, mode, expectedResults, schema }) => {
+    it.each(docs)(`${name} (mode: ${mode})`, async (doc) => {
+      await expectCompletion(doc, expectedResults, { mode, schema });
     });
   },
 );

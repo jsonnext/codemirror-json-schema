@@ -84,23 +84,90 @@ const persistEditorStateOnChange = (key: string) => {
   );
 };
 
-/**
- * json4!
- */
+// --- Dynamic mode ---
 
-const state = EditorState.create({
-  doc: ls.getItem("json4") ?? jsonText,
-  extensions: [
-    commonExtensions,
-    jsonSchema(schema),
-    persistEditorStateOnChange("json4"),
-  ],
-});
+const dynamicDefaultDoc = `{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "my-project",
+  "version": "1.0.0"
+}`;
 
-const editor1 = new EditorView({
-  state,
-  parent: document.querySelector("#editor-json")!,
-});
+async function fetchSchemaByURL(url: string): Promise<any | undefined> {
+  try {
+    const res = await fetch(url);
+    return res.ok ? res.json() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+let isDynamic = false;
+
+function createDynamicEditor(parent: Element): EditorView {
+  let activeSchemaURL: string | null = null;
+
+  const loadSchemaFromDoc = debounce(async (view: EditorView) => {
+    try {
+      const text = view.state.doc.toString();
+      const m = text.match(/"\$schema"\s*:\s*"([^"]+)"/);
+      const url = m?.[1];
+      if (!url || url === activeSchemaURL) return;
+      activeSchemaURL = url;
+      console.log("Loading schema:", url);
+      const schema = await fetchSchemaByURL(url);
+      // The editor may have been replaced while the schema loaded.
+      if (schema && view === editor1) updateSchema(view, schema);
+    } catch (e) {
+      console.warn("Schema loading failed:", e);
+    }
+  }, 500);
+
+  const view = new EditorView({
+    state: EditorState.create({
+      doc: ls.getItem("json4") || dynamicDefaultDoc,
+      extensions: [
+        commonExtensions,
+        jsonSchema({
+          fetchSchema: fetchSchemaByURL,
+        }),
+        persistEditorStateOnChange("json4"),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            loadSchemaFromDoc(update.view);
+          }
+        }),
+      ],
+    }),
+    parent,
+  });
+
+  // Load schema from the initial document
+  loadSchemaFromDoc(view);
+
+  return view;
+}
+
+function createStaticEditor(
+  parent: Element,
+  initialSchema: JSONSchema7,
+): EditorView {
+  return new EditorView({
+    state: EditorState.create({
+      doc: ls.getItem("json4") ?? jsonText,
+      extensions: [
+        commonExtensions,
+        jsonSchema(initialSchema),
+        persistEditorStateOnChange("json4"),
+      ],
+    }),
+    parent,
+  });
+}
+
+// --- Editors ---
+
+const jsonParent = document.querySelector("#editor-json")!;
+let editor1: EditorView = createStaticEditor(jsonParent, schema);
 
 /**
  * json5!
@@ -136,8 +203,10 @@ const editor3 = new EditorView({
   parent: document.querySelector("#editor-yaml")!,
 });
 
+// --- Schema switching ---
+
 const handleSchemaChange = (newSchema: JSONSchema7) => {
-  updateSchema(editor1, newSchema);
+  if (!isDynamic) updateSchema(editor1, newSchema);
   updateSchema(editor2, newSchema);
   updateSchema(editor3, newSchema);
 };
@@ -158,7 +227,9 @@ const getSchema = async (val: string) => {
   handleSchemaChange(data);
 };
 
-const schemaSelect = document.getElementById("schema-selection");
+const schemaSelect = document.getElementById(
+  "schema-selection",
+) as HTMLSelectElement;
 const schemaValue = localStorage.getItem("selectedSchema")!;
 
 const setFileName = (value: any) => {
@@ -167,31 +238,50 @@ const setFileName = (value: any) => {
   });
 };
 
+function switchToDynamic() {
+  isDynamic = true;
+  editor1.destroy();
+  editor1 = createDynamicEditor(jsonParent);
+  setFileName("dynamic");
+}
+
+function switchToStatic(val: string) {
+  if (isDynamic) {
+    isDynamic = false;
+    editor1.destroy();
+    editor1 = createStaticEditor(jsonParent, schema);
+  }
+  getSchema(val);
+  setFileName(val.split(".")[0]);
+}
+
 (async () => {
   if (schemaValue) {
-    schemaSelect!.value = schemaValue;
-    await getSchema(schemaValue);
-    document.querySelectorAll("h2 code span").forEach((el) => {
-      el.textContent = schemaValue.split(".")[0];
-    });
-    setFileName(schemaValue.split(".")[0]);
+    schemaSelect.value = schemaValue;
+    if (schemaValue === "__dynamic__") {
+      switchToDynamic();
+    } else {
+      await getSchema(schemaValue);
+      setFileName(schemaValue.split(".")[0]);
+    }
   }
 })();
 
-schemaSelect!.onchange = async (e) => {
-  const val = e.target!.value!;
-  if (!val) {
-    return;
-  }
+schemaSelect.onchange = async (e) => {
+  const val = (e.target as HTMLSelectElement).value;
+  if (!val) return;
   ls.setItem("selectedSchema", val);
-  await getSchema(val);
-  setFileName(val.split(".")[0]);
+  if (val === "__dynamic__") {
+    switchToDynamic();
+  } else {
+    switchToStatic(val);
+  }
 };
 
-function debounce(fn: Function, ms: number) {
+function debounce<T extends (...args: any[]) => any>(fn: T, ms: number): T {
   let timeout: number;
   return function (this: any, ...args: any[]) {
     clearTimeout(timeout);
     timeout = window.setTimeout(() => fn.apply(this, args), ms);
-  };
+  } as any;
 }

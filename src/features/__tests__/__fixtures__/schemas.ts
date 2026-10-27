@@ -252,3 +252,104 @@ export const testSchemaArrayOfObjects = {
     type: "object",
   },
 } as JSONSchema7;
+
+export const testSchemaStringValidation = {
+  type: "object",
+  properties: {
+    code: {
+      type: "string",
+      minLength: 1,
+      maxLength: 10,
+      pattern: "^[A-Z]+$",
+    },
+    name: {
+      type: "string",
+      minLength: 2,
+    },
+  },
+  required: ["code"],
+  additionalProperties: false,
+} as JSONSchema7;
+
+export const testSchemaWithExternalRef = {
+  type: "object",
+  properties: {
+    code: { $ref: "https://example.com/schemas/code" },
+  },
+  $defs: {
+    Code: {
+      $id: "https://example.com/schemas/code",
+      type: "string",
+      minLength: 1,
+      maxLength: 10,
+      pattern: "^[A-Z]+$",
+    },
+  },
+} as JSONSchema7;
+
+export const testSchemaRefWithOneOf = {
+  type: "object",
+  properties: {
+    invoiceType: {
+      $ref: "#/definitions/keyType",
+      oneOf: [
+        {
+          const: "standard",
+          title: "Standard",
+          description: "Standard invoice",
+        },
+        {
+          const: "proforma",
+          title: "Proforma",
+          description: "Proforma invoice",
+        },
+      ],
+      title: "Type",
+      description: "Type of invoice document.",
+    },
+  },
+  definitions: {
+    keyType: { type: "string" },
+  },
+} as JSONSchema7;
+
+// Mirrors a GOBL invoice bundle: a root-level $ref, an array property whose
+// items carry a $ref alongside a sibling oneOf listing the available values
+// (e.g. the `$addons` keys). Exercises $ref-sibling handling inside array
+// items resolved through draft 2020-12.
+export const testSchemaArrayItemsRefWithOneOf = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: "https://gobl.org/draft-0/bill/invoice",
+  $ref: "#/$defs/bill.Invoice",
+  $defs: {
+    "bill.Invoice": {
+      type: "object",
+      properties: {
+        $addons: {
+          $ref: "#/$defs/tax.AddonList",
+          title: "Addons",
+          description: "Tax addons applied to the document.",
+        },
+      },
+    },
+    "tax.AddonList": {
+      type: "array",
+      items: {
+        $ref: "#/$defs/cbc.Key",
+        oneOf: [
+          {
+            const: "es-verifactu-v1",
+            title: "Spain VERI*FACTU V1",
+            description: "Spain VERI*FACTU invoicing.",
+          },
+          {
+            const: "mx-cfdi-v4",
+            title: "Mexican SAT CFDI v4.X",
+            description: "Mexican SAT CFDI invoicing.",
+          },
+        ],
+      },
+    },
+    "cbc.Key": { type: "string", pattern: "^[a-z][a-z0-9-]*$" },
+  },
+} as JSONSchema7;
